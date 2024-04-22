@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { createWork, fetchWorkType, fetchLocations, fetchShopGroups, fetchUsers } from '../../services/api';
+import { createWork, fetchWorkType, fetchLocations, fetchShopGroups, createWorkLog } from '../../services/api';
 import './workForm.css';
 
 function WorkForm({ showWorkForm, setShowWorkForm }) {
@@ -15,6 +15,7 @@ function WorkForm({ showWorkForm, setShowWorkForm }) {
     const [workTypes, setWorkTypes] = useState([]);
     const [locations, setLocations] = useState([]);
     const [shopGroups, setShopGroups] = useState([]);
+    const [createWorkLogChecked, setCreateWorkLogChecked] = useState(false); // State for checkbox
 
     useEffect(() => {
         const fetchData = async () => {
@@ -40,7 +41,14 @@ function WorkForm({ showWorkForm, setShowWorkForm }) {
         event.preventDefault();
         try {
             console.log(workData);
-            await createWork(workData);
+            const createdWork = await createWork(workData);
+            console.log(createdWork);
+            const workId = createdWork.payload;
+            console.log(workId);
+
+            if (createWorkLogChecked) { // If checkbox is checked, call createWorkLog API
+                await createWorkLog(workId, workData);
+            }
             alert("Work created successfully!");
             setShowWorkForm(false); // Close the form
             window.location.reload(); // Reload the page
@@ -64,7 +72,7 @@ function WorkForm({ showWorkForm, setShowWorkForm }) {
             setWorkData({ ...workData, [name]: value });
         }
     };
-    
+
     return (
         <div className={`modal ${showWorkForm ? "show" : "hide"}`}>
             <div className="form-content">
@@ -152,6 +160,19 @@ function WorkForm({ showWorkForm, setShowWorkForm }) {
                                 <option key={group.id} value={group.id}>{group.name}</option>
                             ))}
                         </select>
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="createWorkLog" className="form-checkbox-label">
+                            <input
+                                type="checkbox"
+                                id="createWorkLog"
+                                name="createWorkLog"
+                                checked={createWorkLogChecked}
+                                onChange={() => setCreateWorkLogChecked(!createWorkLogChecked)}
+                            />
+                            <span>Create Work Log</span>
+                        </label>
                     </div>
 
                     <button type="submit" className="form-button">Create Work</button>

@@ -57,11 +57,16 @@ function EditWorkForm({ showEditWorkForm, setshowEditWorkForm }) {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const customFieldValues = customFields.map(field => ({
+            const filteredCustomFields = customFields.filter(field => {
+                const value = workData[field.name];
+                return value !== undefined && value !== null && value !== '';
+            });
+    
+            const customFieldValues = filteredCustomFields.map(field => ({
                 id: field.id,
                 value: {
                     type: field.valueType || 'String',
-                    value: workData[field.name] || null
+                    value: workData[field.name]
                 }
             }));
 

@@ -79,6 +79,12 @@ function ElementForm({ showElementForm, setShowElementForm }) {
     }
   }, [taggedClassId]);
 
+  const handleParentChange = (event) => {
+    const selectedParentId = event.target.value;
+    console.log("Selected parent ID:", selectedParentId);
+    setParentId(selectedParentId);
+  };
+
   // Function to fetch class details
   const fetchClassDetails = async () => {
     try {
@@ -131,19 +137,18 @@ function ElementForm({ showElementForm, setShowElementForm }) {
                 id="parent"
                 name="parent"
                 value={parentId}
-                onChange={(event) => {
-                  console.log("Selected parent ID:", event.target.value);
-                  setParentId(event.target.value);
-                }}
+                onChange={handleParentChange}
               >
                 <option value="">Select a parent</option>
-                {parents.map((parent) => (
-                  <option key={parent.id} value={parent.id}>
-                    {parent.name}
-                  </option>
-                ))}
+                {parents.map((parent) => {
+                  console.log(parent);
+                  return (
+                    <option key={parent.id} value={parent.id}>
+                      {parent.name}
+                    </option>
+                  );
+                })}
               </select>
-
 
             ) : (
               <input
@@ -169,6 +174,18 @@ function ElementForm({ showElementForm, setShowElementForm }) {
       console.error("Error fetching class details:", error.message);
     }
   };
+
+// Check initial state of parentId
+console.log("Initial parentId:", parentId);
+
+// Add a log statement inside handleInputChange to check the selected value
+const handleInputChange = (event) => {
+  const selectedParentId = event.target.value;
+  console.log("Selected parent ID:", selectedParentId);
+  setParentId(selectedParentId);
+};
+
+
 
   // Function to fetch extends class attributes
   const fetchExtendsClassAttributes = async () => {
@@ -245,37 +262,37 @@ function ElementForm({ showElementForm, setShowElementForm }) {
   });
 
   // Function to handle input changes
-  const handleInputChange = (attributeName, attributeValue) => {
-    if (attributeName === "slac-id") {
-      setItemData((prevData) => ({
-        ...prevData,
-        name: attributeValue,
-      }));
-    } else if (attributeName === "parent") {
-      setSelectedParent(attributeValue);
-      setItemData((prevData) => ({
-        ...prevData,
-        parentId: attributeValue,
-      }));
-    } else if (attributeName === "classesName") {
-      setSelectedClassName(attributeValue);
-      const selectedClasses = classesName.find(
-        (classes) => classes.name === attributeValue
-      );
-      setItemData((prevData) => ({
-        ...prevData,
-        classId: selectedClasses ? selectedClasses.id : "",
-      }));
-    } else {
-      setItemData((prevData) => ({
-        ...prevData,
-        attributes: {
-          ...prevData.attributes,
-          [attributeName]: attributeValue.trim() === "" ? null : attributeValue,
-        },
-      }));
-    }
-  };
+  // const handleInputChange = (attributeName, attributeValue) => {
+  //   if (attributeName === "slac-id") {
+  //     setItemData((prevData) => ({
+  //       ...prevData,
+  //       name: attributeValue,
+  //     }));
+  //   } else if (attributeName === "parent") {
+  //     setSelectedParent(attributeValue);
+  //     setItemData((prevData) => ({
+  //       ...prevData,
+  //       parentId: attributeValue,
+  //     }));
+  //   } else if (attributeName === "classesName") {
+  //     setSelectedClassName(attributeValue);
+  //     const selectedClasses = classesName.find(
+  //       (classes) => classes.name === attributeValue
+  //     );
+  //     setItemData((prevData) => ({
+  //       ...prevData,
+  //       classId: selectedClasses ? selectedClasses.id : "",
+  //     }));
+  //   } else {
+  //     setItemData((prevData) => ({
+  //       ...prevData,
+  //       attributes: {
+  //         ...prevData.attributes,
+  //         [attributeName]: attributeValue.trim() === "" ? null : attributeValue,
+  //       },
+  //     }));
+  //   }
+  // };
 
   // Function to handle form submission
   const handleSubmit = async (event) => {

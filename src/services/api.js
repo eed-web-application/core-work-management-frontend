@@ -20,6 +20,37 @@ export const setDomainId = async () => {
   }
 };
 
+/* ----------------------------------------- CONNECT ----------------------------------------- */
+
+export const createWorkLog = async (workId, entry) => {
+  try {
+    const token = await extractJWT();
+    const formData = new FormData();
+    formData.append('entry', JSON.stringify(entry));
+
+    const response = await fetch(
+      `api/cwm/v1/log/${workId}`,
+      {
+        method: "POST",
+        headers: {
+          "x-vouch-idp-accesstoken": token,
+        },
+        body: formData,
+      }
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      throw new Error("Failed to create log entry");
+    }
+  } catch (error) {
+    throw new Error("Error creating log entry: " + error.message);
+  }
+};
+
+
 /* ----------------------------------------- CORE WORK ----------------------------------------- */
 
 export const fetchLovValuesForField = async (domainType, subtypeId, fieldName) => {
@@ -1240,6 +1271,31 @@ export const fetchAllClass = async () => {
     }
   } catch (error) {
     throw new Error("Error fetching class types:", error.message);
+  }
+};
+
+export const fetchLogbooks = async () => {
+  try {
+    const token = await extractJWT();
+    const response = await fetch(
+      "/api/elog/v1/logbooks",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "x-vouch-idp-accesstoken": token,
+        },
+      }
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      throw new Error("Failed to fetch logbooks");
+    }
+  } catch (error) {
+    throw new Error("Error fetching logbooks:", error.message);
   }
 };
 

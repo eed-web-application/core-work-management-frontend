@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useHistory } from 'react-router-dom'; // Import Link from react-router-dom
-import { fetchAWork, fetchActivity, fetchAActivity } from "../../services/api";
+import { fetchAWork, fetchActivity, fetchAActivity, fetchLogbooks } from "../../services/api";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell, faUser, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
 import ActivityForm from './activityForm';
@@ -28,6 +28,18 @@ const WorkDetails = () => {
         { label: 'Issues', link: '/cwm' },
         { label: 'Issue Details', link: `/work/${workId}` },
     ];
+    useEffect(() => {
+        const fetchTheLogbooks = async () => {
+            try {
+                const response = await fetchLogbooks();
+            } catch (error) {
+                console.error("Error fetching logbooks:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchTheLogbooks();
+    }, []);
 
     useEffect(() => {
         const fetchWorkDetails = async () => {
@@ -298,7 +310,7 @@ const WorkDetails = () => {
                             </colgroup>
                             <tbody>
                                 <tr>
-                                    <h3 id="attachments" style={{marginLeft: "10px"}}>Tasks<span className="new-class-button" style={{ margin: '0' }}>
+                                    <h3 id="attachments" style={{ marginLeft: "10px" }}>Tasks<span className="new-class-button" style={{ margin: '0' }}>
                                         <button onClick={() => setShowActivityForm(!showActivityForm)} className="task-button">
                                             {showActivityForm ? "Close Activity Form" : "+"}
                                         </button>

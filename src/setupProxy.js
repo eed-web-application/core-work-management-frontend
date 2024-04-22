@@ -1,13 +1,13 @@
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
-module.exports = function(app) {
+module.exports = function (app) {
   // Proxy middleware for /api/cis
   app.use(
     '/api/cis',
     createProxyMiddleware({
       target: 'http://localhost:8081',
       changeOrigin: true,
-      pathRewrite: {'^/api/cis': ''},
+      pathRewrite: { '^/api/cis': '' },
     })
   );
 
@@ -17,7 +17,17 @@ module.exports = function(app) {
     createProxyMiddleware({
       target: 'http://localhost:8082',
       changeOrigin: true,
-      pathRewrite: {'^/api/cwm': ''},
+      pathRewrite: { '^/api/cwm': '' },
+    })
+  );
+
+  // Proxy middleware for /api/elog
+  app.use(
+    '/api/elog',
+    createProxyMiddleware({
+      target: 'http://localhost:8083',
+      changeOrigin: true,
+      pathRewrite: { '^/api/elog': '' },
     })
   );
 };

@@ -5,12 +5,13 @@ import './activityForm.css';
 
 function EditActivityForm({ showEditActivityForm, setShowEditActivityForm }) {
     const { workId, activityId } = useParams();
-    const [activityData, setActivityData] = useState({
-        title: '',
-        description: '',
-        activityTypeId: '',
-        activityTypeSubtype: '',
-    });
+    const [activityData, setActivityData] = useState({});
+    // const [activityData, setActivityData] = useState({
+    //     title: '',
+    //     description: '',
+    //     activityTypeId: '',
+    //     activityTypeSubtype: '',
+    // });
     const [activityTypes, setActivityTypes] = useState([]);
     const [activityType, setActivityType] = useState(null);
     const [activitySubtypes, setActivitySubtypes] = useState([]);
@@ -24,18 +25,27 @@ function EditActivityForm({ showEditActivityForm, setShowEditActivityForm }) {
                 const workResponse = await fetchAActivity(workId, activityId);
                 const { title, description, activityType, activityTypeSubtype, customFields } = workResponse.payload;
                 const activityTypeId = activityType ? activityType.id : ''; // Grab activityType title
-                setActivityData({ title, description, activityTypeId, activityTypeSubtype });
+                // setActivityData({ title, description, activityTypeId, activityTypeSubtype });
+                // console.log(activityData);
+                setActivityType(activityType);
 
                 const customFieldsData = {};
                 customFields.forEach(field => {
                     customFieldsData[field.name] = field.value.value;
                 });
-                setActivityData(prevActivityData => ({ ...prevActivityData, ...customFieldsData }));
-                setActivityType(activityType);
+
+                setActivityData({
+                    title,
+                    description,
+                    activityTypeId,
+                    activityTypeSubtype,
+                    ...customFieldsData // Add custom fields to activityData state
+                });
+                // setActivityData(prevActivityData => ({ ...prevActivityData, ...customFieldsData }));
 
                 // Check if activityType and customFields exist, and if so, extract isLov values
                 const isLovValues = activityType?.customFields.map(field => field.isLov) || [];
-                console.log("isLov values:", isLovValues);
+                // console.log("isLov values:", isLovValues);
 
                 setCustomFields(customFields);
                 const typeResponse = await fetchActivityType();
@@ -55,7 +65,7 @@ function EditActivityForm({ showEditActivityForm, setShowEditActivityForm }) {
         try {
             const lovValuesResponse = await fetchLovValuesForField("Activity", activityData.activityTypeId, fieldName);
             if (lovValuesResponse.errorCode === 0) {
-                console.log(lovValuesResponse.payload);
+                // console.log(lovValuesResponse.payload);
                 return lovValuesResponse.payload.map(value => ({ id: value.id, value: value.value }));
             } else {
                 console.error('Error fetching LOV values for field:', fieldName, lovValuesResponse.errorMessage);
@@ -67,13 +77,33 @@ function EditActivityForm({ showEditActivityForm, setShowEditActivityForm }) {
         }
     };
 
-    // Function to fetch LOV values for the current field
     const fetchLovValuesAndRender = async (fieldName, isLov, isBoolean) => {
         try {
+            let fieldComponent;
+
             if (isLov) {
                 const lovValues = await getLovValues(fieldName);
-                // Render the component based on LOV values
-                return lovValues.length > 0 ? (
+                fieldComponent = (
+                    <select
+                    id={fieldName}
+                    name={fieldName}
+                    value={activityData[fieldName]} // Bind value here
+                    onChange={(e) => handleCustomFieldChange(fieldName, e.target.value)}
+                    className="form-select"
+                >
+                    {lovValues.map((lovItem, index) => (
+                        <option 
+                            key={index} 
+                            value={lovItem.id}
+                            selected={lovItem.value === activityData[fieldName]} // Compare with activityData value
+                        >
+                            {lovItem.value}
+                        </option>
+                    ))}
+                </select>
+                );
+            } else if (isBoolean) {
+                fieldComponent = (
                     <select
                         id={fieldName}
                         name={fieldName}
@@ -81,51 +111,24 @@ function EditActivityForm({ showEditActivityForm, setShowEditActivityForm }) {
                         onChange={(e) => handleCustomFieldChange(fieldName, e.target.value)}
                         className="form-select"
                     >
-
-                        {/* Render select options based on LOV values */}
-                        {lovValues.map((lovItem, index) => (
-                            <option key={index} value={lovItem.id}>
-                                {lovItem.value}
-                            </option>
-                        ))}
-                    </select>
-                ) : (
-                    <input
-                        type="text"
-                        id={fieldName}
-                        name={fieldName}
-                        value={activityData[fieldName] || ''}
-                        onChange={(e) => handleCustomFieldChange(fieldName, e.target.value)} // Pass fieldName to the handler
-                        className="form-input"
-                    />
-                );
-            } else if (isBoolean) {
-                // Render a select input for boolean fields
-                return (
-                    <select
-                        id={fieldName}
-                        name={fieldName}
-                        value={activityData[fieldName] || ''}
-                        onChange={(e) => handleCustomFieldChange(fieldName, e.target.value)} // Pass fieldName to the handler
-                        className="form-select"
-                    >
                         <option value="true">True</option>
                         <option value="false">False</option>
                     </select>
                 );
             } else {
-                // If isLov is false and it's not a boolean field, render a simple text input
-                return (
+                fieldComponent = (
                     <input
                         type="text"
                         id={fieldName}
                         name={fieldName}
-                        value={activityData[fieldName] || ''}
-                        onChange={handleInputChange} // Use handleInputChange for non-LOV fields
+                        value={activityData[fieldName]}
+                        onChange={(e) => handleCustomFieldChange(fieldName, e.target.value)}
                         className="form-input"
                     />
                 );
             }
+
+            return fieldComponent;
         } catch (error) {
             console.error('Error fetching LOV values for field:', fieldName, error);
             // Handle the error if necessary
@@ -133,8 +136,10 @@ function EditActivityForm({ showEditActivityForm, setShowEditActivityForm }) {
         }
     };
 
+
     // Asynchronously render components for custom fields
     const renderCustomFields = async () => {
+        // console.log("Rendering custom fields");
         const components = {};
         const isLovValues = activityType?.customFields.map(field => field.isLov) || [];
         const valueTypes = activityType?.customFields.map(field => field.valueType) || [];
@@ -143,9 +148,12 @@ function EditActivityForm({ showEditActivityForm, setShowEditActivityForm }) {
             const field = customFields[i];
             const isLov = isLovValues[i] || false; // Default to false if isLov is not defined
             const isBoolean = valueTypes[i] === 'Boolean'; // Check if the valueType is boolean
+            // console.log("Rendering custom field:", field.name);
             const component = await fetchLovValuesAndRender(field.name, isLov, isBoolean);
+            // console.log("Component for", field.name, ":", component);
             components[field.name] = component;
         }
+        // console.log("Rendered components:", components);
         setRenderedComponents(components);
     };
 
@@ -188,18 +196,38 @@ function EditActivityForm({ showEditActivityForm, setShowEditActivityForm }) {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        // Update the value in the state
-        setActivityData((prevActivityData) => ({
-            ...prevActivityData,
-            [name]: value,
-        }));
+
+        // If the changed input field is a custom field
+        if (name in activityData) {
+            // Update the value of the custom field
+            setActivityData((prevActivityData) => ({
+                ...prevActivityData,
+                [name]: value,
+            }));
+        } else {
+            // If it's a standard field like title, description, etc.
+            setActivityData((prevActivityData) => ({
+                ...prevActivityData,
+                [name]: value,
+            }));
+        }
     };
-    
+
+    // const handleCustomFieldChange = (fieldName, selectedValue) => {
+    //     setActivityData(prevActivityData => ({
+    //         ...prevActivityData,
+    //         [fieldName]: selectedValue,
+    //     }));
+    // };
+
     const handleCustomFieldChange = (fieldName, selectedValue) => {
-        setActivityData((prevActivityData) => ({
-            ...prevActivityData,
-            [fieldName]: selectedValue,
-        }));
+        console.log("Custom field changed:", fieldName, selectedValue);
+        setActivityData((prevActivityData) => {
+            return {
+                ...prevActivityData,
+                [fieldName]: selectedValue,
+            };
+        });
     };
 
     // Utility function to convert camelCase to normal casing
@@ -218,7 +246,7 @@ function EditActivityForm({ showEditActivityForm, setShowEditActivityForm }) {
                 <h1 className="form-title">UPDATE ACTIVITY</h1>
 
                 <form onSubmit={handleSubmit} className="work-form">
-                    
+
                     <div className="form-group">
                         <label htmlFor="title" className="form-label">Title</label>
                         <input
@@ -259,7 +287,6 @@ function EditActivityForm({ showEditActivityForm, setShowEditActivityForm }) {
                                 </option>
                             ))}
                         </select>
-
                     </div>
 
                     <div className="form-group">
