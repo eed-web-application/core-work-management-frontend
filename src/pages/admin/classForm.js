@@ -8,6 +8,8 @@ function ClassForm({ showClassForm, setShowClassForm }) {
   const [classesName, setClassesName] = useState([]);
   const [classDescription, setClassDescription] = useState("");
   const [attributes, setAttributes] = useState([]);
+  const [permittedChildClass, setPermittedChildClass] = useState("");
+  const [implementedByClass, setImplementedByClass] = useState("");
   const [extendsClass, setExtendsClass] = useState("");
   const [extendsClassAttributes, setExtendsClassAttributes] = useState([]);
   const [selectedExtendsClass, setSelectedExtendsClass] = useState("");

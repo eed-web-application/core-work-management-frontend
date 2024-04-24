@@ -8,6 +8,7 @@ function ElementForm({ showElementForm, setShowElementForm }) {
   const [classId, setClassId] = useState("");
   const [classesName, setClassesName] = useState([]);
   const [selectedClassName, setSelectedClassName] = useState("");
+  const [selectedParent, setSelectedParent] = useState("");
   const [dynamicForm, setDynamicForm] = useState([]);
   const [extendsClassId, setExtendsClassId] = useState("");
   const [extendsClassAttributes, setExtendsClassAttributes] = useState([]);
@@ -79,77 +80,46 @@ function ElementForm({ showElementForm, setShowElementForm }) {
     }
   }, [taggedClassId]);
 
-  const handleParentChange = (event) => {
-    const selectedParentId = event.target.value;
-    console.log("Selected parent ID:", selectedParentId);
-    setParentId(selectedParentId);
-  };
-
   // Function to fetch class details
   const fetchClassDetails = async () => {
     try {
       const classDetails = await fetchClass(classId);
-
-      if (classDetails.errorCode === 0) {
-        const classAttributes = classDetails.payload.attributes || [];
-        const taggedClassAttributesElements = taggedClassAttributes.map(
-          (attribute) => (
-            <div
-              key={attribute.name}
-              className={attribute.description ? "with-description" : ""}
-            >
-              <label htmlFor={attribute.name}>
-                {formatAttributeName(attribute.name)}:
-              </label>
-              {attribute.description ? (
-                <div className="attribute-description">
-                  {attribute.description}
-                </div>
-              ) : (
-                <input
-                  type="text"
-                  id={attribute.name}
-                  name={attribute.name}
-                  onChange={(e) =>
-                    handleInputChange(attribute.name, e.target.value)
-                  }
-                />
-              )}
+      if (classDetails.errorCode !== 0) throw new Error("Error fetching class details");
+      
+      const classAttributes = classDetails.payload.attributes || [];
+      const renderAttribute = (attribute) => (
+        <div
+          key={attribute.name}
+          className={attribute.description ? "with-description" : ""}
+        >
+          <label htmlFor={attribute.name}>
+            {formatAttributeName(attribute.name)}:
+          </label>
+          {attribute.description ? (
+            <div className="attribute-description">
+              {attribute.description}
             </div>
-          )
-        );
-
-        const dynamicFormElements = classAttributes.map((attribute) => (
-          <div
-            key={attribute.name}
-            className={attribute.description ? "with-description" : ""}
-          >
-            <label htmlFor={attribute.name}>
-              {formatAttributeName(attribute.name)}:
-            </label>
-            {attribute.description ? (
-              <div className="attribute-description">
-                {attribute.description}
-              </div>
-            ) : attribute.name === "parent" ? (
-              // In the parent dropdown's onChange handler, update parentId directly
+          ) : (
+            attribute.name === "parent" ? (
               <select
                 id="parent"
                 name="parent"
-                value={parentId}
-                onChange={handleParentChange}
+                value={selectedParent}
+                onChange={(event) => {
+                  setSelectedParent(event.target.value);
+                  const selectedParents = parents.find(
+                    (parents) => parents.name === event.target.value
+                  );
+                  setParentId(selectedParents ? selectedParents.id : "");
+                }}
               >
                 <option value="">Select a parent</option>
-                {parents.map((parent) => {
-                  console.log(parent);
-                  return (
-                    <option key={parent.id} value={parent.id}>
-                      {parent.name}
-                    </option>
-                  );
-                })}
+                {parents.map((parents) => (
+                  <option key={parents.id} value={parents.id}>
+                    {parents.name}
+                  </option>
+                ))}
               </select>
-
             ) : (
               <input
                 type="text"
@@ -159,33 +129,27 @@ function ElementForm({ showElementForm, setShowElementForm }) {
                   handleInputChange(attribute.name, e.target.value)
                 }
               />
-            )}
-          </div>
-        ));
-
-        setDynamicForm([
-          ...dynamicFormElements,
-          ...taggedClassAttributesElements,
-        ]);
-      } else {
-        throw new Error("Error fetching class details");
-      }
+            )
+          )}
+        </div>
+      );
+  
+      const taggedClassAttributesElements = taggedClassAttributes.map(renderAttribute);
+      const dynamicFormElements = classAttributes.map(renderAttribute);
+  
+      setDynamicForm([...dynamicFormElements, ...taggedClassAttributesElements]);
     } catch (error) {
       console.error("Error fetching class details:", error.message);
     }
   };
-
-// Check initial state of parentId
-console.log("Initial parentId:", parentId);
-
-// Add a log statement inside handleInputChange to check the selected value
-const handleInputChange = (event) => {
-  const selectedParentId = event.target.value;
-  console.log("Selected parent ID:", selectedParentId);
-  setParentId(selectedParentId);
-};
-
-
+   
+// Fetch class details when 'classId', 'taggedClassId', 'taggedClassAttributes', 'selectedParent', or 'selectedClassName' change
+useEffect(() => {
+  if (classId || selectedParent || selectedClassName) {
+    // Clear the dynamic form whenever a new class name is chosen
+    fetchClassDetails();
+  }
+}, [classId, selectedParent, taggedClassId, taggedClassAttributes, selectedClassName]);
 
   // Function to fetch extends class attributes
   const fetchExtendsClassAttributes = async () => {
@@ -262,37 +226,42 @@ const handleInputChange = (event) => {
   });
 
   // Function to handle input changes
-  // const handleInputChange = (attributeName, attributeValue) => {
-  //   if (attributeName === "slac-id") {
-  //     setItemData((prevData) => ({
-  //       ...prevData,
-  //       name: attributeValue,
-  //     }));
-  //   } else if (attributeName === "parent") {
-  //     setSelectedParent(attributeValue);
-  //     setItemData((prevData) => ({
-  //       ...prevData,
-  //       parentId: attributeValue,
-  //     }));
-  //   } else if (attributeName === "classesName") {
-  //     setSelectedClassName(attributeValue);
-  //     const selectedClasses = classesName.find(
-  //       (classes) => classes.name === attributeValue
-  //     );
-  //     setItemData((prevData) => ({
-  //       ...prevData,
-  //       classId: selectedClasses ? selectedClasses.id : "",
-  //     }));
-  //   } else {
-  //     setItemData((prevData) => ({
-  //       ...prevData,
-  //       attributes: {
-  //         ...prevData.attributes,
-  //         [attributeName]: attributeValue.trim() === "" ? null : attributeValue,
-  //       },
-  //     }));
-  //   }
-  // };
+  const handleInputChange = (attributeName, attributeValue) => {
+    if (attributeName === "slac-id") {
+      setItemData((prevData) => ({
+        ...prevData,
+        name: attributeValue,
+      }));
+    } else if (attributeName === "parent") {
+      setSelectedParent(attributeValue);
+      const selectedParents = parents.find(
+        (parents) => parents.name === attributeValue
+      );
+      setItemData((prevData) => ({
+        ...prevData,
+        parentId: selectedParents ? selectedParents.id : "",
+      }));
+    } else if (attributeName === "classesName") {
+      setSelectedClassName(attributeValue);
+      const selectedClasses = classesName.find(
+        (classes) => classes.name === attributeValue
+      );
+      setItemData((prevData) => ({
+        ...prevData,
+        classId: selectedClasses ? selectedClasses.id : "",
+      }));
+    } else {
+      // Add a null check for attributeValue
+      const trimmedValue = attributeValue ? attributeValue.trim() : null;
+      setItemData((prevData) => ({
+        ...prevData,
+        attributes: {
+          ...prevData.attributes,
+          [attributeName]: trimmedValue,
+        },
+      }));
+    }
+  };
 
   // Function to handle form submission
   const handleSubmit = async (event) => {

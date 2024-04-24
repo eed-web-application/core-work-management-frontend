@@ -22,11 +22,35 @@ export const setDomainId = async () => {
 
 /* ----------------------------------------- CONNECT ----------------------------------------- */
 
-export const createWorkLog = async (workId, entry) => {
+export const fetchEntriesByOriginId = async (originId) => {
   try {
     const token = await extractJWT();
-    const formData = new FormData();
-    formData.append('entry', JSON.stringify(entry));
+    const url = `/api/elog/v1/entries?originId=${encodeURIComponent(originId)}`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-vouch-idp-accesstoken': token,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log(data);
+      return data;
+    } else {
+      throw new Error(`Failed to fetch entries by originId: ${originId}. Status: ${response.status}, StatusText: ${response.statusText}`);
+    }
+  } catch (error) {
+    console.error('Error fetching entries:', error.message);
+    throw error;
+  }
+};
+
+
+export const createWorkLog = async (workId, formData) => {
+  try {
+    const token = await extractJWT();
 
     const response = await fetch(
       `api/cwm/v1/log/${workId}`,
@@ -660,7 +684,7 @@ export const getRootElements = async () => {
         "Content-Type": "application/json",
         'x-vouch-idp-accesstoken': token,
         'Cache-Control': 'no-cache',
-    'Pragma': 'no-cache',
+        'Pragma': 'no-cache',
       },
     });
 
@@ -765,14 +789,14 @@ export const searchInventory = async (anchorId, options) => {
     const domain_id = await setDomainId();
     const queryParams = new URLSearchParams(options).toString();
 
-    const response = await fetch(`/api/cis/v1/inventory/domain/${domain_id}/element?${queryParams}`, 
-    {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-vouch-idp-accesstoken': token,
-      },
-    });
+    const response = await fetch(`/api/cis/v1/inventory/domain/${domain_id}/element?${queryParams}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-vouch-idp-accesstoken': token,
+        },
+      });
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -815,13 +839,13 @@ export const fetchElementChildren = async () => {
 };
 
 
-export const fetchPath = async ( elementId, pathType) => {
+export const fetchPath = async (elementId, pathType) => {
   try {
     const token = await extractJWT();
     const domain_id = await setDomainId();
 
     const queryParams = new URLSearchParams({
-      pathType: pathType 
+      pathType: pathType
     });
 
     const response = await fetch(
@@ -867,7 +891,7 @@ export const fetchPath = async ( elementId, pathType) => {
 };
 
 
-export const createImplementation = async ( elementId, implementationData) => {
+export const createImplementation = async (elementId, implementationData) => {
   try {
     const token = await extractJWT(); // Retrieve your token here
     const domain_id = await setDomainId();
@@ -888,11 +912,11 @@ export const createImplementation = async ( elementId, implementationData) => {
     if (response.status === 201) {
       const data = await response.json();
       console.log("API.js Class created successfully:", data);
-      alert("Class created successfully!"); 
+      alert("Class created successfully!");
 
-    // if (response.ok) {
-    //   const data = await response.json();
-    //   return data;
+      // if (response.ok) {
+      //   const data = await response.json();
+      //   return data;
     } else {
       const errorData = await response.json(); // Retrieve error details
       const errorMessage = errorData.message || 'Failed to create element implementation';
@@ -931,7 +955,7 @@ export const fetchImplementation = async (elementId) => {
       const data = await response.json();
       return data;
     } else {
-      const errorData = await response.json(); 
+      const errorData = await response.json();
       throw new Error(
         `Failed to fetch element implementation: ${errorData.message}`
       );
@@ -1008,7 +1032,7 @@ export const createInventoryClass = async (classData) => {
       alert("Error creating class. Please try again.");
     }
   } catch (error) {
-    console.error("Error creating class:", error);
+    console.error("Error creating class:", error.message);
     alert("Network error. Please check your connection.");
   }
 };
@@ -1325,7 +1349,7 @@ export const searchElements = async (searchQuery = "") => {
       // Include detailed error message
       const errorData = await response.json().catch(() => null); // Try to parse JSON error response
       const errorMessage = errorData?.message || 'Unknown error';
-      
+
       throw new Error(`Error fetching inventory elements. Status: ${response.status}, Message: ${errorMessage}`);
     }
   } catch (error) {
@@ -1361,7 +1385,7 @@ export const fetchAllElements = async (limit = 10, page = 1, anchorId = null, se
       // Include detailed error message
       const errorData = await response.json().catch(() => null); // Try to parse JSON error response
       const errorMessage = errorData?.message || 'Unknown error';
-      
+
       throw new Error(`Error fetching inventory elements. Status: ${response.status}, Message: ${errorMessage}`);
     }
   } catch (error) {

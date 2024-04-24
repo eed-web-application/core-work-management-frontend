@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useHistory } from 'react-router-dom'; // Import Link from react-router-dom
-import { fetchAWork, fetchActivity, fetchAActivity, fetchLogbooks } from "../../services/api";
+import { fetchAWork, fetchEntriesByOriginId, fetchActivity, fetchAActivity, fetchLogbooks } from "../../services/api";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell, faUser, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
 import ActivityForm from './activityForm';
@@ -21,6 +21,7 @@ const WorkDetails = () => {
     const [selectedActivity, setSelectedActivity] = useState(null);
     const [showEditActivityForm, setShowEditActivityForm] = useState(false);
     const sidebarRef = useRef(null); // Ref for the sidebar panel
+    const [entries, setEntries] = useState([]);
     const history = useHistory();
 
     const breadcrumbItems = [
@@ -28,6 +29,23 @@ const WorkDetails = () => {
         { label: 'Issues', link: '/cwm' },
         { label: 'Issue Details', link: `/work/${workId}` },
     ];
+
+    useEffect(() => {
+        const fetchData = async () => {
+          try {
+            const response = await fetchEntriesByOriginId('cwm:work:4');
+            setEntries(response.payload);
+            console.log(entries);
+          } catch (error) {
+            console.error("Error fetching entries:", error);
+          } finally {
+            setLoading(false);
+          }
+        };
+      
+        fetchData();
+      }, []);
+
     useEffect(() => {
         const fetchTheLogbooks = async () => {
             try {

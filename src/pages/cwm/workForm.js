@@ -45,16 +45,25 @@ function WorkForm({ showWorkForm, setShowWorkForm }) {
             console.log(createdWork);
             const workId = createdWork.payload;
             console.log(workId);
-
-            if (createWorkLogChecked) { // If checkbox is checked, call createWorkLog API
-                await createWorkLog(workId, workData);
+    
+            if (createWorkLogChecked) {
+                const entryData = {
+                    title: workData.title,
+                    description: workData.description
+                };
+        
+                const formData = new FormData();
+                formData.append('title', entryData.title); // Add the title to the formData
+                formData.append('text', entryData.description);
+                console.log("creating work log...")
+                await createWorkLog(workId, formData);
             }
             alert("Work created successfully!");
-            setShowWorkForm(false); // Close the form
-            window.location.reload(); // Reload the page
+            setShowWorkForm(false);
+            window.location.reload();
         } catch (error) {
-            console.error('Error creating shop group:', error);
-            alert("Error creating shop group. Please try again.");
+            console.error('Error creating work:', error);
+            alert("Error creating work. Please try again.");
         }
     };
 
@@ -171,7 +180,7 @@ function WorkForm({ showWorkForm, setShowWorkForm }) {
                                 checked={createWorkLogChecked}
                                 onChange={() => setCreateWorkLogChecked(!createWorkLogChecked)}
                             />
-                            <span>Create Work Log</span>
+                            <span>Select to create Work Log for this Problem Ticket</span>
                         </label>
                     </div>
 
