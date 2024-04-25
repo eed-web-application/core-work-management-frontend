@@ -168,6 +168,35 @@
     transition: background-color 0.3s ease;
 }
 
+/* Add this CSS to your existing stylesheet */
+
+.entry-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.entry-table th,
+.entry-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.entry-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.entry-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.entry-table tr:hover {
+    background-color: #ddd;
+}
+
+
 .line {
     border: none;
     height: 1px;

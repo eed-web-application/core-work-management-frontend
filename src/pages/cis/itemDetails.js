@@ -24,6 +24,7 @@ const ItemDetails = () => {
         // Fetch element details
         const elementData = await fetchElement(id);
         setElementDetails(elementData);
+        console.log(elementData.parentId);
         // Check if classDTO exists in elementData
         const classId = elementData.classDTO?.id;
 
@@ -154,7 +155,7 @@ const ItemDetails = () => {
                 <Link to={`/inventory/${item.id}`} style={{ textDecoration: "none", color: "inherit" }}>
                   <div style={{ position: "relative", padding: "10px", marginLeft: `${level * 20 + 10}px`, borderRadius: "5px", background: item.id === location.pathname.split("/").pop() ? "#ddd" : "none" }}>
                     <div style={{ position: "absolute", bottom: "-2px", left: "-10px", width: "10px", height: "100%" }}>
-                      <div style={{ position: "absolute", bottom: "0", left: "0", width: "100%", height: "10px", borderBottom: "1px solid #ddd" }}></div>
+                      <div style={{ position: "absolute", bottom: "0", left: "0", width: "100%", height: "10px" }}></div> {/*, borderBottom: "1px solid #ddd" */}
                       <div style={{ position: "absolute", top: "0", left: "0", width: "10px", height: "100%", borderLeft: "1px solid #ddd" }}></div>
                     </div>
                     <div style={{ fontSize: "14px", fontWeight: "normal" }}>{item.name}</div>

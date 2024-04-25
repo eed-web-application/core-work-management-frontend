@@ -15,7 +15,7 @@ const Inventory = () => {
   const [searchInput, setSearchInput] = useState(""); // State to store the search input
   const [currentPage, setCurrentPage] = useState(1); // New state for current page
   const [lastItemId, setLastItemId] = useState(null); // New state to keep track of the last item's ID
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
 
   useEffect(() => {
     // Fetch initial inventory items when the component mounts
@@ -48,6 +48,7 @@ const Inventory = () => {
       const searchData = await fetchAllElements(5, 1, null, searchInput); // Assuming default values for limit, page, and anchorId
 
       setInventory(searchData.payload);
+      console.log(inventory);
       setLastItemId(searchData.payload[searchData.payload.length - 1]?.id || null);
     } catch (error) {
       console.error("Error fetching inventory elements:", error);
@@ -58,7 +59,7 @@ const Inventory = () => {
   const handleLoadMore = async () => {
     try {
       const nextPageData = await fetchAllElements(itemsPerPage, currentPage + 1, lastItemId);
-
+      console.log(inventory);
       if (nextPageData.payload.length > 0) {
         setInventory((prevInventory) => [...prevInventory, ...nextPageData.payload]);
         setCurrentPage((prevPage) => prevPage + 1);
@@ -92,7 +93,7 @@ const Inventory = () => {
   return (
     <div className="search-page">
       <br></br>
-      
+
       {/* New Item Form */}
       <div className="search-bar-new-item-container">
         {/* Search Bar */}
@@ -148,23 +149,34 @@ const Inventory = () => {
       </div>
 
       {/* Inventory Items */}
-      <div className="assets-cards-container">
+      <div className="inventory-cards-container">
         <div className="assets-cards">
+
           {inventory && inventory.length > 0 ? (
             inventory.map((item) => (
               <div key={item.id} onClick={() => handleCardClick(item.id)}>
-                <Link to={`/inventory/${item.id}`} style={{ textDecoration: 'none' }}></Link>
-                <div className="inventory-card">
-                  <p>ID: {item.id}</p>
-                  <h2>{formatItemName(item.name)}</h2>
-                  <p>{item.id}</p>
-                  {/* Add other information here */}
-                </div>
+                <Link to={`/inventory/${item.id}`} style={{ textDecoration: 'none' }}>
+                  <div className="inventory-card">
+                    <div className="inventoryleft-column">
+                      <div className="slac-id-label">SLAC ID</div>
+                      <p style={{ color: "black", fontSize: "20px", marginBottom: "0px", marginTop: "0px" }}>{formatItemName(item.name)}</p>
+                      <p className="serial-label">Manufacturer: <span className="serial">{item.classDTO.name}</span></p>
+                    </div>
+                    <div className="right-column">
+                      <p>Created By: {item.createdBy}</p>
+                      <p>Last Modified By: {item.lastModifiedBy}</p>
+                      <p>Last Modified Date: {item.lastModifiedDate}</p>
+                    </div>
+                  </div>
+
+                </Link>
               </div>
             ))
           ) : (
             <div>No inventory items available</div>
           )}
+
+
         </div>
         {/* Load More Button */}
         <div className="load-more-button">

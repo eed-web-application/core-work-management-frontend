@@ -4,7 +4,7 @@ import "../admin/admin.css";
 
 function ElementForm({ showElementForm, setShowElementForm }) {
   const [parents, setParents] = useState([]);
-  const [parentId, setParentId] = useState("");
+  const [parentId, setParentId] = useState(null);
   const [classId, setClassId] = useState("");
   const [classesName, setClassesName] = useState([]);
   const [selectedClassName, setSelectedClassName] = useState("");
@@ -268,7 +268,7 @@ useEffect(() => {
     event.preventDefault();
     console.log("submitting");
 
-    const parentIdToSend = parentId || null;
+    const parentIdToSend = selectedParent || null;
 
     const attributesData = Object.entries(itemData.attributes).map(
       ([key, value]) => ({

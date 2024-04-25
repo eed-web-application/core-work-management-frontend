@@ -25,7 +25,8 @@ export const setDomainId = async () => {
 export const fetchEntriesByOriginId = async (originId) => {
   try {
     const token = await extractJWT();
-    const url = `/api/elog/v1/entries?originId=${encodeURIComponent(originId)}`;
+    const limit = 25; // Set the limit to 25
+    const url = `/api/elog/v1/entries?originId=${originId}&limit=${limit}`; // Append the limit parameter to the URL
     const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -36,7 +37,7 @@ export const fetchEntriesByOriginId = async (originId) => {
 
     if (response.ok) {
       const data = await response.json();
-      console.log(data);
+      console.log("ENTRY DATA API:", data);
       return data;
     } else {
       throw new Error(`Failed to fetch entries by originId: ${originId}. Status: ${response.status}, StatusText: ${response.statusText}`);
@@ -46,6 +47,7 @@ export const fetchEntriesByOriginId = async (originId) => {
     throw error;
   }
 };
+
 
 
 export const createWorkLog = async (workId, formData) => {

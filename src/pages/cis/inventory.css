@@ -14,6 +14,13 @@
   pointer-events: none; /* Prevent clicking on content when form is hidden */
 }
 
+.inventory-cards-container {
+  width: 70%;
+  top: 100px;
+  align-items: center;
+  margin: 0 auto;
+}
+
 /* Semi-transparent overlay */
 .overlay {
   content: '';
@@ -81,7 +88,27 @@
   background-color: #fff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
 }
+
+.inventoryleft-column {
+  flex: 50%;
+}
+
+.right-column {
+  flex: 50%;
+  text-align: right;
+}
+
+.right-column p {
+  color: black; /* Set the text color to black */
+  font-size: 12px; /* Set the font size to your desired size */
+  margin-top: 0px;
+  margin-bottom: 5px;
+}
+
 
 /* Styling for the search page */
 .search-page {
@@ -185,4 +212,21 @@
 /* Styling for a top-right element */
 .top-right {
   margin: 10px;
+}
+
+.slac-id-label {
+  font-size: 10px;
+  color: #aaa;
+  margin-bottom: 1px; /* Adjust as needed */
+}
+
+.serial-label {
+  font-size: 12px;
+  color: #666;
+  margin-top: 5px;
+  margin-bottom: 0px;
+}
+
+.serial {
+  font-weight: bold;
 }

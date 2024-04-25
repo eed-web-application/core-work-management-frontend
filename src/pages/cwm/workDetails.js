@@ -31,22 +31,6 @@ const WorkDetails = () => {
     ];
 
     useEffect(() => {
-        const fetchData = async () => {
-          try {
-            const response = await fetchEntriesByOriginId('cwm:work:10');
-            setEntries(response.payload);
-            console.log(entries);
-          } catch (error) {
-            console.error("Error fetching entries:", error);
-          } finally {
-            setLoading(false);
-          }
-        };
-      
-        fetchData();
-      }, []);
-
-    useEffect(() => {
         const fetchTheLogbooks = async () => {
             try {
                 const response = await fetchLogbooks();
@@ -93,6 +77,26 @@ const WorkDetails = () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, [workId]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                // Check if workDetails is not null or undefined
+                if (workDetails && workDetails.workNumber) {
+                    const response = await fetchEntriesByOriginId(`cwm:work:${workDetails.workNumber}`);
+                    setEntries(response.payload);
+                    console.log("ENTRY:", entries);
+                }
+            } catch (error) {
+                console.error("Error fetching entries:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+    
+        fetchData();
+    }, [workDetails]); // Add workDetails as a dependency
+    
 
     const toggleEditForm = () => setShowEditForm(prevState => !prevState);
     const toggleEditSidebarForm = () => setShowEditActivityForm(prevState => !prevState);
@@ -195,7 +199,7 @@ const WorkDetails = () => {
                         </div>
 
                     )}
-                    {workDetails && (
+                    {/* {workDetails && (
                         <div>
                             <hr className="line" />
                             <div className="container">
@@ -212,9 +216,9 @@ const WorkDetails = () => {
                                     ))}
                                 </div>
                             </div>
-                            <hr className="line" />
                         </div>
-                    )}
+                    )} */}
+                    <hr className="line" />
 
                     <p id="attachments">Attachments</p>
                     <div className="file-upload-container">
@@ -227,10 +231,35 @@ const WorkDetails = () => {
 
                     <hr className="line" />
                     <p id="attachments">Emails Sent</p>
-                    <p>Title:</p>
-                    <p>Description: </p>
+                    <p>Users:</p>
 
                     <hr className="line" />
+
+                    {entries.length > 0 && (
+                        <div>
+                            <p id="attachments">Related eLog Entries</p>
+                            <table className="entry-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Title</th>
+                                        <th>Logged At</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {entries.map((entry, index) => (
+                                        <tr key={entry.id}>
+                                            <td>{index + 1}</td>
+                                            <td>{entry.title}</td>
+                                            <td>{entry.loggedAt}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+
+                    <br></br><hr className="line" />
 
                     {showJobDetails && (
                         // 
@@ -320,42 +349,42 @@ const WorkDetails = () => {
                 {/* <div className="attachments-activity-container"> */}
 
 
-                    <div className='work-card'>
-                        {/* <div className="attachments-section"> */}
-                        <table className='work-table'>
-                            <colgroup>
-                                <col style={{ borderLeft: '1px solid black' }} />
-                            </colgroup>
-                            <tbody>
-                                <tr>
-                                    <h3 id="attachments" style={{ marginLeft: "10px" }}>Tasks<span className="new-class-button" style={{ margin: '0' }}>
-                                        <button onClick={() => setShowActivityForm(!showActivityForm)} className="task-button">
-                                            {showActivityForm ? "Close Activity Form" : "+"}
-                                        </button>
-                                        {showActivityForm && (
-                                            <ActivityForm
-                                                showActivityForm={showActivityForm}
-                                                setShowActivityForm={setShowActivityForm}
-                                            />
-                                        )}
-                                    </span></h3>
+                <div className='work-card'>
+                    {/* <div className="attachments-section"> */}
+                    <table className='work-table'>
+                        <colgroup>
+                            <col style={{ borderLeft: '1px solid black' }} />
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <h3 id="attachments" style={{ marginLeft: "10px" }}>Tasks<span className="new-class-button" style={{ margin: '0' }}>
+                                    <button onClick={() => setShowActivityForm(!showActivityForm)} className="task-button">
+                                        {showActivityForm ? "Close Activity Form" : "+"}
+                                    </button>
+                                    {showActivityForm && (
+                                        <ActivityForm
+                                            showActivityForm={showActivityForm}
+                                            setShowActivityForm={setShowActivityForm}
+                                        />
+                                    )}
+                                </span></h3>
+                            </tr>
+                            {activities.map(activity => (
+                                <tr key={activity.id} onClick={() => handleActivityClick(activity)}>
+                                    <td className='activity-card' style={{ borderLeft: '3px solid rgba(144, 21, 21, 1)', width: '100%' }}>
+                                        <div>
+                                            <h4>{activity.activityType.title}</h4>
+                                            {/* <p>Job: {activity.workNumber}</p> */}
+                                            <p>Subtype: {activity.activityTypeSubtype}</p>
+                                            <p>Description: {activity.description}</p>
+                                        </div>
+                                    </td>
                                 </tr>
-                                {activities.map(activity => (
-                                    <tr key={activity.id} onClick={() => handleActivityClick(activity)}>
-                                        <td className='activity-card' style={{ borderLeft: '3px solid rgba(144, 21, 21, 1)', width: '100%' }}>
-                                            <div>
-                                                <h4>{activity.activityType.title}</h4>
-                                                {/* <p>Job: {activity.workNumber}</p> */}
-                                                <p>Subtype: {activity.activityTypeSubtype}</p>
-                                                <p>Description: {activity.description}</p>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                        {/* </div> */}
-                    </div>
+                            ))}
+                        </tbody>
+                    </table>
+                    {/* </div> */}
+                </div>
 
                 {/* </div> */}
             </div>
