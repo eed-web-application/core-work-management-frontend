@@ -33,7 +33,7 @@ const WorkDetails = () => {
     useEffect(() => {
         const fetchData = async () => {
           try {
-            const response = await fetchEntriesByOriginId('cwm:work:4');
+            const response = await fetchEntriesByOriginId('cwm:work:10');
             setEntries(response.payload);
             console.log(entries);
           } catch (error) {
@@ -317,7 +317,7 @@ const WorkDetails = () => {
 
             <div className="work-details-container2">
                 {/* Status and Tasks section */}
-                <div className="attachments-activity-container">
+                {/* <div className="attachments-activity-container"> */}
 
 
                     <div className='work-card'>
@@ -342,7 +342,7 @@ const WorkDetails = () => {
                                 </tr>
                                 {activities.map(activity => (
                                     <tr key={activity.id} onClick={() => handleActivityClick(activity)}>
-                                        <td className="activity-card" style={{ borderLeft: '3px solid rgba(144, 21, 21, 1)' }}>
+                                        <td className='activity-card' style={{ borderLeft: '3px solid rgba(144, 21, 21, 1)', width: '100%' }}>
                                             <div>
                                                 <h4>{activity.activityType.title}</h4>
                                                 {/* <p>Job: {activity.workNumber}</p> */}
@@ -357,7 +357,7 @@ const WorkDetails = () => {
                         {/* </div> */}
                     </div>
 
-                </div>
+                {/* </div> */}
             </div>
         </div>
     );

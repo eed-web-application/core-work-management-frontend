@@ -25,23 +25,43 @@ function Sidebar() {
   const renderButtons = () => {
     return buttons.map((button, index) => (
       <div key={index}>
-        <Link to={button.path}>
-          <button
-            onClick={() => handleClick(button.label.toLowerCase(), button.path)}
-            className={`icon-button ${
-              activeButton === button.path ? "active-button" : ""
-            }`}
-          >
-            <div className="button-label">
-              <FontAwesomeIcon icon={button.icon} className="icon" title={button.label} />
-              <div className="small-label">{button.label}</div>
-              <span className="label">{button.label}</span>
-            </div>
-          </button>
-        </Link>
+        {/* Check if the button is for "eLogs" */}
+        {button.path === "/elog" ? (
+          <a href="http://localhost:5173/elog" target="_blank" rel="noopener noreferrer">
+            {/* Use 'a' tag instead of 'Link' */}
+            <button
+              className={`icon-button ${
+                activeButton === button.path ? "active-button" : ""
+              }`}
+            >
+              <div className="button-label">
+                <FontAwesomeIcon icon={button.icon} className="icon" title={button.label} />
+                <div className="small-label">{button.label}</div>
+                <span className="label">{button.label}</span>
+              </div>
+            </button>
+          </a>
+        ) : (
+          // For other buttons, continue using 'Link' component
+          <Link to={button.path}>
+            <button
+              onClick={() => handleClick(button.label.toLowerCase(), button.path)}
+              className={`icon-button ${
+                activeButton === button.path ? "active-button" : ""
+              }`}
+            >
+              <div className="button-label">
+                <FontAwesomeIcon icon={button.icon} className="icon" title={button.label} />
+                <div className="small-label">{button.label}</div>
+                <span className="label">{button.label}</span>
+              </div>
+            </button>
+          </Link>
+        )}
       </div>
     ));
   };
+  
 
   // Handle button clicks and update the active button
   const handleClick = (buttonName, path) => {
