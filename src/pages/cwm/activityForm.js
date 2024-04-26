@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import DatePicker from 'react-datepicker'; // Importing React Datepicker
 import 'react-datepicker/dist/react-datepicker.css';
-import { createActivity, fetchActivityType, fetchAWork, fetchLovValuesForField } from '../../services/api';
+import { createActivity, fetchActivityType, fetchAWork, fetchLovValuesForField, createActivityLog } from '../../services/api';
 import './activityForm.css';
 
 function ActivityForm({ showActivityForm, setShowActivityForm }) {
@@ -17,6 +17,7 @@ function ActivityForm({ showActivityForm, setShowActivityForm }) {
     });
     const [activityTypes, setActivityTypes] = useState([]);
     const [activityTypesFetched, setActivityTypesFetched] = useState(false);
+    const [createActivityLogChecked, setCreateActivityLogChecked] = useState(false); // State for checkbox
 
     useEffect(() => {
         const fetchWorkAndActivityData = async () => {
@@ -152,8 +153,24 @@ function ActivityForm({ showActivityForm, setShowActivityForm }) {
                 customFieldValues: customFieldValues,
             };
 
+
             console.log(formData);
-            await createActivity(workId, formData);
+            const createdActivity = await createActivity(workId, formData);
+            const activityId = createdActivity.payload;
+
+            if (createActivityLogChecked) {
+                const entryData = {
+                    title: activityData.title,
+                    description: activityData.description
+                };
+        
+                const formData = new FormData();
+                formData.append('title', entryData.title); // Add the title to the formData
+                formData.append('text', entryData.description);
+                console.log("creating work log...")
+                await createActivityLog(workId, activityId, formData);
+            }
+
             alert("Activity created successfully!");
             setShowActivityForm(false);
             window.location.reload();
@@ -250,6 +267,19 @@ function ActivityForm({ showActivityForm, setShowActivityForm }) {
 
                     {renderNewFields()}
                     {renderCustomFieldsBySection()}
+
+                    <div className="form-group">
+                        <label htmlFor="createActivityLog" className="form-checkbox-label">
+                            <input
+                                type="checkbox"
+                                id="createActivityLog"
+                                name="createActivityLog"
+                                checked={createActivityLogChecked}
+                                onChange={() => setCreateActivityLogChecked(!createActivityLogChecked)}
+                            />
+                            <span>Select to create Log Entry for this Task</span>
+                        </label>
+                    </div>
 
                     <button type="submit" className="activityform-button">Create Task</button>
                 </form>

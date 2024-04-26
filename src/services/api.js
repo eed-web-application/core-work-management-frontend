@@ -48,14 +48,37 @@ export const fetchEntriesByOriginId = async (originId) => {
   }
 };
 
+export const createActivityLog = async (workId, activityId, formData) => {
+  try {
+    const token = await extractJWT();
 
+    const response = await fetch(`http://localhost:3000/api/cwm/v1/log/work/${workId}/activity/${activityId}`,
+      {
+        method: "POST",
+        headers: {
+          "x-vouch-idp-accesstoken": token,
+        },
+        body: formData,
+      }
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      throw new Error("Failed to create activity log entry");
+    }
+  } catch (error) {
+    throw new Error("Error creating activity log entry: " + error.message);
+  }
+};
 
 export const createWorkLog = async (workId, formData) => {
   try {
     const token = await extractJWT();
 
     const response = await fetch(
-      `api/cwm/v1/log/${workId}`,
+      `api/cwm/v1/log/work/${workId}`,
       {
         method: "POST",
         headers: {
