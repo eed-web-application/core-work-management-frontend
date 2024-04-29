@@ -106,6 +106,7 @@ const WorkDetails = () => {
             // Fetch details of the selected activity
             const response = await fetchAActivity(workId, activity.id);
             setSelectedActivity(response.payload); // Set the details of the selected activity
+            console.log(selectedActivity);
             setShowJobDetails(true); // Show the job details sidebar
             history.push(`/work/${workId}/${activity.id}`); // Push the activity ID to the URL
         } catch (error) {
@@ -265,7 +266,7 @@ const WorkDetails = () => {
                         // 
                         <div ref={sidebarRef} className={`sidebar-panel ${showJobDetails ? 'open' : ''}`}>
                             {/* Display job details here */}
-                            <h1 style={{ fontSize: '18px' }}>Job Details</h1>
+                            <h1 style={{ fontSize: '18px' }}>Task Details</h1>
                             {selectedActivity && (
                                 <>
 
@@ -291,6 +292,10 @@ const WorkDetails = () => {
                                                             <td>{selectedActivity.currentStatus.status}</td>
                                                         </tr>
                                                         <tr>
+                                                            <td className="work-label">Task Type</td>
+                                                            <td>{selectedActivity.activityType.title}</td>
+                                                        </tr>
+                                                        <tr>
                                                             <td className="work-label">Title</td>
                                                             <td>{selectedActivity.title}</td>
                                                         </tr>
@@ -307,10 +312,10 @@ const WorkDetails = () => {
                                                 <div className="container">
                                                     <table className="aligned-table-customdetails">
                                                         <tbody>
-                                                            {selectedActivity.customFields && selectedActivity.customFields.map(field => (
+                                                            {selectedActivity.activityType.customFields.map(field => (
                                                                 <tr key={field.id}>
-                                                                    <td className="left-column">{convertCamelCaseToNormalCase(field.name)}</td>
-                                                                    <td className="right-column">{field.value && field.value.value}</td>
+                                                                    <td className="left-column">{convertCamelCaseToNormalCase(field.label)}</td>
+                                                                    <td className="right-column">{selectedActivity.customFields.find(cf => cf.name === field.name)?.value?.value || ''}</td>
                                                                 </tr>
                                                             ))}
                                                         </tbody>

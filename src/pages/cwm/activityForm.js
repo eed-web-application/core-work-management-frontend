@@ -133,16 +133,21 @@ function ActivityForm({ showActivityForm, setShowActivityForm }) {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const customFieldValues = activityData.customFields.map(field => {
-                const value = {
-                    "type": field.valueType === "Boolean" ? "Boolean" : field.valueType === "Date" ? "Date" : field.valueType === "Number" ? "Number" : "String",
-                    "value": field.valueType === "Boolean" ? (activityData.customFieldValues[field.id] === "true") :
-                        field.valueType === "Date" ? "2024-04-04" :
-                            field.valueType === "Number" ? parseFloat(activityData.customFieldValues[field.id]) :
-                                activityData.customFieldValues[field.id] || null
-                };
-                return { id: field.id, value: value };
-            });
+            const customFieldValues = activityData.customFields.reduce((acc, field) => {
+                const value = activityData.customFieldValues[field.id];
+                if (value !== null && value !== undefined && value !== '') {
+                    const formattedValue = {
+                        type: field.valueType === "Boolean" ? "Boolean" :
+                              field.valueType === "Date" ? "Date" :
+                              field.valueType === "Number" ? "Number" : "String",
+                        value: field.valueType === "Boolean" ? (value === "true") :
+                               field.valueType === "Date" ? new Date(value).toISOString() :
+                               field.valueType === "Number" ? parseFloat(value) : value
+                    };
+                    acc.push({ id: field.id, value: formattedValue });
+                }
+                return acc;
+            }, []);
 
             const formData = {
                 title: activityData.title,
