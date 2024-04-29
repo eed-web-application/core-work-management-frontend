@@ -64,6 +64,7 @@ export const createActivityLog = async (workId, activityId, formData) => {
 
     if (response.ok) {
       const data = await response.json();
+      console.log(data);
       return data;
     } else {
       throw new Error("Failed to create activity log entry");
