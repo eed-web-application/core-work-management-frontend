@@ -104,9 +104,10 @@
     width: 40%;
 }
 
-.right-column {
+.taskright-column {
     flex: 4;
     width: 60%;
+    color: black;
 }
 
 .work-label {
@@ -129,8 +130,14 @@
     border-bottom: none;
 }
 
+.aligned-table-customdetails td {
+    border-collapse: collapse;
+    padding: 10px;
+    vertical-align: top;
+    color: black;
+}
+
 .aligned-table-customdetails,
-.aligned-table-customdetails td,
 .aligned-table-customdetails .left-column,
 .aligned-table-customdetails tr,
 .aligned-table-customdetails tr:last-child {

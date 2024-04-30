@@ -11,7 +11,7 @@ WORKDIR /app
 
 RUN --mount=type=cache,id=npm,target=/npm/store npm install --frozen-lockfile
 
-RUN npm build --mode $MODE
+RUN npm run build
 
 FROM nginx:alpine
 

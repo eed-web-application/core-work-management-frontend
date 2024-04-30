@@ -5,13 +5,13 @@ import {
   fetchEntriesByOriginId,
   fetchActivity,
   fetchAActivity,
-  fetchLogbooks,
+  fetchLogbooks
 } from "../../services/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBell,
   faUser,
-  faMapMarkerAlt,
+  faMapMarkerAlt, faPersonChalkboard, faPeopleGroup
 } from "@fortawesome/free-solid-svg-icons";
 import ActivityForm from "./activityForm";
 import EditWorkForm from "./editWorkForm";
@@ -59,6 +59,7 @@ const WorkDetails = () => {
       try {
         const response = await fetchAWork(workId);
         setWorkDetails(response.payload);
+        console.log(workDetails);
       } catch (error) {
         console.error("Error fetching work details:", error);
       } finally {
@@ -212,7 +213,7 @@ const WorkDetails = () => {
           {workDetails && (
             <div style={{ display: "flex", flexDirection: "row" }}>
               {/* First column with dark grey text */}
-              <div style={{ color: "darkgrey", marginRight: "10px" }}>
+              <div style={{ color: "darkgrey", marginRight: "30px" }}>
                 <p id="attachments">
                   <span style={{ marginRight: "10px" }}>
                     <FontAwesomeIcon
@@ -230,6 +231,24 @@ const WorkDetails = () => {
                     />
                   </span>
                   <span>Area</span>
+                </p>
+                <p id="locationmgr">
+                  <span style={{ marginRight: "7px" }}>
+                    <FontAwesomeIcon
+                      icon={faPersonChalkboard}
+                      style={{ color: "darkcyan", width: "15px" }}
+                    />
+                  </span>
+                  <span>Manager</span>
+                </p>
+                <p id="shopgroup">
+                  <span style={{ marginRight: "7px" }}>
+                    <FontAwesomeIcon
+                      icon={faPeopleGroup}
+                      style={{ color: "darkorange", width: "15px" }}
+                    />
+                  </span>
+                  <span>Shop Group</span>
                 </p>
                 {workDetails.assignedTo && workDetails.assignedTo.length > 0 ? (
                   <p id="assigned-to">
@@ -251,10 +270,15 @@ const WorkDetails = () => {
               <div>
                 <p id="attachments">{workDetails.currentStatus.status}</p>
                 {workDetails.location && (
+                  <div>
                   <p id="location">
-                    {workDetails.location.name} -{" "}
-                    {workDetails.location.locationManagerUserId}
+                    {workDetails.location.name}
                   </p>
+                  <p id="locationmgr">
+                  {workDetails.location.locationManagerUserId}
+                </p><p id="shopgroup">
+                  {workDetails.shopGroup.name}
+                </p></div>
                 )}
                 {workDetails.assignedTo && workDetails.assignedTo.length > 0 ? (
                   <p id="assigned-to">{workDetails.assignedTo[0]}</p>
@@ -358,22 +382,16 @@ const WorkDetails = () => {
 
                   <div className="activity-card">
                     <div>
-                      <p>Task Details </p>
-                      {/* <div>
-                                                <pre>{JSON.stringify(selectedActivity, null, 2)}</pre>
-                                            </div> */}
+                      <p>{selectedActivity.activityType.title} </p>
                       <hr className="line" />
 
                       <div className="container">
                         <table className="aligned-table">
                           <tbody>
+
                             <tr>
                               <td className="work-label">Status</td>
                               <td>{selectedActivity.currentStatus.status}</td>
-                            </tr>
-                            <tr>
-                              <td className="work-label">Task Type</td>
-                              <td>{selectedActivity.activityType.title}</td>
                             </tr>
                             <tr>
                               <td className="work-label">Title</td>
@@ -400,7 +418,7 @@ const WorkDetails = () => {
                                         field.label
                                       )}
                                     </td>
-                                    <td className="right-column">
+                                    <td className="taskright-column">
                                       {selectedActivity.customFields.find(
                                         (cf) => cf.name === field.name
                                       )?.value?.value || ""}
