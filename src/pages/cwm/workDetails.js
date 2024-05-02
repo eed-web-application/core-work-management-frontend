@@ -59,7 +59,6 @@ const WorkDetails = () => {
       try {
         const response = await fetchAWork(workId);
         setWorkDetails(response.payload);
-        console.log(workDetails);
       } catch (error) {
         console.error("Error fetching work details:", error);
       } finally {
@@ -99,7 +98,6 @@ const WorkDetails = () => {
             `cwm:work:${workDetails.workNumber}`
           );
           setWorkEntries(response.payload);
-          console.log("ENTRY:", workEntries);
         }
       } catch (error) {
         console.error("Error fetching entries:", error);

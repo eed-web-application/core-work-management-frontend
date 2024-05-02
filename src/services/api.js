@@ -37,7 +37,6 @@ export const fetchEntriesByOriginId = async (originId) => {
 
     if (response.ok) {
       const data = await response.json();
-      console.log("ENTRY DATA API:", data);
       return data;
     } else {
       throw new Error(`Failed to fetch entries by originId: ${originId}. Status: ${response.status}, StatusText: ${response.statusText}`);

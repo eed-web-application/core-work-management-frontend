@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  fetchActivityType,
-  fetchActivitySubtype,
-  fetchAActivity,
-  updateActivity,
-  fetchLovValuesForField,
-} from "../../services/api";
+import { fetchActivityType, fetchActivitySubtype, fetchAActivity, updateActivity, fetchLovValuesForField } from "../../services/api";
 import { useParams } from "react-router-dom";
 import "./activityForm.css";
 
@@ -17,41 +11,29 @@ function EditActivityForm({ showEditActivityForm, setShowEditActivityForm }) {
   const [activitySubtypes, setActivitySubtypes] = useState([]);
   const [customFields, setCustomFields] = useState([]);
   const [renderedComponents, setRenderedComponents] = useState({});
+  const [lovValuesDictionary, setLovValuesDictionary] = useState({});
 
   // prefills form with current data
   useEffect(() => {
     const fetchData = async () => {
       try {
         const workResponse = await fetchAActivity(workId, activityId);
-        const {
-          title,
-          description,
-          activityType,
-          activityTypeSubtype,
-          customFields,
-        } = workResponse.payload;
+        const { title, description, activityType, activityTypeSubtype, customFields } = workResponse.payload;
         const activityTypeId = activityType ? activityType.id : ""; // Grab activityType title
         setActivityType(activityType);
 
+        // used to prefill the data
         const customFieldsData = {};
         customFields.forEach((field) => {
           customFieldsData[field.name] = field.value.value;
         });
-
         setActivityData({
-          title,
-          description,
-          activityTypeId,
-          activityTypeSubtype,
-          ...customFieldsData, // Add custom fields to activityData state
+          title, description, activityTypeId, activityTypeSubtype, ...customFieldsData, // Add custom fields to activityData state
         });
 
-        // Check if activityType and customFields exist, and if so, extract isLov values
-        const isLovValues =
-          activityType?.customFields.map((field) => field.isLov) || [];
-        // console.log("isLov values:", isLovValues);
-
+        // {id, name, value {type, value}}
         setCustomFields(customFields);
+
         const typeResponse = await fetchActivityType();
         setActivityTypes(typeResponse || []);
 
@@ -65,110 +47,37 @@ function EditActivityForm({ showEditActivityForm, setShowEditActivityForm }) {
     fetchData();
   }, [workId, activityId]);
 
-  const getLovValues = async (fieldName) => {
-    try {
-      const lovValuesResponse = await fetchLovValuesForField(
-        "Activity",
-        activityData.activityTypeId,
-        fieldName
-      );
-      if (lovValuesResponse.errorCode === 0) {
-        return lovValuesResponse.payload.map((value) => ({
-          id: value.id,
-          value: value.value,
-        }));
-      } else {
-        console.error(
-          "Error fetching LOV values for field:",
-          fieldName,
-          lovValuesResponse.errorMessage
-        );
-        return [];
-      }
-    } catch (error) {
-      console.error("Error fetching LOV values for field:", fieldName, error);
-      return [];
-    }
-  };
-
-  const fetchLovValuesAndRender = async (fieldName, isLov, isBoolean) => {
-    try {
-      let fieldComponent;
-
-      if (isLov) {
-        const lovValues = await getLovValues(fieldName);
-        fieldComponent = (
-          <select
-            id={fieldName}
-            name={fieldName}
-            value={activityData[fieldName]} // Bind value here
-            onChange={(e) => handleCustomFieldChange(fieldName, e.target.value)}
-            className="form-select"
-          >
-            {lovValues.map((lovItem, index) => (
-              <option key={index} value={lovItem.value}>
-                {lovItem.value}
-              </option>
-            ))}
-          </select>
-        );
-      } else if (isBoolean) {
-        fieldComponent = (
-          <select
-            id={fieldName}
-            name={fieldName}
-            value={activityData[fieldName]}
-            onChange={(e) => handleCustomFieldChange(fieldName, e.target.value)}
-            className="form-select"
-          >
-            <option value="true">True</option>
-            <option value="false">False</option>
-          </select>
-        );
-      } else {
-        fieldComponent = (
-          <input
-            type="text"
-            id={fieldName}
-            name={fieldName}
-            value={activityData[fieldName]}
-            onChange={(e) => handleCustomFieldChange(fieldName, e.target.value)}
-            className="form-input"
-          />
-        );
-      }
-      return fieldComponent;
-    } catch (error) {
-      console.error("Error fetching LOV values for field:", fieldName, error);
-      // Handle the error if necessary
-      return null;
-    }
-  };
-
-  // Asynchronously render components for custom fields
-  const renderCustomFields = async () => {
-    const components = {};
-    const isLovValues =
-      activityType?.customFields.map((field) => field.isLov) || [];
-    const valueTypes =
-      activityType?.customFields.map((field) => field.valueType) || [];
-    for (let i = 0; i < customFields.length; i++) {
-      const field = customFields[i];
-      const isLov = isLovValues[i] || false; // Default to false if isLov is not defined
-      const isBoolean = valueTypes[i] === "Boolean"; // Check if the valueType is boolean
-      const component = await fetchLovValuesAndRender(
-        field.name,
-        isLov,
-        isBoolean
-      );
-      components[field.name] = component;
-    }
-    setRenderedComponents(components);
-  };
-
   useEffect(() => {
-    renderCustomFields();
-  }, [customFields]); // Run the effect whenever customFields change
+    // Fetch LOV values for each field and create the dictionary
+    const fetchLovValues = async () => {
+      const dictionary = {};
+      for (const field of customFields) {
+        try {
+          const lovValuesResponse = await fetchLovValuesForField("Activity", activityData.activityTypeId, field.name);
+          if (lovValuesResponse.errorCode === 0) {
+            const lovValues = lovValuesResponse.payload.map((value) => ({
+              id: value.id,
+              value: value.value,
+            }));
+            if (lovValues.length > 0) { // Check if LOV values are not empty
+              dictionary[field.name] = lovValues;
+            }
+          } else {
+            console.error(
+              "Error fetching LOV values for field:",
+              field.name,
+              lovValuesResponse.errorMessage
+            );
+          }
+        } catch (error) {
+          console.error("Error fetching LOV values for field:", field.name, error);
+        }
+      }
+      setLovValuesDictionary(dictionary);
+    };
+
+    fetchLovValues();
+  }, [activityData.activityTypeId, customFields]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -316,25 +225,54 @@ function EditActivityForm({ showEditActivityForm, setShowEditActivityForm }) {
           </div>
 
           {/* Mapping over customFields to render fields */}
-          {activityType &&
+          {activityType && activityType.customFields &&
             activityType.customFields.map((field) => (
               <div key={field.id} className="form-group">
                 <label htmlFor={field.name} className="form-label">
                   {camelToNormalCase(field.label)}
                 </label>
-                {/* If the field exists in selectedActivity.customFields, prefill with its value, otherwise, render an empty input field */}
-                {renderedComponents[field.name] || (
+                {/* Check if field name exists in lovValuesDictionary and if valueType is not 'Boolean' */}
+                {field.name in lovValuesDictionary && field.valueType !== 'Boolean' ? (
+                  <select
+                    id={field.name}
+                    name={field.name}
+                    value={activityData[field.name]}
+                    onChange={(e) => handleCustomFieldChange(field.name, e.target.value)}
+                    className="form-select"
+                  >
+                    {/* Use options from lovValuesDictionary */}
+                    {lovValuesDictionary[field.name].map((option) => (
+                      <option key={option.id} value={option.value}>
+                        {option.value}
+                      </option>
+                    ))}
+                  </select>
+                ) : field.valueType === "Boolean" ? (
+                  <select
+                    id={field.name}
+                    name={field.name}
+                    value={activityData[field.name]}
+                    onChange={(e) => handleCustomFieldChange(field.name, e.target.value)}
+                    className="form-select"
+                  >
+                    <option value="true">True</option>
+                    <option value="false">False</option>
+                  </select>
+                ) : (
                   <input
                     type="text"
                     id={field.name}
                     name={field.name}
                     value={activityData[field.name] || ""}
-                    onChange={handleInputChange}
+                    onChange={(e) => handleCustomFieldChange(field.name, e.target.value)}
                     className="form-input"
                   />
                 )}
               </div>
             ))}
+
+
+
 
           <button type="submit" className="form-button">
             Update Activity
