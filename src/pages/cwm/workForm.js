@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { createWork, fetchWorkType, fetchLocations, fetchShopGroups, createWorkLog } from '../../services/api';
 import './workForm.css';
 
-function WorkForm({ showWorkForm, setShowWorkForm }) {
+function WorkForm({ showWorkForm, setShowWorkForm, selectedDomainId }) {
     // State to manage form input values
     const [workData, setWorkData] = useState({
+        domainId: selectedDomainId,
         title: '',
         description: '',
         workTypeId: '',

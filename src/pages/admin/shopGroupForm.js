@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { createShopGroup, fetchUsers } from '../../services/api';
+import { createShopGroup, fetchUsers, fetchWorkDomain } from '../../services/api';
 import { MultiSelect } from 'react-multi-select-component';
 
-function ShopGroupForm({ showShopGroupForm, setShowShopGroupForm }) {
-  const [shopGroupData, setShopGroupData] = useState({ name: '', description: '', users: [] });
+function ShopGroupForm({ showShopGroupForm, setShowShopGroupForm, selectedDomain }) {
+  const [shopGroupData, setShopGroupData] = useState({ domainId: selectedDomain, name: '', description: '', users: [] });
   const [users, setUsers] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
 
@@ -52,6 +52,16 @@ function ShopGroupForm({ showShopGroupForm, setShowShopGroupForm }) {
         <h1 className="form-title">NEW SHOP GROUP</h1>
         <form onSubmit={handleSubmit} className="shop-group-form">
 
+          {/* <div className="form-group">
+            <label htmlFor="domain">Domain</label>
+            <select id="domain" name="domain" value={shopGroupData.domain} onChange={handleInputChange} required>
+              <option value="">Select Domain</option>
+              {domains.map(domain => (
+                <option key={domain.id} value={domain.id}>{domain.name}</option>
+              ))}
+            </select>
+          </div> */}
+          
           <div className="form-group">
             <label htmlFor="name">Name</label>
             <input type="text" id="name" name="name" value={shopGroupData.name} onChange={handleInputChange} required />
@@ -61,7 +71,7 @@ function ShopGroupForm({ showShopGroupForm, setShowShopGroupForm }) {
             <label htmlFor="description">Description</label>
             <input type="text" id="description" name="description" value={shopGroupData.description} onChange={handleInputChange} />
           </div>
-          
+
           <div className="form-group" style={{ width: '100%' }}>
             <label htmlFor="userEmails">User Emails</label>
             <MultiSelect options={options} value={selectedUsers} onChange={handleUserChange} labelledBy={"Select"} style={{ width: '100%' }} />

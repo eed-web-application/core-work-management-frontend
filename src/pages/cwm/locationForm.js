@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { createLocation, fetchUsers, fetchAllElements } from '../../services/api';
+import { createLocation, fetchUsers, fetchAllElements, fetchWorkDomain } from '../../services/api';
 import './locationForm.css';
 
-function LocationForm({ showLocationForm, setShowLocationForm }) {
+function LocationForm({ showLocationForm, setShowLocationForm, selectedDomain }) {
+  console.log(selectedDomain);
   const [formData, setFormData] = useState({
-    parentId: null,
+    domainId: selectedDomain,
     name: '',
     description: '',
     externalLocationIdentifier: '',
     locationManagerUserId: '',
   });
-
   const [users, setUsers] = useState([]);
   const [depotItems, setDepotItems] = useState([]);
+  const [domains, setDomains] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,6 +34,21 @@ function LocationForm({ showLocationForm, setShowLocationForm }) {
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const fetchDomains = async () => {
+      try {
+        const workDomainData = await fetchWorkDomain(); // Fetch work domains
+        setSelectedDomain(selectedDomain); // Set default domain
+        setDomains(workDomainData.payload);
+        console.log(domains);
+      } catch (error) {
+        console.error('Error fetching data:', error.message);
+      }
+    };
+
+    fetchDomains();
+  }, [selectedDomain]);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -84,10 +100,10 @@ function LocationForm({ showLocationForm, setShowLocationForm }) {
   );
 
   const fields = [
-    { label: 'Parent ID', name: 'parentId', type: 'text' },
+    // { label: 'Domain', name: 'domainId', type: 'select', options: domains.map(domain => ({ id: domain.id, value: domain.id, label: domain.name })), required: true },
     { label: 'Name', name: 'name', type: 'text', required: true },
     { label: 'Description', name: 'description', type: 'text', required: true },
-    { label: 'Add DEPOT Item', name: 'externalLocationIdentifier', type: 'select', options: depotItems.map(item => ({ id: `${item.domainDTO.id}/${item.id}`, value: `${item.domainDTO.id}/${item.id}`, label: item.name })) },
+    { label: 'Corresponding DEPOT Location', name: 'externalLocationIdentifier', type: 'select', options: depotItems.map(item => ({ id: `${item.domainDTO.id}/${item.id}`, value: `${item.domainDTO.id}/${item.id}`, label: item.name })) },
     { label: 'Manager', name: 'locationManagerUserId', type: 'select', options: users.map(user => ({ id: user.uid, value: user.mail, label: `${user.commonName} ${user.surname}` })), required: true },
   ];
 

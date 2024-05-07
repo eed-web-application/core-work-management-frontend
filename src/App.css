@@ -14,7 +14,6 @@ body {
 
 .Layout {
   display: flex;
-  /* height: 100vh;  */
   width: 100%;
 }
 
@@ -39,10 +38,8 @@ ul {
   width: calc(100% - 250px);
   display: flex;
   flex-direction: column;
-  /* background: white; */
   background: rgba(245, 244, 244, 0.547); 
-  /* background: rgba(242, 242, 242, 0.547);  */
-  transition: margin-left 0.3s; /* Remove this line */
+  transition: margin-left 0.3s; 
 }
 
 /* Add your CSS styles for the profile section */

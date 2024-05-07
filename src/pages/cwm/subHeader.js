@@ -4,7 +4,7 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import WorkForm from './workForm.js';
 import "./cwm.css";
 
-const SubHeader = ({ showLocationForm, setShowLocationForm, showWorkForm, setShowWorkForm, searchInput, setSearchInput, handleSearch }) => {
+const SubHeader = ({ showLocationForm, setShowLocationForm, showWorkForm, setShowWorkForm, searchInput, setSearchInput, handleSearch, selectedDomain }) => {
     const handleItemClick = (formType) => {
 
     };
@@ -43,6 +43,7 @@ const SubHeader = ({ showLocationForm, setShowLocationForm, showWorkForm, setSho
                     <WorkForm
                         showWorkForm={showWorkForm}
                         setShowWorkForm={setShowWorkForm}
+                        selectedDomain={selectedDomain}
                     />
                 )}
             </div>

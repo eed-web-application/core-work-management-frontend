@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import SubHeader from './subHeader.js';
 import "./searchPage.css";
 
-const SearchPage = () => {
+const SearchPage = ({selectedDomain}) => {
   const [state, setState] = useState({
     showLocationForm: false,
     showWorkForm: false,
@@ -71,6 +71,7 @@ const SearchPage = () => {
         searchInput={state.searchInput}
         setSearchInput={(value) => setState(prevState => ({ ...prevState, searchInput: value }))}
         handleSearch={handleSearch}
+        selectedDomain={selectedDomain}
       />
       <div className="cwm-search-page">
         <br />

@@ -5,7 +5,8 @@ import {
   fetchEntriesByOriginId,
   fetchActivity,
   fetchAActivity,
-  fetchLogbooks
+  fetchLogbooks,
+  fetchWorkDomain
 } from "../../services/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -40,6 +41,20 @@ const WorkDetails = () => {
     { label: "Issues", link: "/cwm" },
     { label: "Issue Details", link: `/work/${workId}` },
   ];
+
+  useEffect(() => {
+    const fetchtheDomains = async () => {
+      try {
+        const response = await fetchWorkDomain();
+        console.log(response);
+      } catch (error) {
+        console.error("Error fetching domains:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchtheDomains();
+  }, []);
 
   useEffect(() => {
     const fetchTheLogbooks = async () => {

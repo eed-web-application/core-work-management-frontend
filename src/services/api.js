@@ -20,7 +20,87 @@ export const setDomainId = async () => {
   }
 };
 
-/* ----------------------------------------- CONNECT ----------------------------------------- */
+/* ----------------------------------------- DOMAINS ----------------------------------------- */
+
+export const fetchWorkDomain = async () => {
+  try {
+    const token = await extractJWT();
+    const response = await fetch(
+      `/api/cwm/v1/domain`, 
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "x-vouch-idp-accesstoken": token,
+        },
+      }
+    );
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      throw new Error("Failed to fetch work domains");
+    }
+  } catch (error) {
+    throw new Error("Error fetching domains:", error.message);
+  }
+};
+
+export const fetchOneWorkDomain = async (domainId) => {
+  try {
+    const token = await extractJWT();
+    const response = await fetch(
+      `/api/cwm/v1/domain/${domainId}`, 
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "x-vouch-idp-accesstoken": token,
+        },
+      }
+    );
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      throw new Error("Failed to fetch the work domain");
+    }
+  } catch (error) {
+    throw new Error("Error fetching the domain:", error.message);
+  }
+};
+
+export const createWorkDomain = async (domainData) => {
+  try {
+    const token = await extractJWT();
+    const response = await fetch(
+      `/api/cwm/v1/domain`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-vouch-idp-accesstoken": token,
+        },
+        body: JSON.stringify(domainData)
+      }
+    );
+
+    if (response.status === 201) {
+      const data = await response.json();
+      console.log(data);
+      return data;
+    } else {
+      const errorData = await response.json();
+      console.error("Error creating work domain:", errorData);
+      throw new Error("Error creating work domain. Please try again.");
+    }
+  } catch (error) {
+    console.error("Error creating work domain:", error, errorData);
+    return { errorCode: -1, payload: [] }; // Return a default error response
+  }
+};
+
+/* ----------------------------------------- CONNECT ELOG ----------------------------------------- */
 
 export const fetchEntriesByOriginId = async (originId) => {
   try {
