@@ -2,6 +2,7 @@
   "name": "unification",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://accel-webapp-dev.slac.stanford.edu/cwm/",
   "dependencies": {
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
