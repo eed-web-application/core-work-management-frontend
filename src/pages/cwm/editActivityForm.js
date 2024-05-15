@@ -92,10 +92,10 @@ function EditActivityForm({ showEditActivityForm, setShowEditActivityForm }) {
         assignedTo: activityData.assignedTo,
         locationId: activityData.locationId,
         shopGroupId: activityData.shopGroupId,
-        customAttributeValues: customFields.map((field) => ({
+        customFieldValues: customFields.map((field) => ({
           id: field.id,
           value: {
-            type: "String",
+            type: String(field.value.type),
             value: activityData[field.name] || "",
           },
         })),
@@ -232,42 +232,50 @@ function EditActivityForm({ showEditActivityForm, setShowEditActivityForm }) {
                   {camelToNormalCase(field.label)}
                 </label>
                 {/* Check if field name exists in lovValuesDictionary and if valueType is not 'Boolean' */}
-                {field.name in lovValuesDictionary && field.valueType !== 'Boolean' ? (
-                  <select
+                {field.valueType === "Date" ? ( // Check if valueType is 'Date'
+                <input
+                    type="date" // Use input type date for date values
+                    id={field.name}
+                    name={field.name}
+                    value={activityData[field.name] || ""}
+                    onChange={(e) => handleCustomFieldChange(field.name, e.target.value)}
+                    className="form-input"
+                />
+            ) : field.name in lovValuesDictionary && field.valueType !== 'Boolean' ? (
+                <select
                     id={field.name}
                     name={field.name}
                     value={activityData[field.name]}
                     onChange={(e) => handleCustomFieldChange(field.name, e.target.value)}
                     className="form-select"
-                  >
-                    {/* Use options from lovValuesDictionary */}
+                >
                     {lovValuesDictionary[field.name].map((option) => (
-                      <option key={option.id} value={option.value}>
-                        {option.value}
-                      </option>
+                        <option key={option.id} value={option.id}>
+                            {option.value}
+                        </option>
                     ))}
-                  </select>
-                ) : field.valueType === "Boolean" ? (
-                  <select
+                </select>
+            ) : field.valueType === "Boolean" ? (
+                <select
                     id={field.name}
                     name={field.name}
                     value={activityData[field.name]}
                     onChange={(e) => handleCustomFieldChange(field.name, e.target.value)}
                     className="form-select"
-                  >
+                >
                     <option value="true">True</option>
                     <option value="false">False</option>
-                  </select>
-                ) : (
-                  <input
+                </select>
+            ) : (
+                <input
                     type="text"
                     id={field.name}
                     name={field.name}
                     value={activityData[field.name] || ""}
                     onChange={(e) => handleCustomFieldChange(field.name, e.target.value)}
                     className="form-input"
-                  />
-                )}
+                />
+            )}
               </div>
             ))}
 

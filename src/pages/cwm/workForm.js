@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { createWork, fetchWorkType, fetchLocations, fetchShopGroups, createWorkLog } from '../../services/api';
 import './workForm.css';
 
-function WorkForm({ showWorkForm, setShowWorkForm, selectedDomainId }) {
+function WorkForm({ showWorkForm, setShowWorkForm, selectedDomain }) {
     // State to manage form input values
     const [workData, setWorkData] = useState({
-        domainId: selectedDomainId,
+        domainId: selectedDomain,
         title: '',
         description: '',
         workTypeId: '',
@@ -21,22 +21,26 @@ function WorkForm({ showWorkForm, setShowWorkForm, selectedDomainId }) {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                // Fetch locations and shopGroups for the selected domain
                 const [typesResponse, locationsResponse, shopGroupsResponse] = await Promise.all([
                     fetchWorkType(),
-                    fetchLocations(),
-                    fetchShopGroups(),
+                    fetchLocations(selectedDomain),
+                    fetchShopGroups(selectedDomain)
                 ]);
-
+    
                 setWorkTypes(typesResponse || []);
-                setLocations(locationsResponse.payload || []);
-                setShopGroups(shopGroupsResponse || []);
+                // Set locations filtered by selectedDomain
+                setLocations(locationsResponse.payload.filter(location => location.domain.id === selectedDomain) || []);
+                // Set shopGroups filtered by selectedDomain
+                setShopGroups(shopGroupsResponse.filter(shopGroup => shopGroup.domain.id === selectedDomain) || []);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
         };
-
+    
         fetchData();
-    }, []);
+    }, [selectedDomain]);
+    
 
     const handleSubmit = async (event) => {
         event.preventDefault();

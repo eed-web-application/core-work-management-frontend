@@ -132,6 +132,10 @@
   align-items: center;
   background-color: white;
   z-index: 98;
+  display: flex;
+  justify-content: flex-start; /* Aligns items to the start */
+  align-items: center;
+  flex-grow: 1;
 }
 
 .tab-extension {
@@ -141,6 +145,13 @@
   padding-top: 39px;
   border-bottom: 1px solid #ccc;
   z-index: 98;
+  display: flex;
+  justify-content: space-between; /* Aligns items along the main axis */
+  align-items: center;
+}
+
+.select-domain-container {
+  margin-right: 20px;
 }
 
 .cwm-tab {

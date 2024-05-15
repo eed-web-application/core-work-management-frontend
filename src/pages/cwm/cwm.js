@@ -4,14 +4,12 @@ import { fetchWorkDomain } from "../../services/api.js";
 import SearchPage from "./searchPage.js";
 import ReportsPage from "./reportsPage.js";
 import CalendarPage from "./calendarPage.js";
-import SubHeader from './subHeader.js';
 import "./cwm.css";
 
 function Cwm() {
   const location = useLocation(); // Hook from react-router-dom to get the current location
-
   const [domains, setDomains] = useState([]);
-  const [selectedDomain, setSelectedDomain] = useState('');
+  const [selectedDomain, setSelectedDomain] = useState('TEC');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -20,13 +18,10 @@ function Cwm() {
         const fetchedDomains = await fetchWorkDomain();
         setDomains(fetchedDomains.payload);
         console.log(domains);
-        // Set default selected domain
-        // setSelectedDomain(domains[0].name);
       } catch (error) {
         console.error('Error fetching domains:', error);
       }
     };
-
     fetchData();
   }, []);
 
@@ -45,7 +40,7 @@ function Cwm() {
             <NavLink to="/cwm/calendar">Calendar</NavLink>
             {/* Select Domain */}
             <div className="select-domain-container">
-              <label htmlFor="select-domain">Select Domain: </label>
+              <label htmlFor="select-domain">Domain: </label>
               <select id="select-domain" onChange={handleDomainChange} value={selectedDomain}>
                 {domains.map(domain => (
                   <option key={domain.id} value={domain.id}>{domain.name}</option>
@@ -62,10 +57,10 @@ function Cwm() {
             <CalendarPage />
           </Route>
           <Route path="/cwm/search">
-            <SearchPage />
+            <SearchPage selectedDomain={selectedDomain}/>
           </Route>
           <Route path="/cwm"> {/* Render SearchPage when root path is matched */}
-            <SearchPage />
+            <SearchPage selectedDomain={selectedDomain}/>
           </Route>
         </Switch>
       </div>

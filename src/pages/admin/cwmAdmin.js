@@ -20,8 +20,7 @@ function CWMadmin() {
     const fetchData = async () => {
       try {
         const workDomainData = await fetchWorkDomain();
-        setSelectedDomain(workDomainData[0]); // Set default domain
-        console.log(selectedDomain);
+        setSelectedDomain(workDomainData.payload[0].id); // Set default domain
         setDomains(workDomainData.payload);
       } catch (error) {
         console.error('Error fetching data:', error.message);
@@ -31,6 +30,7 @@ function CWMadmin() {
     fetchData();
   }, []);
 
+useEffect(() => {
   const fetchDataForDomain = async () => {
     try {
       const locationsData = await fetchLocations();
@@ -40,7 +40,6 @@ function CWMadmin() {
         setLocations(locationsData.payload);
       }
       const shopGroupsData = await fetchShopGroups();
-      console.log(shopGroupsData);
       if (selectedDomain !== '') {
         setShopGroups(shopGroupsData.filter(shopGroup => shopGroup.domain.id === selectedDomain));
       } else {
@@ -50,13 +49,9 @@ function CWMadmin() {
       console.error('Error fetching locations:', error.message);
     }
   };
-  
 
-  useEffect(() => {
-    if (selectedDomain !== '') {
-      fetchDataForDomain();
-    }
-  }, [selectedDomain]);
+  fetchDataForDomain();
+}, [selectedDomain]);
 
   const handleDomainChange = (event) => {
     const selectedDomain = event.target.value;

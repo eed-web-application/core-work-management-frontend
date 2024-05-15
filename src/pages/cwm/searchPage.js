@@ -6,6 +6,7 @@ import SubHeader from './subHeader.js';
 import "./searchPage.css";
 
 const SearchPage = ({selectedDomain}) => {
+  // console.log(selectedDomain);
   const [state, setState] = useState({
     showLocationForm: false,
     showWorkForm: false,
@@ -20,13 +21,18 @@ const SearchPage = ({selectedDomain}) => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [selectedDomain]);
 
   const fetchData = async () => {
     try {
-      const response = await fetchWork();
+      console.log(selectedDomain);
+      const response = await fetchWork(); // Assuming fetchWork doesn't accept domain ID as a parameter
       if (response?.payload) {
-        setState(prevState => ({ ...prevState, work: response.payload }));
+        console.log(response.payload);
+        // Filter work items based on selected domain
+        const filteredWork = response.payload.filter(item => item.domain.description === selectedDomain);
+        console.log(filteredWork);
+        setState(prevState => ({ ...prevState, work: filteredWork }));
       } else {
         console.error("Error fetching work:", response.errorCode);
       }
