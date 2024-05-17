@@ -9,11 +9,14 @@ const extractJWT = async () => {
     const token = json.payload["Name1 Surname1"];
     return token;
   } else {
-    // Return a default token or handle the case for production environment
-    return null; // or any default token value
+    // In production, retrieve the token from local storage or cookies
+    const token = localStorage.getItem('x-vouch-idp-accesstoken'); // or wherever the token is stored
+    if (!token) {
+      throw new Error('No authentication token found');
+    }
+    return token;
   }
 };
-
 
 // Set domain id
 export const setDomainId = async () => {
