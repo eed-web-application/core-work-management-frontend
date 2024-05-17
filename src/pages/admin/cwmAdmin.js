@@ -41,9 +41,9 @@ useEffect(() => {
       }
       const shopGroupsData = await fetchShopGroups();
       if (selectedDomain !== '') {
-        setShopGroups(shopGroupsData.filter(shopGroup => shopGroup.domain.id === selectedDomain));
+        setShopGroups(shopGroupsData.payload.filter(shopGroup => shopGroup.domain.id === selectedDomain));
       } else {
-        setShopGroups(shopGroupsData);
+        setShopGroups(shopGroupsData.payload);
       }
     } catch (error) {
       console.error('Error fetching locations:', error.message);

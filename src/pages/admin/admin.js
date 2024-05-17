@@ -1,9 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route, Link, useLocation, Redirect } from "react-router-dom";
-import GeneralAdmin from "./generalAdmin.js";
-import CISadmin from "./cisAdmin.js";
 import CWMadmin from "./cwmAdmin.js";
-import ELOGadmin from "./elogAdmin.js";
 import './admin.css';
 
 function Admin() {
@@ -13,27 +10,15 @@ function Admin() {
       <div>
         <div className="admin-tab-extension">
         <div className="tab-bar">
-          <NavLink to="/admin/generalAdmin">Admin</NavLink>
-          <NavLink to="/admin/CISadmin">CIS</NavLink>
           <NavLink to="/admin/CWMadmin">CWM</NavLink>
-          <NavLink to="/admin/ELOGadmin">ELOG</NavLink>
         </div>
         </div>
         <Switch>
           <Route exact path="/">
-            <Redirect to="/admin/generalAdmin" /> {/* Redirect the default route to generalAdmin */}
-          </Route>
-          <Route path="/admin/CISadmin">
-            <CISadmin />
+            <Redirect to="/admin/CWMadmin" /> {/* Redirect the default route to generalAdmin */}
           </Route>
           <Route path="/admin/CWMadmin">
             <CWMadmin />
-          </Route>
-          <Route path="/admin/ELOGadmin">
-            <ELOGadmin />
-          </Route>
-          <Route path="/admin/generalAdmin"> {/* Define a new route for generalAdmin */}
-            <GeneralAdmin />
           </Route>
         </Switch>
       </div>

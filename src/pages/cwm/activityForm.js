@@ -27,7 +27,7 @@ function ActivityForm({ showActivityForm, setShowActivityForm }) {
 
                 if (!activityTypesFetched) {
                     const typeResponse = await fetchActivityType();
-                    setActivityTypes(typeResponse || []);
+                    setActivityTypes(typeResponse.payload || []);
                     setActivityTypesFetched(true);
                 }
 

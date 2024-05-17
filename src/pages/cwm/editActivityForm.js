@@ -35,10 +35,10 @@ function EditActivityForm({ showEditActivityForm, setShowEditActivityForm }) {
         setCustomFields(customFields);
 
         const typeResponse = await fetchActivityType();
-        setActivityTypes(typeResponse || []);
+        setActivityTypes(typeResponse.payload || []);
 
         const subtypeResponse = await fetchActivitySubtype();
-        setActivitySubtypes(subtypeResponse || []);
+        setActivitySubtypes(subtypeResponse.payload || []);
       } catch (error) {
         console.error("Error fetching data:", error);
       }

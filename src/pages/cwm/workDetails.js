@@ -46,7 +46,6 @@ const WorkDetails = () => {
     const fetchtheDomains = async () => {
       try {
         const response = await fetchWorkDomain();
-        console.log(response);
       } catch (error) {
         console.error("Error fetching domains:", error);
       } finally {
@@ -135,7 +134,6 @@ const WorkDetails = () => {
               `cwm:work:${workDetails.workNumber}:job:${selectedActivity.activityNumber}`
             );
             setActivityEntries(response.payload);
-            console.log("Activity ENTRY:", activityEntries);
           }
         }
       } catch (error) {
