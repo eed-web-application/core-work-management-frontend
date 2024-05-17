@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { fetchAllClass, fetchAllDomain, fetchAllElements } from "../../services/api";
+import { fetchAllClass, fetchAllDomain, fetchAllElements, createInventoryDomain } from "../../services/api";
 import ClassForm from "./classForm";
 import "./admin.css";
 
@@ -11,6 +11,8 @@ function CISadmin() {
   const [classes, setClasses] = useState([]);
   const [elements, setElements] = useState([]);
   const [expandedClasses, setExpandedClasses] = useState([]);
+  const [showDomainForm, setShowDomainForm] = useState(false);
+  const [newDomainData, setNewDomainData] = useState({ name: '', description: '', tags: [], authorizations: [], authenticationTokens: [] });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -103,9 +105,49 @@ function CISadmin() {
     return capitalized.replace(/-/g, ' ');
   };
 
+  const handleNewDomainChange = (event) => {
+    const { name, value } = event.target;
+    setNewDomainData(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+
+  const handleDomainFormSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      await createInventoryDomain(newDomainData);
+      setNewDomainData({ name: '', description: '', tags: [], authorizations: [], authenticationTokens: [] });
+      setShowDomainForm(false);
+    } catch (error) {
+      console.error('Error creating domain:', error.message);
+    }
+  };
+
+  const domainModal = (
+    <div id="domainModal" className="modal" style={{ display: showDomainForm ? 'block' : 'none' }}>
+      <div className="modal-content">
+        <span className="close" onClick={() => setShowDomainForm(false)}>&times;</span>
+        <h3>Create Domain</h3>
+        <form onSubmit={handleDomainFormSubmit}>
+          <label>Name:</label>
+          <input type="text" name="name" value={newDomainData.name} onChange={handleNewDomainChange} required />
+          <br></br><br></br>
+          <label>Description:</label>
+          <textarea name="description" value={newDomainData.description} style={{ width: "100%" }} onChange={handleNewDomainChange} required />
+          <br></br><br></br><br></br>
+          <button type="submit">Create</button>
+        </form>
+      </div>
+    </div>
+  );
+
   return (
     <div className="cis-admin">
       <h3 style={{ textAlign: 'center' }}>CIS Administrator</h3>
+
+      <button onClick={() => setShowDomainForm(true)}>Create Domain</button>
+      {showDomainForm && domainModal}
 
       {/* Button to add a new class */}
       <div className="new-class-button">

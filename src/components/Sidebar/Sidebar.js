@@ -27,7 +27,7 @@ function Sidebar() {
       <div key={index}>
         {/* Check if the button is for "eLogs" */}
         {button.path === "/elog" ? (
-          <a href="http://localhost:5173/elog" target="_blank" rel="noopener noreferrer">
+          <a href="https://accel-webapp-dev.slac.stanford.edu/elog" target="_blank" rel="noopener noreferrer">
             {/* Use 'a' tag instead of 'Link' */}
             <button
               className={`icon-button ${

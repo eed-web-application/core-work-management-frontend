@@ -17,7 +17,6 @@ function Cwm() {
         // Fetch domains here
         const fetchedDomains = await fetchWorkDomain();
         setDomains(fetchedDomains.payload);
-        console.log(domains);
       } catch (error) {
         console.error('Error fetching domains:', error);
       }

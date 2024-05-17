@@ -2,11 +2,18 @@
 
 // Set Auth TokenresponseJSON with mock user data and JWTs
 const extractJWT = async () => {
-  const responseJSON = await fetch("/api/cis/v1/mock/users-auth");
-  const json = await responseJSON.json();
-  const token = json.payload["Name1 Surname1"];
-  return token;
+  if (process.env.NODE_ENV === 'development') {
+    // Execute only in development environment
+    const responseJSON = await fetch("/api/cis/v1/mock/users-auth");
+    const json = await responseJSON.json();
+    const token = json.payload["Name1 Surname1"];
+    return token;
+  } else {
+    // Return a default token or handle the case for production environment
+    return null; // or any default token value
+  }
 };
+
 
 // Set domain id
 export const setDomainId = async () => {
@@ -780,6 +787,11 @@ export const getLocationById = async (locationId) => {
 
 export const getRootElements = async () => {
   try {
+
+    if (!domain_id) {
+      throw new Error("Domain ID is required. Please create a domain first.");
+    }
+
     const token = await extractJWT();
     const domain_id = await setDomainId();
 
@@ -820,6 +832,10 @@ export const getRootElements = async () => {
 
 export const getChildElements = async (elementId) => {
   try {
+    if (!domain_id) {
+      throw new Error("Domain ID is required. Please create a domain first.");
+    }
+
     const token = await extractJWT();
     const domain_id = await setDomainId();
     const response = await fetch(`/api/cis/v1/inventory/domain/${domain_id}/element/${elementId}/children`, {
@@ -845,6 +861,10 @@ export const getChildElements = async (elementId) => {
 
 
 export const submitEdits = async () => {
+  if (!domain_id) {
+    throw new Error("Domain ID is required. Please create a domain first.");
+  }
+
   const token = await extractJWT();
   const domain_id = await setDomainId();
   try {
@@ -890,6 +910,11 @@ export const fetchElementNicknames = async () => {
 
 export const searchInventory = async (anchorId, options) => {
   try {
+
+    if (!domain_id) {
+      throw new Error("Domain ID is required. Please create a domain first.");
+    }
+
     const token = await extractJWT();
     const domain_id = await setDomainId();
     const queryParams = new URLSearchParams(options).toString();
@@ -918,6 +943,10 @@ export const searchInventory = async (anchorId, options) => {
 
 export const fetchElementChildren = async () => {
   try {
+    if (!domain_id) {
+      throw new Error("Domain ID is required. Please create a domain first.");
+    }
+
     const token = await extractJWT();
     const domain_id = await setDomainId();
     // const token = await retrieveToken();
@@ -946,6 +975,10 @@ export const fetchElementChildren = async () => {
 
 export const fetchPath = async (elementId, pathType) => {
   try {
+    if (!domain_id) {
+      throw new Error("Domain ID is required. Please create a domain first.");
+    }
+
     const token = await extractJWT();
     const domain_id = await setDomainId();
 
@@ -998,6 +1031,10 @@ export const fetchPath = async (elementId, pathType) => {
 
 export const createImplementation = async (elementId, implementationData) => {
   try {
+    if (!domain_id) {
+      throw new Error("Domain ID is required. Please create a domain first.");
+    }
+
     const token = await extractJWT(); // Retrieve your token here
     const domain_id = await setDomainId();
 
@@ -1042,6 +1079,10 @@ export const createImplementation = async (elementId, implementationData) => {
 
 export const fetchImplementation = async (elementId) => {
   try {
+    if (!domain_id) {
+      throw new Error("Domain ID is required. Please create a domain first.");
+    }
+
     const token = await extractJWT();
     const domain_id = await setDomainId();
 
@@ -1073,6 +1114,10 @@ export const fetchImplementation = async (elementId) => {
 
 export const fetchInventoryData = async () => {
   try {
+    if (!domain_id) {
+      throw new Error("Domain ID is required. Please create a domain first.");
+    }
+
     // Simulating an API call with a JWT in headers (replace with actual API endpoint)
     const token = await extractJWT();
     const domain_id = await setDomainId();
@@ -1144,6 +1189,10 @@ export const createInventoryClass = async (classData) => {
 
 export const createInventoryElement = async (elementData) => {
   try {
+    if (!domain_id) {
+      throw new Error("Domain ID is required. Please create a domain first.");
+    }
+
     const token = await extractJWT();
     const domain_id = await setDomainId();
 
@@ -1196,6 +1245,10 @@ export const updateElement = async (
   updatedElementData
 ) => {
   try {
+    if (!domain_id) {
+      throw new Error("Domain ID is required. Please create a domain first.");
+    }
+
     const token = await extractJWT();
     const domain_id = await setDomainId();
     // const token = await retrieveToken();
@@ -1230,6 +1283,10 @@ export const updateElement = async (
 };
 
 export const updateInventoryDomain = async (domainId, requestBody) => {
+  if (!domain_id) {
+    throw new Error("Domain ID is required. Please create a domain first.");
+  }
+
   const domain_id = await setDomainId();
   const url = `/api/cis/v1/inventory/domain/${domain_id}`;
 
@@ -1427,6 +1484,37 @@ export const fetchLogbooks = async () => {
     throw new Error("Error fetching logbooks:", error.message);
   }
 };
+
+export const createInventoryDomain = async (domainData) => {
+  try {
+    const token = await extractJWT();
+    const response = await fetch(
+      `/api/cis/v1/inventory/domain`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-vouch-idp-accesstoken": token,
+        },
+        body: JSON.stringify(domainData)
+      }
+    );
+
+    if (response.status === 201) {
+      const data = await response.json();
+      console.log(data);
+      return data;
+    } else {
+      const errorData = await response.json();
+      console.error("Error creating work domain:", errorData);
+      throw new Error("Error creating work domain. Please try again.");
+    }
+  } catch (error) {
+    console.error("Error creating work domain:", error, errorData);
+    return { errorCode: -1, payload: [] }; // Return a default error response
+  }
+};
+
 
 export const searchElements = async (searchQuery = "") => {
   try {
