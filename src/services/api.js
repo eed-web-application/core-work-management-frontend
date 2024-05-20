@@ -3,20 +3,34 @@
 // Set Auth TokenresponseJSON with mock user data and JWTs
 const extractJWT = async () => {
   if (process.env.NODE_ENV === 'development') {
-    // Execute only in development environment
+    console.log("Development environment: Fetching mock token");
     const responseJSON = await fetch("/api/cwm/v1/mock/users-auth");
     const json = await responseJSON.json();
     const token = json.payload["Name1 Surname1"];
+    console.log("Mock token retrieved:", token);
     return token;
   } else {
-    // In production, retrieve the token from local storage or cookies
-    const token = localStorage.getItem('x-vouch-idp-accesstoken'); // or wherever the token is stored
+    console.log("Staging environment: Retrieving token from cookie");
+
+    // Extract token from cookie
+    const cookies = document.cookie.split(';');
+    let token = '';
+    cookies.forEach(cookie => {
+      const parts = cookie.split('=');
+      if (parts[0].trim() === 'VouchSession') {
+        token = parts[1];
+      }
+    });
+
+    console.log("Token found in cookie:", token);
     if (!token) {
-      throw new Error('No authentication token found');
+      throw new Error('No authentication token found in cookie');
     }
     return token;
   }
 };
+
+
 
 // Set domain id
 export const setDomainId = async () => {
