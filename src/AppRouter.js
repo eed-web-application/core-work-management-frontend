@@ -17,8 +17,8 @@ function AppRouter() {
       <Layout>
         <Switch>
           <Route exact path="/" component={Home} />
-          <Route path="/work/:workId/:activityId" component={WorkDetails} />
-          <Route path="/work/:workId" component={WorkDetails} />
+          <Route path="/cwm/:workId/:activityId" component={WorkDetails} />
+          <Route path="/cwm/:workId" component={WorkDetails} />
           <Route path="/home" component={Home} />
           <Route path="/admin" component={Admin} />
           <Route path="/admin/:classId" component={ClassDetails} />
