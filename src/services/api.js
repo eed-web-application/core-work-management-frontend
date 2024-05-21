@@ -10,15 +10,15 @@ const extractJWT = async () => {
     console.log("Mock token retrieved:", token);
     return token;
   } else {
-    console.log("Staging environment: Retrieving token from cookie");
+    console.log("Production or staging environment: Retrieving token from cookie");
 
     // Extract token from cookie
     const cookies = document.cookie.split(';');
     let token = '';
     cookies.forEach(cookie => {
       const parts = cookie.split('=');
-      if (parts[0].trim() === 'VouchSession') {
-        token = parts[1];
+      if (parts[0].trim() === 'slac-vouch') {
+        token = parts.slice(1).join('='); // Handle case where the cookie value contains '='
       }
     });
 
