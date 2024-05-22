@@ -1,6 +1,18 @@
 // src/services/api.js
 
 // Set Auth TokenresponseJSON with mock user data and JWTs
+function __SET_ACCESS_CODE(code) {
+  if (code === null) {
+    localStorage.removeItem("vouch-idp-accesstoken");
+    return;
+  }
+  localStorage.setItem("vouch-idp-accesstoken", code);
+}
+
+function __GET_ACCESS_CODE() {
+  return localStorage.getItem("vouch-idp-accesstoken");
+}
+
 const extractJWT = async () => {
   if (process.env.NODE_ENV === 'development') {
     console.log("Development environment: Fetching mock token");
@@ -8,28 +20,36 @@ const extractJWT = async () => {
     const json = await responseJSON.json();
     const token = json.payload["Name1 Surname1"];
     console.log("Mock token retrieved:", token);
+    __SET_ACCESS_CODE(token);
     return token;
   } else {
     console.log("Production or staging environment: Retrieving token from cookie");
 
-    // Extract token from cookie
-    const cookies = document.cookie.split(';');
-    let token = '';
-    cookies.forEach(cookie => {
-      const parts = cookie.split('=');
-      if (parts[0].trim() === 'slac-vouch') {
-        token = parts.slice(1).join('='); // Handle case where the cookie value contains '='
-      }
-    });
-
-    console.log("Token found in cookie:", token);
-    if (!token) {
-      throw new Error('No authentication token found in cookie');
+    let token = __GET_ACCESS_CODE();
+    if (token) {
+      console.log("Token retrieved from localStorage:", token);
+      return token;
     }
+
+    const cookieString = document.cookie;
+    const cookies = cookieString.split('; ');
+    for (const cookie of cookies) {
+      const [name, value] = cookie.split('=');
+      if (name === 'slac-vouch') {
+        token = value;
+        break;
+      }
+    }
+
+    if (!token) {
+      throw new Error('Authentication token not found in cookies');
+    }
+
+    console.log("Token retrieved from cookies:", token);
+    __SET_ACCESS_CODE(token);
     return token;
   }
 };
-
 
 
 // Set domain id
