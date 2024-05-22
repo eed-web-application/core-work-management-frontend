@@ -10,7 +10,20 @@ function __SET_ACCESS_CODE(code) {
 }
 
 function __GET_ACCESS_CODE() {
-  return localStorage.getItem("vouch-idp-accesstoken");
+  const tokenFromLocalStorage = localStorage.getItem("vouch-idp-accesstoken");
+  if (tokenFromLocalStorage) {
+    return tokenFromLocalStorage;
+  } else {
+    const cookieString = document.cookie;
+    const cookies = cookieString.split('; ');
+    for (const cookie of cookies) {
+      const [name, value] = cookie.split('=');
+      if (name === 'slac-vouch') {
+        return value;
+      }
+    }
+    return null;
+  }
 }
 
 const extractJWT = async () => {
@@ -23,33 +36,18 @@ const extractJWT = async () => {
     __SET_ACCESS_CODE(token);
     return token;
   } else {
-    console.log("Production or staging environment: Retrieving token from cookie");
+    console.log("Production or staging environment: Retrieving token from localStorage or cookies");
 
     let token = __GET_ACCESS_CODE();
     if (token) {
-      console.log("Token retrieved from localStorage:", token);
+      console.log("Token retrieved:", token);
       return token;
+    } else {
+      throw new Error('Authentication token not found in localStorage or cookies');
     }
-
-    const cookieString = document.cookie;
-    const cookies = cookieString.split('; ');
-    for (const cookie of cookies) {
-      const [name, value] = cookie.split('=');
-      if (name === 'slac-vouch') {
-        token = value;
-        break;
-      }
-    }
-
-    if (!token) {
-      throw new Error('Authentication token not found in cookies');
-    }
-
-    console.log("Token retrieved from cookies:", token);
-    __SET_ACCESS_CODE(token);
-    return token;
   }
 };
+
 
 
 // Set domain id
@@ -65,17 +63,18 @@ export const setDomainId = async () => {
 };
 
 // Utility function to fetch data from the API with authentication headers
-const fetchData = async (url, method = 'GET', body = null) => {
+export const fetchData = async (url, method = 'GET', body = null, token = null) => {
   try {
-    const token = await extractJWT();
-
     const options = {
       method,
       headers: {
         'Content-Type': 'application/json',
-        'x-vouch-idp-accesstoken': token,
       },
     };
+
+    if (token) {
+      options.headers['x-vouch-idp-accesstoken'] = token;
+    }
 
     if (body) {
       options.body = JSON.stringify(body);
@@ -95,17 +94,18 @@ const fetchData = async (url, method = 'GET', body = null) => {
 };
 
 
-export const fetchWorkDomain = async () => {
-  return fetchData('/api/cwm/v1/domain', 'GET', null);
+export const fetchWorkDomain = async (token) => {
+  return fetchData('/api/cwm/v1/domain', 'GET', null, token);
 };
 
-export const fetchOneWorkDomain = async (domainId) => {
-  return fetchData(`/api/cwm/v1/domain/${domainId}`, 'GET', null);
+export const fetchOneWorkDomain = async (domainId, token) => {
+  return fetchData(`/api/cwm/v1/domain/${domainId}`, 'GET', null, token);
 };
 
-export const createWorkDomain = async (domainData) => {
-  const response = await fetchData(`/api/cwm/v1/domain`, 'POST', domainData);
+export const createWorkDomain = async (domainData, token) => {
+  return fetchData(`/api/cwm/v1/domain`, 'POST', domainData, token);
 };
+
 
 export const fetchEntriesByOriginId = async (originId) => {
   try {
