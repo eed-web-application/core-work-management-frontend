@@ -26,7 +26,7 @@ function Sidebar() {
     { path: "/cwm", icon: faTicket, label: "Issues" },
     { path: "/elog", icon: faNewspaper, label: "eLogs" },
     { path: "/815", icon: faClock, label: "8:15" },
-    { path: "/admin/generalAdmin", icon: faLock, label: "Admin" },
+    { path: "/cwm/admin", icon: faLock, label: "Admin" },
     { path: "/settings", icon: faCog, label: "Settings" },
   ];
 

@@ -5,7 +5,7 @@ import Home from './pages/dashboard/home';
 import Cwm from './pages/cwm/cwm';
 import ActivityDetails from './pages/cwm/activityDetails';
 import Settings from './pages/settings/settings';
-import Admin from './pages/admin/admin';
+import Admin from './pages/admin/cwmAdmin';
 import ClassDetails from './pages/admin/classDetail';
 import WorkDetails from './pages/cwm/workDetails';
 import Elog from './pages/elog/elog';
@@ -17,11 +17,11 @@ function AppRouter() {
       <Layout>
         <Switch>
           <Route exact path="/" component={Home} />
+          <Route path="/cwm/admin" component={Admin} />
           <Route path="/cwm/:workId/:activityId" component={WorkDetails} />
           <Route path="/cwm/:workId" component={WorkDetails} />
           <Route path="/home" component={Home} />
-          <Route path="/admin" component={Admin} />
-          <Route path="/admin/:classId" component={ClassDetails} />
+          {/* <Route path="/admin/:classId" component={ClassDetails} /> */}
           <Route path="/cwm" component={Cwm} />
           <Route path="/elog" component={Elog} />
           <Route path="/815" component={Meeting} />

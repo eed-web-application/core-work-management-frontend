@@ -3,9 +3,10 @@
 // Set domain id
 export const setDomainId = async () => {
   try {
-    const domainData = await fetchAllDomain();
+    const domainData = await fetchWorkDomain();
     const domain_id = domainData.payload[0].id;
-    return domain_id;
+    console.log(domain_id)
+;    return domain_id;
   } catch (error) {
     console.error('Error setting domain_id:', error.message);
     throw new Error('Unable to determine domain_id');
