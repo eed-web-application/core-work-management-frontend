@@ -10,7 +10,15 @@ function Sidebar() {
   const [activeButton, setActiveButton] = useState(localStorage.getItem("activeButton") || "/cwm");
 
   useEffect(() => {
-    setActiveButton(location.pathname);
+    if (location.pathname.startsWith("/cwm")) {
+      setActiveButton("/cwm");
+    } else if (location.pathname.startsWith("/cis")) {
+      setActiveButton("/cis");
+    } else if (location.pathname.startsWith("/admin")) {
+      setActiveButton("/admin/generalAdmin");
+    } else {
+      setActiveButton(location.pathname);
+    }
   }, [location.pathname]);
 
   useEffect(() => {

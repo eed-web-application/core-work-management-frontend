@@ -39,7 +39,7 @@ const WorkDetails = () => {
   const breadcrumbItems = [
     { label: "Home", link: "/" },
     { label: "Issues", link: "/cwm" },
-    { label: "Issue Details", link: `/work/${workId}` },
+    { label: "Issue Details", link: `/cwm/${workId}` },
   ];
 
   useEffect(() => {
@@ -158,7 +158,7 @@ const WorkDetails = () => {
       setSelectedActivity(response.payload); // Set the details of the selected activity
       console.log(selectedActivity);
       setShowJobDetails(true); // Show the job details sidebar
-      history.push(`/work/${workId}/${activity.id}`); // Push the activity ID to the URL
+      history.push(`/cwm/${workId}/${activity.id}`); // Push the activity ID to the URL
 
     } catch (error) {
       console.error("Error fetching activity:", error);

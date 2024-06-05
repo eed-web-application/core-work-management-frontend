@@ -15,8 +15,8 @@ const ActivityDetails = () => {
     const breadcrumbItems = [
         { label: 'Home', link: '/' },
         { label: 'Work', link: '/cwm/search' },
-        { label: 'Work Details', link: `/work/${workId}` },
-        { label: 'Activity Details', link: `/work/${workId}/${activityId}` },
+        { label: 'Work Details', link: `/cwm/${workId}` },
+        { label: 'Activity Details', link: `/cwm/${workId}/${activityId}` },
     ];
 
     // Fetch element path data on component mount

@@ -39,7 +39,7 @@ const SearchPage = ({selectedDomain}) => {
   };
 
   const handleCardClick = (workId) => {
-    history.push(`/work/${workId}`);
+    history.push(`/cwm/${workId}`);
     window.location.reload();
   };
 
@@ -82,7 +82,7 @@ const SearchPage = ({selectedDomain}) => {
           {state.work && state.work.length > 0 ? (
             state.work.map((item) => (
               <div key={item.id} onClick={() => handleCardClick(item.id)}>
-                <Link to={`/work/${item.id}`} style={{ textDecoration: 'none', display: 'block', width: '100%' }}>
+                <Link to={`/cwm/${item.id}`} style={{ textDecoration: 'none', display: 'block', width: '100%' }}>
                   <WorkCard item={item} />
                 </Link>
               </div>

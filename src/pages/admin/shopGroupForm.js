@@ -1,19 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import { createShopGroup, fetchUsers, fetchWorkDomain } from '../../services/api';
+import { createShopGroup, fetchUsers } from '../../services/api';
 import { MultiSelect } from 'react-multi-select-component';
 
 function ShopGroupForm({ showShopGroupForm, setShowShopGroupForm, selectedDomain }) {
   const [shopGroupData, setShopGroupData] = useState({ domainId: selectedDomain, name: '', description: '', users: [] });
   const [users, setUsers] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      const response = await fetchUsers();
-      setUsers(response.payload);
+    const handler = setTimeout(() => {
+      const fetchUserData = async () => {
+        const response = await fetchUsers(searchQuery);
+        setUsers(response.payload);
+        console.log(response.payload);
+      };
+  
+      if (searchQuery || searchQuery === '') {
+        fetchUserData();
+      }
+    }, 500);
+
+    return () => {
+      clearTimeout(handler);
     };
-    fetchUserData();
-  }, []);
+  }, [searchQuery]);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -40,7 +51,7 @@ function ShopGroupForm({ showShopGroupForm, setShowShopGroupForm, selectedDomain
     }
   };
 
-  const options = users.map((user) => ({
+  const filteredOptions = users.map((user) => ({
     value: user.mail,
     label: `${user.commonName} (${user.mail})`
   }));
@@ -51,16 +62,6 @@ function ShopGroupForm({ showShopGroupForm, setShowShopGroupForm, selectedDomain
         <span className="close" onClick={() => setShowShopGroupForm(false)}>&times;</span>
         <h1 className="form-title">NEW SHOP GROUP</h1>
         <form onSubmit={handleSubmit} className="shop-group-form">
-
-          {/* <div className="form-group">
-            <label htmlFor="domain">Domain</label>
-            <select id="domain" name="domain" value={shopGroupData.domain} onChange={handleInputChange} required>
-              <option value="">Select Domain</option>
-              {domains.map(domain => (
-                <option key={domain.id} value={domain.id}>{domain.name}</option>
-              ))}
-            </select>
-          </div> */}
           
           <div className="form-group">
             <label htmlFor="name">Name</label>
@@ -74,7 +75,15 @@ function ShopGroupForm({ showShopGroupForm, setShowShopGroupForm, selectedDomain
 
           <div className="form-group" style={{ width: '100%' }}>
             <label htmlFor="userEmails">User Emails</label>
-            <MultiSelect options={options} value={selectedUsers} onChange={handleUserChange} labelledBy={"Select"} style={{ width: '100%' }} />
+            <MultiSelect
+              options={filteredOptions}
+              value={selectedUsers}
+              onChange={handleUserChange}
+              labelledBy={"Select"}
+              hasSelectAll={false}
+              onSearchChange={setSearchQuery}
+              style={{ width: '100%' }}
+            />
           </div>
 
           <button type="submit" className="form-button">Create Shop Group</button>
