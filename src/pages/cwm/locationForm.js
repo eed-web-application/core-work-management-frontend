@@ -18,7 +18,7 @@ function LocationForm({ showLocationForm, setShowLocationForm, selectedDomain })
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const usersResponse = await fetchUsers("surname");
+        const usersResponse = await fetchUsers("martinez");
         const elementsResponse = await fetchAllElements(20);
         if (usersResponse.errorCode === 0) {
           setUsers(usersResponse.payload);
