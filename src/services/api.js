@@ -140,21 +140,7 @@ export const fetchWork = async (token) => {
 export const fetchAWork = async (workId, token) => fetchData(`/api/cwm/v1/work/${workId}`, 'GET', token);
 
 export const createWork = async (workData, token) => {
-  const response = await fetchData(
-    "/api/cwm/v1/work",
-    'POST',
-    workData,
-    token
-  );
-
-  if (response.status === 201) {
-    console.log(response);
-    return response;
-  } else {
-    const errorData = await response.json();
-    console.error("Error creating work:", errorData);
-    throw new Error("Error creating work. Please try again.");
-  }
+  return await fetchData("/api/cwm/v1/work", 'POST', workData, token);
 };
 
 export const fetchWorkType = async (token) => {
@@ -192,15 +178,6 @@ export const fetchLocations = async (token) => {
 
 export const createLocation = async (locationData, token) => {
   const response = await fetchData('/api/cwm/v1/location', 'POST', locationData, token);
-
-  if (response.status === 201) {
-    const data = await response.json();
-    console.log('Location created successfully:', data);
-  } else {
-    const errorData = await response.json();
-    console.error('Error creating location:', errorData);
-    alert('Error creating location. Please try again.');
-  }
 };
 
 export const getLocationById = async (locationId, token) => {
