@@ -18,7 +18,7 @@ function LocationForm({ showLocationForm, setShowLocationForm, selectedDomain })
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const usersResponse = await fetchUsers("martinez");
+        const usersResponse = await fetchUsers("surname");
         const elementsResponse = await fetchAllElements(20);
         if (usersResponse.errorCode === 0) {
           setUsers(usersResponse.payload);
@@ -70,50 +70,34 @@ function LocationForm({ showLocationForm, setShowLocationForm, selectedDomain })
     }
   };
 
-  const renderField = (field) => (
-    <div key={field.name} className="form-group">
-      <label htmlFor={field.name}>{field.label}{field.required && <span className="required">*</span>}</label>
-      {field.type === 'select' ? (
-        <select
-          id={field.name}
-          name={field.name}
-          value={formData[field.name]}
-          onChange={handleInputChange}
-          className="select-input"
-          multiple={field.multiple}
-        >
-          <option value="">Select {field.label}</option>
-          {field.options.map(option => (
-            <option key={option.id} value={option.value}>{option.label}</option>
-          ))}
-        </select>
-      ) : (
-        <input
-          type={field.type}
-          id={field.name}
-          name={field.name}
-          value={formData[field.name]}
-          onChange={handleInputChange}
-        />
-      )}
-    </div>
-  );
-
-  const fields = [
-    // { label: 'Domain', name: 'domainId', type: 'select', options: domains.map(domain => ({ id: domain.id, value: domain.id, label: domain.name })), required: true },
-    { label: 'Name', name: 'name', type: 'text', required: true },
-    { label: 'Description', name: 'description', type: 'text', required: true },
-    { label: 'Corresponding DEPOT Location', name: 'externalLocationIdentifier', type: 'select', options: depotItems.map(item => ({ id: `${item.domainDTO.id}/${item.id}`, value: `${item.domainDTO.id}/${item.id}`, label: item.name })) },
-    { label: 'Manager', name: 'locationManagerUserId', type: 'select', options: users.map(user => ({ id: user.uid, value: user.mail, label: `${user.commonName} ${user.surname}` })), required: true },
-  ];
-
   return (
     <div className={`modal ${showLocationForm ? "show" : "hide"}`}>
       <div className="form-content">
         <span className="close" onClick={() => setShowLocationForm(false)}>&times;</span>
         <h1 className="form-title">NEW LOCATION</h1>
+        
         <form onSubmit={handleSubmit} className="location-form">
-          {fields.map(renderField)}
+          
+          <div className="form-group">
+            <label htmlFor="name">Name</label>
+            <input type="text" id="name" name="name" value={formData.name} onChange={handleInputChange} required />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="description">Description</label>
+            <input type="text" id="description" name="description" value={formData.description} onChange={handleInputChange} />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="locationManagerUserId">Manager</label>
+            <select id="locationManagerUserId" name="locationManagerUserId" value={formData.locationManagerUserId} onChange={handleInputChange}>
+              <option value="">Select Manager</option>
+              {users.map(user => (
+                <option key={user.uid} value={user.mail}>{`${user.commonName}`}</option>
+              ))}
+            </select>
+          </div>
+
           <button type="submit" className="form-button">Create Location</button>
         </form>
       </div>
