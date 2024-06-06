@@ -19,20 +19,32 @@ function WorkForm({ showWorkForm, setShowWorkForm, selectedDomain }) {
     const [createWorkLogChecked, setCreateWorkLogChecked] = useState(false); // State for checkbox
 
     useEffect(() => {
+        const fetchWorkTypes = async () => {
+            try {
+                const typesResponse = await fetchWorkType();
+                setWorkTypes(typesResponse.payload);
+            } catch (error) {
+                console.error('Error fetching work types:', error);
+            }
+        };
+    
+        fetchWorkTypes();
+    }, []);
+    
+
+    useEffect(() => {
         const fetchData = async () => {
             try {
                 // Fetch locations and shopGroups for the selected domain
-                const [typesResponse, locationsResponse, shopGroupsResponse] = await Promise.all([
-                    fetchWorkType(),
-                    fetchLocations(selectedDomain),
-                    fetchShopGroups(selectedDomain)
+                const [locationsResponse, shopGroupsResponse] = await Promise.all([
+                    fetchLocations(),
+                    fetchShopGroups()
                 ]);
     
-                setWorkTypes(typesResponse || []);
                 // Set locations filtered by selectedDomain
                 setLocations(locationsResponse.payload.filter(location => location.domain.id === selectedDomain) || []);
                 // Set shopGroups filtered by selectedDomain
-                setShopGroups(shopGroupsResponse.filter(shopGroup => shopGroup.domain.id === selectedDomain) || []);
+                setShopGroups(shopGroupsResponse.payload.filter(shopGroup => shopGroup.domain.id === selectedDomain) || []);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }

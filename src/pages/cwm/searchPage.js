@@ -28,7 +28,7 @@ const SearchPage = ({selectedDomain}) => {
       const response = await fetchWork(); // Assuming fetchWork doesn't accept domain ID as a parameter
       if (response?.payload) {
         // Filter work items based on selected domain
-        const filteredWork = response.payload.filter(item => item.domain.description === selectedDomain);
+        const filteredWork = response.payload.filter(item => item.domain.id === selectedDomain);
         setState(prevState => ({ ...prevState, work: filteredWork }));
       } else {
         console.error("Error fetching work:", response.errorCode);

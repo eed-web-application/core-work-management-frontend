@@ -9,7 +9,7 @@ import "./cwm.css";
 function Cwm() {
   const location = useLocation(); // Hook from react-router-dom to get the current location
   const [domains, setDomains] = useState([]);
-  const [selectedDomain, setSelectedDomain] = useState('TEC');
+  const [selectedDomain, setSelectedDomain] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -17,6 +17,10 @@ function Cwm() {
         // Fetch domains here
         const fetchedDomains = await fetchWorkDomain();
         setDomains(fetchedDomains.payload);
+        // Set the default selected domain to the first domain ID if domains exist
+        if (fetchedDomains.payload.length > 0) {
+          setSelectedDomain(fetchedDomains.payload[0].id);
+        }
       } catch (error) {
         console.error('Error fetching domains:', error);
       }
