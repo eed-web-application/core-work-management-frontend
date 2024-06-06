@@ -174,6 +174,7 @@ export const fetchProfile = async (token) => {
 };
 
 export const fetchUsers = async (search, token) => {
+  console.log(search);
   return await fetchData(`/api/cwm/v1/auth/users${search ? `?search=${search}` : ''}`, 'GET', null, token);
 };
 

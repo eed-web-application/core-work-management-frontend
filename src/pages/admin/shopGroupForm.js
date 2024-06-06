@@ -1,30 +1,38 @@
+// ShopGroupForm.jsx
+
 import React, { useState, useEffect } from 'react';
 import { createShopGroup, fetchUsers } from '../../services/api';
-import { MultiSelect } from 'react-multi-select-component';
+import CustomMultiSelect from '../../components/CustomMultiSelect';
 
 function ShopGroupForm({ showShopGroupForm, setShowShopGroupForm, selectedDomain }) {
   const [shopGroupData, setShopGroupData] = useState({ domainId: selectedDomain, name: '', description: '', users: [] });
   const [users, setUsers] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedQuery, setDebouncedQuery] = useState('');
 
   useEffect(() => {
     const handler = setTimeout(() => {
-      const fetchUserData = async () => {
-        const response = await fetchUsers(searchQuery);
-        setUsers(response.payload);
-        console.log(response.payload);
-      };
-  
-      if (searchQuery || searchQuery === '') {
-        fetchUserData();
-      }
-    }, 500);
+      setDebouncedQuery(searchQuery);
+      console.log('Debounced Query set to:', searchQuery); 
+    }, 300);
 
     return () => {
       clearTimeout(handler);
     };
   }, [searchQuery]);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      console.log('Fetching user data with query:', debouncedQuery); // Debugging log
+      const response = await fetchUsers(debouncedQuery);
+      console.log("debouncedQuery:", debouncedQuery);
+      setUsers(response.payload);
+      console.log(response.payload);
+    };
+
+    fetchUserData();
+  }, [debouncedQuery]);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -33,15 +41,38 @@ function ShopGroupForm({ showShopGroupForm, setShowShopGroupForm, selectedDomain
 
   const handleUserChange = (selectedOptions) => {
     setSelectedUsers(selectedOptions);
-    const formattedUsers = selectedOptions.map(option => ({ userId: option.value, isLeader: false }));
-    setShopGroupData(prevData => ({ ...prevData, users: formattedUsers }));
   };
-
+  
+  // Callback function to handle selected values change
+  const handleSelectedValuesChange = (selectedOptions) => {
+    console.log(selectedOptions); // Log selectedOptions here
+    setSelectedUsers(selectedOptions);
+    const formattedUsers = selectedOptions.map(option => ({
+      userId: option, // Ensure option is the email address
+      isLeader: false 
+    }));
+    setShopGroupData(prevData => ({ 
+      ...prevData, 
+      users: formattedUsers 
+    }));
+  };
+  
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
+      console.log("Selected Users:", selectedUsers); // Log the selected users here
+      const formattedUsers = selectedUsers.map(option => ({ 
+        userId: option, 
+        isLeader: false 
+      }));
+      console.log(formattedUsers);
+      setShopGroupData(prevData => ({ 
+        ...prevData, 
+        users: formattedUsers 
+      }));
       console.log(shopGroupData);
-      await createShopGroup(shopGroupData);
+      await createShopGroup({ ...shopGroupData, users: formattedUsers });
       alert("Shop group created successfully!");
       setShowShopGroupForm(false); // Close the form
       window.location.reload(); // Reload the page
@@ -50,6 +81,7 @@ function ShopGroupForm({ showShopGroupForm, setShowShopGroupForm, selectedDomain
       alert("Error creating shop group. Please try again.");
     }
   };
+  
 
   const filteredOptions = users.map((user) => ({
     value: user.mail,
@@ -74,15 +106,13 @@ function ShopGroupForm({ showShopGroupForm, setShowShopGroupForm, selectedDomain
           </div>
 
           <div className="form-group" style={{ width: '100%' }}>
-            <label htmlFor="userEmails">User Emails</label>
-            <MultiSelect
+            {/* <label htmlFor="userEmails">User Emails</label> */}
+            <CustomMultiSelect
               options={filteredOptions}
-              value={selectedUsers}
+              selectedValues={selectedUsers}
               onChange={handleUserChange}
-              labelledBy={"Select"}
-              hasSelectAll={false}
               onSearchChange={setSearchQuery}
-              style={{ width: '100%' }}
+              onSelectedValuesChange={handleSelectedValuesChange} // Pass the callback function
             />
           </div>
 
