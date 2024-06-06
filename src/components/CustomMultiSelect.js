@@ -31,8 +31,9 @@ const CustomMultiSelect = ({ options, selectedValues, onChange, onSearchChange }
         }}
         placeholder="Search for users..."
         className="form-input"
+        style={{marginBottom: "0px"}}
       />
-      <div className="options-list" style={{ maxHeight: '200px', overflowY: 'auto' }}>
+      <div className="options-list" style={{ maxHeight: '200px', overflowY: 'auto', border: '1px solid #ccc', padding: '0.5rem' }}>
         {filteredOptions.map((option) => (
           <div key={option.value} className="option-item" style={{ marginBottom: '0.5rem', display: 'flex', alignItems: 'center' }}>
             <input
