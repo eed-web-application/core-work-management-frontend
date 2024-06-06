@@ -183,7 +183,7 @@ export const fetchShopGroups = async (token) => {
 };
 
 export const createShopGroup = async (shopGroupData, token) => {
-  return await fetchData('/api/cwm/v1/shop-group', 'POST', JSON.stringify(shopGroupData), token);
+  return await fetchData('/api/cwm/v1/shop-group', 'POST', shopGroupData, token);
 };
 
 export const fetchLocations = async (token) => {
@@ -191,7 +191,7 @@ export const fetchLocations = async (token) => {
 };
 
 export const createLocation = async (locationData, token) => {
-  const response = await fetchData('/api/cwm/v1/location', 'POST', JSON.stringify(locationData), token);
+  const response = await fetchData('/api/cwm/v1/location', 'POST', locationData, token);
 
   if (response.status === 201) {
     const data = await response.json();
