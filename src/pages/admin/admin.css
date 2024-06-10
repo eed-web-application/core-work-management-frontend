@@ -130,7 +130,7 @@ h1 {
   width: 60%;
   border-radius: 5px;
   position: absolute;
-  top: 50%;
+  top: 45%;
   left: 50%;
   transform: translate(-50%, -50%);
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
@@ -412,6 +412,12 @@ h1 {
   max-height: 500px; /* Set a maximum height for the container */
 }
 
+.table-container {
+  max-height: 400px;
+  overflow-y: auto; /* Enable vertical scrolling */
+  overflow-x: auto; /* Enable horizontal scrolling, if needed */
+}
+
 .class-table {
   border-collapse: separate;
   border-spacing: 0;
@@ -423,6 +429,7 @@ h1 {
   table-layout: fixed;
   overflow: auto;
   overflow-x: auto;
+  overflow-y: auto;
 }
 
 .class-table th,

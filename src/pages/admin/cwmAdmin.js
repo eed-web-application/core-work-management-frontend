@@ -118,6 +118,7 @@ useEffect(() => {
 
       <div className="card-display">
         <h2>Locations</h2>
+        <div className="table-container">
         <table className="class-table">
           <thead>
             <tr>
@@ -142,6 +143,7 @@ useEffect(() => {
             ))}
           </tbody>
         </table>
+        </div>
       </div>
 
       <div className="new-class-button">
@@ -153,6 +155,7 @@ useEffect(() => {
 
       <div className="card-display">
         <h2>Shop Groups</h2>
+        <div className="table-container">
         <table className="class-table">
           <thead>
             <tr>
@@ -173,6 +176,7 @@ useEffect(() => {
             ))}
           </tbody>
         </table>
+        </div>
       </div>
 
       <div className="new-class-button">

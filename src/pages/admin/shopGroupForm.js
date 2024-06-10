@@ -14,7 +14,7 @@ function ShopGroupForm({ showShopGroupForm, setShowShopGroupForm, selectedDomain
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedQuery(searchQuery);
-      console.log('Debounced Query set to:', searchQuery); 
+      console.log('Debounced Query set to:', searchQuery);
     }, 300);
 
     return () => {
@@ -42,34 +42,34 @@ function ShopGroupForm({ showShopGroupForm, setShowShopGroupForm, selectedDomain
   const handleUserChange = (selectedOptions) => {
     setSelectedUsers(selectedOptions);
   };
-  
+
   // Callback function to handle selected values change
   const handleSelectedValuesChange = (selectedOptions) => {
     console.log(selectedOptions); // Log selectedOptions here
     setSelectedUsers(selectedOptions);
     const formattedUsers = selectedOptions.map(option => ({
       userId: option, // Ensure option is the email address
-      isLeader: false 
+      isLeader: false
     }));
-    setShopGroupData(prevData => ({ 
-      ...prevData, 
-      users: formattedUsers 
+    setShopGroupData(prevData => ({
+      ...prevData,
+      users: formattedUsers
     }));
   };
-  
-  
+
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       console.log("Selected Users:", selectedUsers); // Log the selected users here
-      const formattedUsers = selectedUsers.map(option => ({ 
-        userId: option, 
-        isLeader: false 
+      const formattedUsers = selectedUsers.map(option => ({
+        userId: option,
+        isLeader: false
       }));
       console.log(formattedUsers);
-      setShopGroupData(prevData => ({ 
-        ...prevData, 
-        users: formattedUsers 
+      setShopGroupData(prevData => ({
+        ...prevData,
+        users: formattedUsers
       }));
       console.log(shopGroupData);
       await createShopGroup({ ...shopGroupData, users: formattedUsers });
@@ -81,7 +81,7 @@ function ShopGroupForm({ showShopGroupForm, setShowShopGroupForm, selectedDomain
       alert("Error creating shop group. Please try again.");
     }
   };
-  
+
 
   const filteredOptions = users.map((user) => ({
     value: user.mail,
@@ -94,7 +94,11 @@ function ShopGroupForm({ showShopGroupForm, setShowShopGroupForm, selectedDomain
         <span className="close" onClick={() => setShowShopGroupForm(false)}>&times;</span>
         <h1 className="form-title">NEW SHOP GROUP</h1>
         <form onSubmit={handleSubmit} className="shop-group-form">
-          
+
+          <h1 className="workform-title">New Shop Group</h1> {/* Title for the form */}
+          <p className="form-subtitle">Please provide the details of the shop group</p>
+          <hr className="line" /><br></br>
+
           <div className="form-group">
             <label htmlFor="name">Name</label>
             <input type="text" id="name" name="name" value={shopGroupData.name} onChange={handleInputChange} required />

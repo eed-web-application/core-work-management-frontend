@@ -92,6 +92,9 @@ function LocationForm({ showLocationForm, setShowLocationForm, selectedDomain })
         <span className="close" onClick={() => setShowLocationForm(false)}>&times;</span>
         <h1 className="form-title">NEW LOCATION</h1>
         <form onSubmit={handleSubmit} className="location-form">
+          <h1 className="workform-title">New Location</h1> {/* Title for the form */}
+          <p className="form-subtitle">Please provide the details of the location</p>
+          <hr className="line" /><br></br>
           <div className="form-group">
             <label htmlFor="name">Name</label>
             <input type="text" id="name" name="name" value={formData.name} onChange={handleInputChange} required />

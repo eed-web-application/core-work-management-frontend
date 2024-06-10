@@ -122,15 +122,15 @@ export const fetchActivity = async (workId, token) => {
 };
 
 export const createActivity = async (workId, activityData, token) => {
-  return fetchData(`/api/cwm/v1/work/${workId}/activity`, 'POST', JSON.stringify(activityData), token);
+  return fetchData(`/api/cwm/v1/work/${workId}/activity`, 'POST', activityData, token);
 };
 
 export const updateActivity = async (workId, activityId, activityData, token) => {
-  return fetchData(`/api/cwm/v1/work/${workId}/activity/${activityId}`, 'PUT', JSON.stringify(activityData), token);
+  return fetchData(`/api/cwm/v1/work/${workId}/activity/${activityId}`, 'PUT', activityData, token);
 };
 
 export const updateWork = async (workId, workData, token) => {
-  return fetchData(`/api/cwm/v1/work/${workId}`, 'PUT', JSON.stringify(workData), token);
+  return fetchData(`/api/cwm/v1/work/${workId}`, 'PUT', workData, token);
 };
 
 export const fetchWork = async (token) => {
