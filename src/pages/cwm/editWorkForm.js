@@ -36,9 +36,9 @@ function EditWorkForm({ showEditWorkForm, setshowEditWorkForm }) {
                     customFieldValues: {}
                 });
 
-                setWorkTypes(await fetchWorkType() || []);
+                setWorkTypes((await fetchWorkType()).payload || []);
                 setLocations((await fetchLocations()).payload || []);
-                setShopGroups(await fetchShopGroups() || []);
+                setShopGroups((await fetchShopGroups()).payload || []);
                 setUsers((await fetchUsers()).payload || []);
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -48,9 +48,11 @@ function EditWorkForm({ showEditWorkForm, setshowEditWorkForm }) {
     }, [workId]);
 
     useEffect(() => {
-        const selectedType = workTypes.find(type => type.id === workData.workTypeId);
-        if (selectedType) {
-            setCustomFields(selectedType.customFields || []);
+        if (Array.isArray(workTypes) && workTypes.length > 0) {
+            const selectedType = workTypes.find(type => type.id === workData.workTypeId);
+            if (selectedType) {
+                setCustomFields(selectedType.customFields || []);
+            }
         }
     }, [workData.workTypeId, workTypes]);
 
@@ -116,7 +118,7 @@ function EditWorkForm({ showEditWorkForm, setshowEditWorkForm }) {
                     ].map(field => (
                         <div key={field.name} className="form-group">
                             <label htmlFor={field.name} className="form-label">{field.label}</label>
-                            {field.type === 'select' ? (
+                            {field.type === 'select' && Array.isArray(field.options) ? (
                                 <select
                                     id={field.name}
                                     name={field.name}

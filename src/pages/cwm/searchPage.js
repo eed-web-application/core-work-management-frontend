@@ -1,16 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { fetchWork } from "../../services/api.js";
 import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 import SubHeader from './subHeader.js';
 import "./searchPage.css";
 
-const SearchPage = ({selectedDomain}) => {
-  // console.log(selectedDomain);
+const SearchPage = ({ selectedDomain }) => {
   const [state, setState] = useState({
     showLocationForm: false,
     showWorkForm: false,
-    selectedFilter: "",
     searchInput: "",
     currentPage: 1,
     lastItemId: null,
@@ -25,9 +23,8 @@ const SearchPage = ({selectedDomain}) => {
 
   const fetchData = async () => {
     try {
-      const response = await fetchWork(); // Assuming fetchWork doesn't accept domain ID as a parameter
+      const response = await fetchWork();
       if (response?.payload) {
-        // Filter work items based on selected domain
         const filteredWork = response.payload.filter(item => item.domain.id === selectedDomain);
         setState(prevState => ({ ...prevState, work: filteredWork }));
       } else {
@@ -38,31 +35,44 @@ const SearchPage = ({selectedDomain}) => {
     }
   };
 
-  const handleCardClick = (workId) => {
+  const handleCardClick = useCallback((workId) => {
     history.push(`/cwm/${workId}`);
     window.location.reload();
-  };
+  }, [history]);
 
-  const handleSearch = async () => {
+  const handleSearch = useCallback(async () => {
     try {
       setState(prevState => ({ ...prevState, currentPage: 1, lastItemId: null }));
       const searchData = await fetchWork(5, 1, null, state.searchInput);
-      setState(prevState => ({ ...prevState, work: searchData.payload, lastItemId: searchData.payload?.[searchData.payload.length - 1]?.id || null }));
+      setState(prevState => ({
+        ...prevState,
+        work: searchData.payload,
+        lastItemId: searchData.payload?.[searchData.payload.length - 1]?.id || null,
+      }));
     } catch (error) {
       console.error("Error fetching work:", error);
     }
-  };
+  }, [state.searchInput]);
 
-  const handleLoadMore = async () => {
+  const handleLoadMore = useCallback(async () => {
     try {
       const nextPageData = await fetchWork(itemsPerPage, state.currentPage + 1, state.lastItemId);
       if (nextPageData.payload.length > 0) {
-        setState(prevState => ({ ...prevState, work: [...prevState.work, ...nextPageData.payload], currentPage: prevState.currentPage + 1, lastItemId: nextPageData.payload[nextPageData.payload.length - 1]?.id }));
+        setState(prevState => ({
+          ...prevState,
+          work: [...prevState.work, ...nextPageData.payload],
+          currentPage: prevState.currentPage + 1,
+          lastItemId: nextPageData.payload[nextPageData.payload.length - 1]?.id,
+        }));
       }
     } catch (error) {
       console.error("Error fetching work:", error);
     }
-  };
+  }, [state.currentPage, state.lastItemId, itemsPerPage]);
+
+  const filteredWork = useMemo(() => {
+    return state.work.filter(item => item.domain.id === selectedDomain);
+  }, [state.work, selectedDomain]);
 
   return (
     <div>
@@ -79,8 +89,8 @@ const SearchPage = ({selectedDomain}) => {
       <div className="cwm-search-page">
         <br />
         <div className="assets-cards-container">
-          {state.work && state.work.length > 0 ? (
-            state.work.map((item) => (
+          {filteredWork.length > 0 ? (
+            filteredWork.map((item) => (
               <div key={item.id} onClick={() => handleCardClick(item.id)}>
                 <Link to={`/cwm/${item.id}`} style={{ textDecoration: 'none', display: 'block', width: '100%' }}>
                   <WorkCard item={item} />
@@ -100,7 +110,7 @@ const SearchPage = ({selectedDomain}) => {
   );
 };
 
-const WorkCard = ({ item }) => {
+const WorkCard = React.memo(({ item }) => {
   const createdDate = new Date(item.createdDate);
   const currentTime = new Date();
   const timeDifference = currentTime - createdDate;
@@ -129,7 +139,7 @@ const WorkCard = ({ item }) => {
       </div>
     </div>
   );
-};
+});
 
 const getTagColor = (title) => {
   if (title && title.startsWith('So')) return 'blue';

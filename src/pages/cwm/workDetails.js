@@ -332,7 +332,7 @@ const WorkDetails = () => {
           </div>
           <br></br>
 
-          <hr className="line" />
+          {/* <hr className="line" />
           <p id="attachments">Emails Sent</p>
           <p>Users:</p>
 
@@ -362,7 +362,7 @@ const WorkDetails = () => {
             </div>
           )}
 
-          <br></br>
+          <br></br> */}
           <hr className="line" />
 
           {showJobDetails && (

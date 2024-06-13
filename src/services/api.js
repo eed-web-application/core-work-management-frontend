@@ -76,29 +76,11 @@ export const fetchEntriesByOriginId = async (originId, token) => {
 };
 
 export const createActivityLog = async (workId, activityId, formData, token) => {
-  try {
-    return await fetchData(
-      `http://localhost:3000/api/cwm/v1/log/work/${workId}/activity/${activityId}`,
-      'POST',
-      formData,
-      token
-    );
-  } catch (error) {
-    throw new Error("Failed to create activity log entry: " + error.message);
-  }
+  return await fetchData(`/api/cwm/v1/log/work/${workId}/activity/${activityId}`,'POST', formData, token);
 };
 
 export const createWorkLog = async (workId, formData, token) => {
-  try {
-    return await fetchData(
-      `api/cwm/v1/log/work/${workId}`,
-      'POST',
-      formData,
-      token
-    );
-  } catch (error) {
-    throw new Error("Failed to create log entry: " + error.message);
-  }
+  return await fetchData(`/api/cwm/v1/log/work/${workId}`, 'POST', formData, token );
 };
 
 export const fetchLovValuesForField = async (domainType, subtypeId, fieldName, token) => {
