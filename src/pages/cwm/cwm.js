@@ -39,8 +39,8 @@ function Cwm() {
         <div className="tab-extension">
           <div className="tab-bar">
             <NavLink to="/cwm/search">Search</NavLink>
-            <NavLink to="/cwm/reports">Reports</NavLink>
-            <NavLink to="/cwm/calendar">Calendar</NavLink>
+            {/* <NavLink to="/cwm/reports">Reports</NavLink>
+            <NavLink to="/cwm/calendar">Calendar</NavLink> */}
             {/* Select Domain */}
             <div className="select-domain-container">
               <label htmlFor="select-domain">Domain: </label>

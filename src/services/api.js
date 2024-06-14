@@ -115,8 +115,13 @@ export const updateWork = async (workId, workData, token) => {
   return fetchData(`/api/cwm/v1/work/${workId}`, 'PUT', workData, token);
 };
 
-export const fetchWork = async (token) => {
-  return fetchData(`/api/cwm/v1/work?limit=100`, 'GET', token);
+export const fetchWork = async (token, limit = 100, anchorId = null, search = "") => {
+  const url = new URL("/api/cwm/v1/work", window.location.origin);
+  url.searchParams.append('limit', limit);
+  if (anchorId) url.searchParams.append('anchorId', anchorId);
+  if (search) url.searchParams.append('search', search);
+
+  return fetchData(url.toString(), 'GET', null, token);
 };
 
 export const fetchAWork = async (workId, token) => fetchData(`/api/cwm/v1/work/${workId}`, 'GET', token);

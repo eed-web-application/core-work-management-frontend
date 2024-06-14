@@ -13,20 +13,62 @@ const SearchPage = ({ selectedDomain }) => {
     currentPage: 1,
     lastItemId: null,
     work: [],
+    totalResults: 0,
+    hasMore: true,
   });
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
   const history = useHistory();
 
   useEffect(() => {
     fetchData();
   }, [selectedDomain]);
 
+  const handleLoadMore = useCallback(async () => {
+    try {
+      const nextPageData = await fetchWork(null, itemsPerPage, state.lastItemId, state.searchInput);
+      if (nextPageData.payload.length > 0) {
+        setState(prevState => ({
+          ...prevState,
+          work: [...prevState.work, ...nextPageData.payload],
+          currentPage: prevState.currentPage + 1,
+          lastItemId: nextPageData.payload[nextPageData.payload.length - 1]?.id,
+        }));
+      } else {
+        setState(prevState => ({
+          ...prevState,
+          hasMore: false,
+        }));
+      }
+    } catch (error) {
+      console.error("Error fetching work:", error);
+    }
+  }, [state.currentPage, state.lastItemId, itemsPerPage, state.searchInput]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
+      if (scrollTop + clientHeight >= scrollHeight) {
+        handleLoadMore();
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [handleLoadMore]);
+
   const fetchData = async () => {
     try {
-      const response = await fetchWork();
+      const response = await fetchWork(null, itemsPerPage, null, state.searchInput);
       if (response?.payload) {
         const filteredWork = response.payload.filter(item => item.domain.id === selectedDomain);
-        setState(prevState => ({ ...prevState, work: filteredWork }));
+        setState(prevState => ({
+          ...prevState,
+          work: filteredWork,
+          totalResults: response.totalCount, // Assuming API returns total count
+          currentPage: 1,
+          lastItemId: filteredWork.length > 0 ? filteredWork[filteredWork.length - 1].id : null,
+          hasMore: filteredWork.length === itemsPerPage,
+        }));
       } else {
         console.error("Error fetching work:", response.errorCode);
       }
@@ -41,38 +83,16 @@ const SearchPage = ({ selectedDomain }) => {
   }, [history]);
 
   const handleSearch = useCallback(async () => {
-    try {
-      setState(prevState => ({ ...prevState, currentPage: 1, lastItemId: null }));
-      const searchData = await fetchWork(5, 1, null, state.searchInput);
-      setState(prevState => ({
-        ...prevState,
-        work: searchData.payload,
-        lastItemId: searchData.payload?.[searchData.payload.length - 1]?.id || null,
-      }));
-    } catch (error) {
-      console.error("Error fetching work:", error);
-    }
+    setState(prevState => ({ ...prevState, currentPage: 1, lastItemId: null, hasMore: true }));
+    await fetchData();
   }, [state.searchInput]);
-
-  const handleLoadMore = useCallback(async () => {
-    try {
-      const nextPageData = await fetchWork(itemsPerPage, state.currentPage + 1, state.lastItemId);
-      if (nextPageData.payload.length > 0) {
-        setState(prevState => ({
-          ...prevState,
-          work: [...prevState.work, ...nextPageData.payload],
-          currentPage: prevState.currentPage + 1,
-          lastItemId: nextPageData.payload[nextPageData.payload.length - 1]?.id,
-        }));
-      }
-    } catch (error) {
-      console.error("Error fetching work:", error);
-    }
-  }, [state.currentPage, state.lastItemId, itemsPerPage]);
 
   const filteredWork = useMemo(() => {
     return state.work.filter(item => item.domain.id === selectedDomain);
   }, [state.work, selectedDomain]);
+
+  // Logging for debugging
+  console.log("State:", state);
 
   return (
     <div>
@@ -88,23 +108,28 @@ const SearchPage = ({ selectedDomain }) => {
       />
       <div className="cwm-search-page">
         <br />
+        {/* <div className="total-results">
+          Total Results: {state.totalResults}
+        </div> */}
         <div className="assets-cards-container">
           {filteredWork.length > 0 ? (
-            filteredWork.map((item) => (
+            filteredWork.map((item, index) => (
               <div key={item.id} onClick={() => handleCardClick(item.id)}>
                 <Link to={`/cwm/${item.id}`} style={{ textDecoration: 'none', display: 'block', width: '100%' }}>
                   <WorkCard item={item} />
                 </Link>
+                {index === filteredWork.length - 1 && !state.hasMore && (
+                  <div style={{ textAlign: 'center', marginTop: '10px', color: '#999' }}>
+                    No more items to load.
+                  </div>
+                )}
               </div>
             ))
           ) : (
             <div>No CATERs available</div>
           )}
-          <div className="load-more-button">
-            <button onClick={handleLoadMore}>Load More</button>
-          </div>
-          <br /><br />
         </div>
+        <br /><br />
       </div>
     </div>
   );
