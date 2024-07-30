@@ -9,6 +9,7 @@ const SearchPage = ({ selectedDomain }) => {
   const [state, setState] = useState({
     showLocationForm: false,
     showWorkForm: false,
+    showTaskForm: false,
     searchInput: "",
     currentPage: 1,
     lastItemId: null,
@@ -101,6 +102,8 @@ const SearchPage = ({ selectedDomain }) => {
         setShowLocationForm={(value) => setState(prevState => ({ ...prevState, showLocationForm: value }))}
         showWorkForm={state.showWorkForm}
         setShowWorkForm={(value) => setState(prevState => ({ ...prevState, showWorkForm: value }))}
+        showTaskForm={state.showTaskForm}
+        setShowTaskForm={(value) => setState(prevState => ({ ...prevState, showTaskForm: value }))}
         searchInput={state.searchInput}
         setSearchInput={(value) => setState(prevState => ({ ...prevState, searchInput: value }))}
         handleSearch={handleSearch}

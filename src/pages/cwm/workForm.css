@@ -1,8 +1,9 @@
 .modal {
     position: fixed;
-    top: 50%;
+    top: 60%;
     left: 50%;
-    background-color: white;
+    transform: translate(-50%, -50%);
+    /* background-color: white; */
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
@@ -10,6 +11,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    font-family: Arial, sans-serif;
 }
 
 .modal.hide {
@@ -26,7 +28,6 @@
 }
 
 .workform-title {
-    margin-bottom: 20px;
     font-size: 24px;
     color: black;
     text-align: left;
@@ -36,39 +37,40 @@
 
 .form-subtitle {
     color: grey;
-    margin-top: 0;
     font-size: 14px;
 }
 
 .workform-textarea {
     width: 100%;
-    min-height: 4em; /* Minimum height for 4 lines */
-    resize: none; /* Disable resizing */
-    border: 1px solid #ccc; /* Add border */
-    padding: 8px; /* Add padding */
-    font-size: 16px; /* Set font size */
-    box-sizing: border-box; /* Ensure padding and border are included in the width */
-    word-wrap: break-word; /* Allow long words to be broken and wrap onto the next line */
-    overflow-y: auto;
-    overflow-x: hidden;
+    /* min-height: 100px; */
+    resize: vertical;
+    border: 1px solid #ccc;
+    padding: 4px;
+    font-size: 12px;
+    box-sizing: border-box;
 }
 
 .form-group {
     margin-bottom: 20px;
+    width: 100%;
 }
 
 .form-group label {
     display: block;
-    font-size: 16px;
+    font-size: 12px;
+    font-weight: light;
+    padding: 4px;
+    margin-right: 10px;
+    text-align: left;
 }
 
 .form-group input,
 .form-group select {
     width: 100%;
-    padding: 10px;
+    padding: 4px;
     border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
+    border-radius: 4px;
+    font-size: 12px;
 }
 
 .form-button {
@@ -76,9 +78,10 @@
     background-color: #007bff;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 4px;
     font-size: 16px;
     cursor: pointer;
+    align-self: flex-start;
 }
 
 .form-button:hover {
@@ -88,12 +91,14 @@
 .form-checkbox-label {
     display: flex;
     align-items: center;
+    font-size: 12px;
+    color: #333;
 }
 
 .form-checkbox-label input[type="checkbox"] {
     margin-right: 10px;
-    width: 20px; /* Adjust the width as needed */
-    height: 20px; /* Adjust the height as needed */
+    width: 20px;
+    height: 20px;
     vertical-align: middle;
 }
 
@@ -101,8 +106,9 @@
     outline: none;
 }
 
-.form-checkbox-label span {
-    font-size: 14px;
-    color: #333;
-    white-space: nowrap;
+hr {
+    border: none;
+    border-top: 0.5px solid #aaaaaa;
+    width: 100%;
+    margin: 20px 0;
 }

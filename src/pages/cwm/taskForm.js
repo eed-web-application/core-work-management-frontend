@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { createWork, fetchWorkType, fetchLocations, fetchShopGroups, fetchLovValuesForField, fetchLovValues } from '../../services/api';
+import { createWork, fetchWorkType, fetchLocations, fetchShopGroups, fetchLovValuesForField } from '../../services/api';
 import { toast } from 'react-toastify'; // Import toast
 import 'react-toastify/dist/ReactToastify.css';
 import './workForm.css';
 
-function WorkForm({ showWorkForm, setShowWorkForm, selectedDomain }) {
+function TaskForm({ showTaskForm, setShowTaskForm, selectedDomain }) {
     // State to manage form input values
     const [workData, setWorkData] = useState({
         domainId: selectedDomain,
@@ -60,21 +60,8 @@ function WorkForm({ showWorkForm, setShowWorkForm, selectedDomain }) {
     useEffect(() => {
         const fetchSubSystemGroups = async () => {
             try {
-                const lovValuesResponse = await fetchLovValuesForField("Activity", "664ba5664481b1475780792e", "subsystem");
-                const lovValues = await fetchLovValues("Activity", "664ba5664481b1475780792e");
-                
+                const lovValuesResponse = await fetchLovValuesForField("Activity", "664ba5674481b14757807930", "subsystem");
                 setSubsystemGroups(lovValuesResponse.payload);
-
-                // Debugging logs
-                console.log("lovValuesResponse:", lovValuesResponse);
-                console.log("lovValues:", lovValues);
-
-                if (lovValues && lovValues.payload) {
-                    console.log(lovValues.payload);
-                } else {
-                    console.log("lovValues.payload is undefined or null");
-                }
-                console.log("logging");
             } catch (error) {
                 console.error('Error fetching subsystem groups:', error);
             }
@@ -92,8 +79,8 @@ function WorkForm({ showWorkForm, setShowWorkForm, selectedDomain }) {
             const workId = createdWork.payload;
             console.log(workId);
     
-            toast.success("Problem reported successfully!");
-            setShowWorkForm(false);
+            toast.success("Task created successfully!");
+            setShowTaskForm(false);
             window.location.reload();
         } catch (error) {
             console.error('Error creating work:', error);
@@ -118,14 +105,14 @@ function WorkForm({ showWorkForm, setShowWorkForm, selectedDomain }) {
     };
 
     return (
-        <div className={`modal ${showWorkForm ? "show" : "hide"}`}>
+        <div className={`modal ${showTaskForm ? "show" : "hide"}`}>
             <div className="form-content">
-                <span className="close" onClick={() => setShowWorkForm(false)}>
+                <span className="close" onClick={() => setShowTaskForm(false)}>
                     &times;
                 </span>
 
-                <h1 className="workform-title">New Problem Report</h1> {/* Title for the form */}
-                <p className="form-subtitle">Please provide the details of the problem</p>
+                <h1 className="workform-title">Create a New Task</h1> {/* Title for the form */}
+                <p className="form-subtitle">Please create a task</p>
                 <hr className="line" /><br></br>
 
                 <form onSubmit={handleSubmit} className="work-form">
@@ -244,4 +231,4 @@ function WorkForm({ showWorkForm, setShowWorkForm, selectedDomain }) {
     );
 }
 
-export default WorkForm;
+export default TaskForm;

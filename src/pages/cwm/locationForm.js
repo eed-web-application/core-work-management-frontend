@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createLocation, fetchUsers, fetchAllElements, fetchWorkDomain } from '../../services/api';
+import { toast } from 'react-toastify'; // Import toast
+import 'react-toastify/dist/ReactToastify.css';
 import './locationForm.css';
 import SearchableDropdown from '../../components/SearchableDropdown';
 
@@ -73,11 +75,12 @@ function LocationForm({ showLocationForm, setShowLocationForm, selectedDomain })
     event.preventDefault();
     try {
       await createLocation(formData);
-      alert("Location created successfully!");
+      toast.success("Location created successfully!");
       setShowLocationForm(false);  // Close the form
       window.location.reload();    // Reload the page
     } catch (error) {
       console.error('Error creating location:', error);
+      toast.error("Error creating location");
     }
   };
 

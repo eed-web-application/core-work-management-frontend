@@ -38,7 +38,7 @@ ul {
   width: calc(100% - 250px);
   display: flex;
   flex-direction: column;
-  background: rgba(245, 244, 244, 0.547); 
+  /* background: rgba(245, 244, 244, 0.547);  */
   transition: margin-left 0.3s; 
 }
 

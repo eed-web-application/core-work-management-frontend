@@ -2,9 +2,10 @@ import React from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import WorkForm from './workForm.js';
+import TaskForm from './taskForm.js';
 import "./cwm.css";
 
-const SubHeader = ({ showLocationForm, setShowLocationForm, showWorkForm, setShowWorkForm, searchInput, setSearchInput, handleSearch, selectedDomain }) => {
+const SubHeader = ({ showWorkForm, setShowWorkForm, showTaskForm, setShowTaskForm, searchInput, setSearchInput, handleSearch, selectedDomain }) => {
     const handleItemClick = (formType) => {
 
     };
@@ -28,7 +29,28 @@ const SubHeader = ({ showLocationForm, setShowLocationForm, showWorkForm, setSho
                 <button onClick={handleSearch}><FontAwesomeIcon icon={faSearch} /></button>
             </div>
 
-            {/* New Location Button */}
+            {/* New Create a Task Button */}
+            <div className="new-task-button">
+                <button
+                    onClick={() => {
+                        handleItemClick("Work");
+                        setShowTaskForm(true);
+                    }}
+                    className="taskbtn"
+                >
+                    <span>Create Activity</span>
+                    
+                </button>
+                {showTaskForm && (
+                    <TaskForm
+                        showTaskForm={showTaskForm}
+                        setShowTaskForm={setShowTaskForm}
+                        selectedDomain={selectedDomain}
+                    />
+                )}
+            </div>
+
+            {/* New Report a Problem Button */}
             <div className="new-problem-button">
                 <button
                     onClick={() => {
@@ -37,7 +59,7 @@ const SubHeader = ({ showLocationForm, setShowLocationForm, showWorkForm, setSho
                     }}
                     className="problembtn"
                 >
-                    <span>+ NEW</span>
+                    <span>Report Problem</span>
                 </button>
                 {showWorkForm && (
                     <WorkForm

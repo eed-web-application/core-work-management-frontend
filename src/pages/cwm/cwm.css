@@ -47,8 +47,23 @@
   margin-right: 10px;
 }
 
+.new-task-button {
+  padding: 10px 0px 10px 10px; 
+  white-space: nowrap;
+}
+
 .problembtn {
-  background-color: #007bff;
+  background-color: maroon;
+  color: white;
+  padding: 5px 10px 5px 10px;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.taskbtn {
+  background-color: green;
   color: white;
   padding: 5px 10px 5px 10px;
   font-size: 14px;

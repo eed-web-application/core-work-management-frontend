@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { fetchActivityType, fetchActivitySubtype, fetchAActivity, updateActivity, fetchLovValuesForField } from "../../services/api";
 import { useParams } from "react-router-dom";
+import { toast } from 'react-toastify'; // Import toast
+import 'react-toastify/dist/ReactToastify.css';
 import "./activityForm.css";
 
 function EditActivityForm({ showEditActivityForm, setShowEditActivityForm }) {
@@ -102,12 +104,12 @@ function EditActivityForm({ showEditActivityForm, setShowEditActivityForm }) {
       };
       await updateActivity(workId, activityId, updatedActivityData);
       console.log(updatedActivityData);
-      alert("Activity updated successfully!");
+      toast.success("Activity updated successfully!");
       setShowEditActivityForm(false); // Close the form
       window.location.reload(); // Reload the page
     } catch (error) {
       console.error("Error updating activity:", error);
-      alert("Error updating activity. Please try again.");
+      toast.error("Error updating activity. Please try again.");
     }
   };
 

@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense, lazy } from "react";
 import { BrowserRouter as Router, Switch, Route, Link, useLocation } from "react-router-dom";
 import { fetchWorkDomain } from "../../services/api.js";
-import SearchPage from "./searchPage.js";
-import ReportsPage from "./reportsPage.js";
-import CalendarPage from "./calendarPage.js";
 import "./cwm.css";
+
+// Lazy load components
+const SearchPage = lazy(() => import("./searchPage.js"));
+const ReportsPage = lazy(() => import("./reportsPage.js"));
+const CalendarPage = lazy(() => import("./calendarPage.js"));
 
 function Cwm() {
   const location = useLocation(); // Hook from react-router-dom to get the current location
@@ -52,20 +54,22 @@ function Cwm() {
             </div>
           </div>
         </div>
-        <Switch>
-          <Route path="/cwm/reports">
-            <ReportsPage />
-          </Route>
-          <Route path="/cwm/calendar">
-            <CalendarPage />
-          </Route>
-          <Route path="/cwm/search">
-            <SearchPage selectedDomain={selectedDomain}/>
-          </Route>
-          <Route path="/cwm"> {/* Render SearchPage when root path is matched */}
-            <SearchPage selectedDomain={selectedDomain}/>
-          </Route>
-        </Switch>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Switch>
+            <Route path="/cwm/reports">
+              <ReportsPage />
+            </Route>
+            <Route path="/cwm/calendar">
+              <CalendarPage />
+            </Route>
+            <Route path="/cwm/search">
+              <SearchPage selectedDomain={selectedDomain} />
+            </Route>
+            <Route path="/cwm"> {/* Render SearchPage when root path is matched */}
+              <SearchPage selectedDomain={selectedDomain} />
+            </Route>
+          </Switch>
+        </Suspense>
       </div>
     </Router>
   );

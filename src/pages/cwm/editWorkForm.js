@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { fetchAWork, fetchWorkType, fetchLocations, fetchShopGroups, fetchUsers, updateWork } from '../../services/api';
+import { toast } from 'react-toastify'; // Import toast
+import 'react-toastify/dist/ReactToastify.css';
 import './workForm.css';
 
 function EditWorkForm({ showEditWorkForm, setshowEditWorkForm }) {
@@ -82,12 +84,12 @@ function EditWorkForm({ showEditWorkForm, setshowEditWorkForm }) {
             };
 
             await updateWork(workId, updatedWorkData);
-            alert("Work updated successfully!");
+            toast.success("Work updated successfully!");
             setshowEditWorkForm(false);
             window.location.reload();
         } catch (error) {
             console.error('Error updating work:', error);
-            alert("Error updating work. Please try again.");
+            toast.error("Error updating work. Please try again.");
         }
     };
 
