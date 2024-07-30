@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Layout from './layout/layout';
 import Home from './pages/dashboard/home'; 
 import Cwm from './pages/cwm/cwm';
+import Pmm from './pages/pmm/pmm';
 import ActivityDetails from './pages/cwm/activityDetails';
 import Settings from './pages/settings/settings';
 import Admin from './pages/admin/cwmAdmin';
@@ -18,6 +19,7 @@ function AppRouter() {
         <Switch>
           <Route exact path="/" component={Home} />
           <Route path="/cwm/admin" component={Admin} />
+          <Route path="/cwm/pmm" component={Pmm} />
           <Route path="/cwm/:workId/:activityId" component={WorkDetails} />
           <Route path="/cwm/:workId" component={WorkDetails} />
           <Route path="/home" component={Home} />

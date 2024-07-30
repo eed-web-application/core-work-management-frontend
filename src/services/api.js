@@ -92,7 +92,7 @@ export const fetchLovValues = async (domainType, subtypeId, token) => {
 };
 
 export const fetchAllActivity = async (token) => {
-  return fetchData(`/api/cwm/v1/activity?limit=100`, 'GET', null, token);
+  return fetchData(`/api/cwm/v1/work/activity?limit=100`, 'GET', null, token);
 };
 
 export const fetchAActivity = async (workId, activityId, token) => {
@@ -101,6 +101,10 @@ export const fetchAActivity = async (workId, activityId, token) => {
 
 export const fetchActivity = async (workId, token) => {
   return fetchData(`/api/cwm/v1/work/${workId}/activity`, 'GET', null, token);
+};
+
+export const fetchActivities = async (token) => {
+  return fetchData(`/api/cwm/v1/work/activity`, 'GET', null, token);
 };
 
 export const createActivity = async (workId, activityData, token) => {
@@ -126,8 +130,12 @@ export const fetchWork = async (token, limit = 100, anchorId = null, search = ""
 
 export const fetchAWork = async (workId, token) => fetchData(`/api/cwm/v1/work/${workId}`, 'GET', token);
 
-export const createWork = async (workData, token) => {
-  return await fetchData("/api/cwm/v1/work", 'POST', workData, token);
+export const createWork = async (workData, logIf = false, token) => {
+  const workDataWithLog = {
+    ...workData,
+    logIf,
+  };
+  return await fetchData("/api/cwm/v1/work", 'POST', workDataWithLog, token);
 };
 
 export const fetchWorkType = async (token) => {
@@ -153,6 +161,10 @@ export const fetchUsers = async (search, token) => {
 
 export const fetchShopGroups = async (token) => {
   return await fetchData('/api/cwm/v1/shop-group', 'GET', null, token);
+};
+
+export const fetchShopGroup = async (shopGroupId, token) => {
+  return await fetchData(`/api/cwm/v1/shop-group/${shopGroupId}`, 'GET', null, token);
 };
 
 export const createShopGroup = async (shopGroupData, token) => {
@@ -186,6 +198,22 @@ export const fetchAllElements = async (limit = 10, page = 1, anchorId = null, se
     console.error('Error fetching inventory elements:', error.message);
     throw error; // Re-throw the original error for higher-level handling
   }
+};
+
+export const createBucket = async (bucketData, token) => {
+  const response = await fetchData('/api/cwm/v1/maintenance/bucket', 'POST', bucketData, token);
+};
+
+export const fetchBucketTypes = async (token) => {
+  return await fetchData('/api/cwm/v1/lov/Bucket/bucket/type', 'GET', null, token);
+};
+
+export const fetchBucketStatus = async (token) => {
+  return await fetchData('/api/cwm/v1/lov/Bucket/bucket/status', 'GET', null, token);
+};
+
+export const fetchAllBuckets = async (token) => {
+  return await fetchData('/api/cwm/v1/maintenance/bucket?limit=100', 'GET', null, token);
 };
 
 export default {};

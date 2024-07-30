@@ -3,6 +3,8 @@ import { useParams } from 'react-router-dom';
 import DatePicker from 'react-datepicker'; // Importing React Datepicker
 import 'react-datepicker/dist/react-datepicker.css';
 import { createActivity, fetchActivityType, fetchAWork, fetchLovValuesForField, createActivityLog } from '../../services/api';
+import { toast } from 'react-toastify'; // Import toast
+import 'react-toastify/dist/ReactToastify.css';
 import './activityForm.css';
 
 function ActivityForm({ showActivityForm, setShowActivityForm }) {
@@ -176,12 +178,12 @@ function ActivityForm({ showActivityForm, setShowActivityForm }) {
                 await createActivityLog(workId, activityId, formData);
             }
 
-            alert("Activity created successfully!");
+            toast.success("Activity created successfully!");
             setShowActivityForm(false);
             window.location.reload();
         } catch (error) {
             console.error('Error creating activity:', error, error.message);
-            alert(`Error creating activity: ${error.message || "Please try again."}`);
+            toast.error(`Error creating activity: ${error.message || "Please try again."}`);
         }
     };
 
@@ -273,7 +275,7 @@ function ActivityForm({ showActivityForm, setShowActivityForm }) {
                     {renderNewFields()}
                     {renderCustomFieldsBySection()}
 
-                    <div className="form-group">
+                    {/* <div className="form-group">
                         <label htmlFor="createActivityLog" className="form-checkbox-label">
                             <input
                                 type="checkbox"
@@ -284,7 +286,7 @@ function ActivityForm({ showActivityForm, setShowActivityForm }) {
                             />
                             <span>Select to create Log Entry for this Task</span>
                         </label>
-                    </div>
+                    </div> */}
 
                     <button type="submit" className="activityform-button">Create Task</button>
                 </form>

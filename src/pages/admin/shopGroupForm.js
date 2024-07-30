@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { createShopGroup, fetchUsers } from '../../services/api';
 import CustomMultiSelect from '../../components/CustomMultiSelect';
+import { toast } from 'react-toastify'; // Import toast
+import 'react-toastify/dist/ReactToastify.css';
 
 function ShopGroupForm({ showShopGroupForm, setShowShopGroupForm, selectedDomain }) {
   const [shopGroupData, setShopGroupData] = useState({ domainId: selectedDomain, name: '', description: '', users: [] });
@@ -73,12 +75,12 @@ function ShopGroupForm({ showShopGroupForm, setShowShopGroupForm, selectedDomain
       }));
       console.log(shopGroupData);
       await createShopGroup({ ...shopGroupData, users: formattedUsers });
-      alert("Shop group created successfully!");
+      toast.success("Shop group created successfully!");
       setShowShopGroupForm(false); // Close the form
       window.location.reload(); // Reload the page
     } catch (error) {
       console.error('Error creating shop group:', error);
-      alert("Error creating shop group. Please try again.");
+      toast.error("Error creating shop group. Please try again.");
     }
   };
 

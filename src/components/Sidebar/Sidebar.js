@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHome, faNewspaper, faCog, faBox, faTicket, faLock, faClock } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faNewspaper, faCog, faBox, faTicket, faLock, faClock, faScrewdriverWrench} from "@fortawesome/free-solid-svg-icons";
 import "./Sidebar.css";
 
 function Sidebar() {
@@ -12,7 +12,9 @@ function Sidebar() {
   useEffect(() => {
     const path = location.pathname;
 
-    if (path.startsWith("/cwm/admin")) {
+    if (path.startsWith("/cwm/pmm")) {
+      setActiveButton("/cwm/pmm");
+    } else if (path.startsWith("/cwm/admin")) {
       setActiveButton("/cwm/admin");
     } else if (path.startsWith("/cwm")) {
       setActiveButton("/cwm");
@@ -27,17 +29,20 @@ function Sidebar() {
 
   useEffect(() => {
     const currentURL = window.location.href;
-    if (currentURL.includes("/cwm")) {
+    if (currentURL.includes("/cwm/pmm")) {
+      setActiveButton("/cwm/pmm");
+    } else if (currentURL.includes("/cwm")) {
       setActiveButton("/cwm");
     }
   }, []);
 
   const buttons = [
     { path: "/home", icon: faHome, label: "Home" },
-    { path: "/cis", icon: faBox, label: "Inventory" },
     { path: "/cwm", icon: faTicket, label: "Issues" },
-    { path: "/elog", icon: faNewspaper, label: "eLogs" },
+    { path: "/cwm/pmm", icon: faScrewdriverWrench, label: "PMM" },
     { path: "/815", icon: faClock, label: "8:15" },
+    { path: "/cis", icon: faBox, label: "Inventory" },
+    { path: "/elog", icon: faNewspaper, label: "eLogs" },
     { path: "/cwm/admin", icon: faLock, label: "Admin" },
     { path: "/settings", icon: faCog, label: "Settings" },
   ];
@@ -64,34 +69,34 @@ function Sidebar() {
               <span className="label">{button.label}</span>
             </div>
           </button>
-        ) : button.path === "/cwm" ? (
-          <button
-            onClick={() => {
-              window.location.href = "https://accel-webapp-dev.slac.stanford.edu/cwm";
-              handleClick("/cwm");
-            }}
-            className={`icon-button ${activeButton === button.path ? "active-button" : ""}`}
-          >
-            <div className="button-label">
-              <FontAwesomeIcon icon={button.icon} className="icon" title={button.label} />
-              <div className="small-label">{button.label}</div>
-              <span className="label">{button.label}</span>
-            </div>
-          </button>
-        ) : button.path === "/cis" ? (
-          <button
-            onClick={() => {
-              window.location.href = "https://accel-webapp-dev.slac.stanford.edu/cis";
-              handleClick("/cis");
-            }}
-            className={`icon-button ${activeButton === button.path ? "active-button" : ""}`}
-          >
-            <div className="button-label">
-              <FontAwesomeIcon icon={button.icon} className="icon" title={button.label} />
-              <div className="small-label">{button.label}</div>
-              <span className="label">{button.label}</span>
-            </div>
-          </button>
+        // ) : button.path === "/cwm" ? (
+        //   <button
+        //     onClick={() => {
+        //       window.location.href = "https://accel-webapp-dev.slac.stanford.edu/cwm";
+        //       handleClick("/cwm");
+        //     }}
+        //     className={`icon-button ${activeButton === button.path ? "active-button" : ""}`}
+        //   >
+        //     <div className="button-label">
+        //       <FontAwesomeIcon icon={button.icon} className="icon" title={button.label} />
+        //       <div className="small-label">{button.label}</div>
+        //       <span className="label">{button.label}</span>
+        //     </div>
+        //   </button>
+        // ) : button.path === "/cis" ? (
+        //   <button
+        //     onClick={() => {
+        //       window.location.href = "https://accel-webapp-dev.slac.stanford.edu/cis";
+        //       handleClick("/cis");
+        //     }}
+        //     className={`icon-button ${activeButton === button.path ? "active-button" : ""}`}
+        //   >
+        //     <div className="button-label">
+        //       <FontAwesomeIcon icon={button.icon} className="icon" title={button.label} />
+        //       <div className="small-label">{button.label}</div>
+        //       <span className="label">{button.label}</span>
+        //     </div>
+        //   </button>
         ) : (
           <Link to={button.path}>
             <button
