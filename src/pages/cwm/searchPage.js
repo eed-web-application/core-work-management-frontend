@@ -93,7 +93,7 @@ const SearchPage = ({ selectedDomain }) => {
   }, [state.work, selectedDomain]);
 
   // Logging for debugging
-  console.log("State:", state);
+  // console.log("State:", state);
 
   return (
     <div>

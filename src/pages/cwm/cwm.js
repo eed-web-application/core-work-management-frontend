@@ -7,6 +7,7 @@ import "./cwm.css";
 const SearchPage = lazy(() => import("./searchPage.js"));
 const ReportsPage = lazy(() => import("./reportsPage.js"));
 const CalendarPage = lazy(() => import("./calendarPage.js"));
+const AdminPage = lazy(() => import("./adminPage.js"));
 
 function Cwm() {
   const location = useLocation(); // Hook from react-router-dom to get the current location
@@ -41,8 +42,8 @@ function Cwm() {
         <div className="tab-extension">
           <div className="tab-bar">
             <NavLink to="/cwm/search">Search</NavLink>
-            {/* <NavLink to="/cwm/reports">Reports</NavLink>
-            <NavLink to="/cwm/calendar">Calendar</NavLink> */}
+            <NavLink to="/cwm/admin">Admin</NavLink>
+            {/* <NavLink to="/cwm/calendar">Calendar</NavLink> */}
             {/* Select Domain */}
             <div className="select-domain-container">
               <label htmlFor="select-domain">Domain: </label>
@@ -56,8 +57,8 @@ function Cwm() {
         </div>
         <Suspense fallback={<div>Loading...</div>}>
           <Switch>
-            <Route path="/cwm/reports">
-              <ReportsPage />
+            <Route path="/cwm/admin">
+              <AdminPage />
             </Route>
             <Route path="/cwm/calendar">
               <CalendarPage />

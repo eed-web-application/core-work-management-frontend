@@ -1,0 +1,244 @@
+/* adminPage.css */
+
+.admin-dashboard {
+    position: relative;
+    top: 40px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  
+  .admin-nav {
+    position: sticky;
+    width: 100%;
+    background-color: white;
+    color: #333;
+    padding: 1rem 0rem 1rem 0rem;
+    text-align: center;
+    top: 100px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .admin-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .admin-nav li {
+    margin: 0 1rem;
+  }
+  
+  .admin-nav a {
+    color: black;
+    text-decoration: none;
+  }
+  
+  .admin-nav .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .admin-nav .nav-item span {
+    margin-top: 0.5rem;
+  }
+  
+  .admin-nav a.active .nav-item {
+    font-weight: bold;
+  }
+  
+  .admin-content {
+    top: 165px;
+    position: fixed;
+    flex: 1;
+    padding: 1rem;
+    width: 100%;
+  }
+  
+  .side-sheet-container {
+    position: relative;
+  }
+  
+  .side-sheet {
+    position: fixed;
+    top: 168px;
+    width: 50%;
+    height: calc(100% - 100px);
+    background-color: white;
+    border: 1px solid #ddd;
+    transition: transform 0.3s ease;
+    transform: translateX(100%); /* Initially hidden */
+    z-index: 101; /* Above overlay */
+  }
+  
+  .side-sheet.open {
+    transform: translateX(0); /* Slide in from the right */
+  }
+  
+  .sheet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1rem 0rem 1rem;
+  }
+  
+  .close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem; /* Adjust size as needed */
+    color: #333; /* Color for the "X" */
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .close-btn:hover {
+    color: red; /* Change color on hover */
+  }
+  
+  .side-sheet-content {
+    padding: 1rem 1rem 1rem 1rem;
+  }
+  
+  .resize-handle {
+    position: absolute;
+    width: 10px;
+    height: 100%;
+    right: 0;
+    top: 0;
+    cursor: ew-resize;
+  }
+  
+  .user-list-container {
+    position: relative;
+    transition: width 0.3s ease;
+    width: 93%;
+  }
+  
+  .user-list-container.shifted {
+    position: relative;
+    width: 48%;
+  }
+  
+  .user-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .user-item {
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  .user-item:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .user-search {
+    padding: 8px;
+    margin-bottom: 10px;
+    margin-right: 10px;
+    width: 85%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .add-user-button {
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .add-user-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .tab-bar {
+    position: fixed;
+    top: 60px;
+    left: 60px;
+    width: calc(100% - 60px);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: white;
+    z-index: 98;
+  }
+  
+  .tab-extension {
+    position: fixed;
+    background-color: white;
+    width: 100%;
+    padding-top: 39px;
+    border-bottom: 1px solid #ccc;
+    z-index: 98;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .modal-input {
+    padding: 8px;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 20px;
+  }
+  
+  .modal-buttons {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .save-button, .cancel-button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .save-button {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .cancel-button {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  .save-button:hover {
+    background-color: #218838;
+  }
+  
+  .cancel-button:hover {
+    background-color: #c82333;
+  }

@@ -155,7 +155,6 @@ export const fetchProfile = async (token) => {
 };
 
 export const fetchUsers = async (search, token) => {
-  console.log(search);
   return await fetchData(`/api/cwm/v1/auth/users${search ? `?search=${search}` : ''}`, 'GET', null, token);
 };
 
@@ -214,6 +213,41 @@ export const fetchBucketStatus = async (token) => {
 
 export const fetchAllBuckets = async (token) => {
   return await fetchData('/api/cwm/v1/maintenance/bucket?limit=100', 'GET', null, token);
+};
+
+// API call to find a local group using an id
+export const fetchLocalGroupById = async (localGroupId, token) => {
+  return await fetchData(`/api/cwm/v2/auth/local/group/${localGroupId}`, 'GET', null, token);
+};
+
+// API call to update a local group using an id
+export const updateLocalGroupById = async (localGroupId, localGroupData, token) => {
+  return await fetchData(`/api/cwm/v2/auth/local/group/${localGroupId}`, 'PUT', localGroupData, token);
+};
+
+// API call to delete a local group using an id
+export const deleteLocalGroupById = async (localGroupId, token) => {
+  return await fetchData(`/api/cwm/v2/auth/local/group/${localGroupId}`, 'DELETE', null, token);
+};
+
+// API call to find local groups using a query parameter
+export const fetchLocalGroupsByQuery = async (token) => {
+  return await fetchData(`/api/cwm/v2/auth/local/group?limit=10`, 'GET', null, token);
+};
+
+// API call to create a new local group
+export const createLocalGroup = async (localGroupData, token) => {
+  return await fetchData(`/api/cwm/v2/auth/local/group`, 'POST', localGroupData, token);
+};
+
+// API call to get current user information
+export const authorizeCurrentUser = async (token) => {
+  return await fetchData(`/api/cwm/v2/auth/local/group/authorize`, 'POST', null, token);
+};
+
+// API call to get user information by user IDs
+export const authorizeUsersByIds = async (userIds, token) => {
+  return await fetchData(`/api/cwm/v2/auth/local/group/authorize/${userIds}`, 'GET', null, token);
 };
 
 export default {};
