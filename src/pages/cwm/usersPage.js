@@ -39,14 +39,6 @@ const UsersPage = ({ openSheet, isSheetOpen }) => {
     );
   };
 
-  const handleAddUser = () => {
-    openSheet(
-      <div>
-        <h3>Add New User</h3>
-      </div>
-    );
-  };
-
   return (
     <div className={`user-list-container ${isSheetOpen ? 'shifted' : ''}`}>
       <div className="user-list-header">
@@ -57,7 +49,6 @@ const UsersPage = ({ openSheet, isSheetOpen }) => {
           onChange={handleSearchChange}
           className="user-search"
         />
-        <button onClick={handleAddUser} className="add-user-button">Add User</button>
       </div>
       <ul className="user-list">
         {filteredUsers.length > 0 ? (

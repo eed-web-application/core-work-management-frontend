@@ -177,10 +177,9 @@ function ActivityForm({ showActivityForm, setShowActivityForm }) {
                 console.log("creating work log...")
                 await createActivityLog(workId, activityId, formData);
             }
-
-            toast.success("Activity created successfully!");
             setShowActivityForm(false);
             window.location.reload();
+            toast.success("Activity created successfully!");
         } catch (error) {
             console.error('Error creating activity:', error, error.message);
             toast.error(`Error creating activity: ${error.message || "Please try again."}`);

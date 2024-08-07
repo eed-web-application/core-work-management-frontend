@@ -72,6 +72,7 @@
     transition: transform 0.3s ease;
     transform: translateX(100%); /* Initially hidden */
     z-index: 101; /* Above overlay */
+    overflow-y: auto;
   }
   
   .side-sheet.open {
@@ -127,6 +128,7 @@
     list-style: none;
     padding: 0;
     margin: 0;
+    overflow-y: auto;
   }
   
   .user-item {

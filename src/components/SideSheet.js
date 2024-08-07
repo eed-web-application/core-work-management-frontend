@@ -1,5 +1,5 @@
 import React, { useCallback, useRef } from 'react';
-import './SideSheet.css'; // Ensure you have this CSS file
+import styles from '../pages/cwm/SideSheet.module.css'; // Import CSS module
 
 const SideSheet = ({ sheetBody, isOpen, onClose }) => {
   const sheetRef = useRef(null);
@@ -27,15 +27,15 @@ const SideSheet = ({ sheetBody, isOpen, onClose }) => {
   );
 
   return (
-    <div className={`side-sheet-container ${isOpen ? 'open' : ''}`}>
-      <div className="side-sheet" ref={sheetRef}>
-        <div className="sheet-header">
-          <button className="close-btn" onClick={onClose}>
-            &times; {/* HTML entity for "×" */}
+    <div className={`${styles.sideSheetContainer} ${isOpen ? styles.open : ''}`}>
+      <div className={styles.sideSheet} ref={sheetRef}>
+        <div className={styles.sheetHeader}>
+          <button className={styles.closeBtn} onClick={onClose}>
+            &times;
           </button>
         </div>
-        <div className="side-sheet-content">{sheetBody}</div>
-        <div className="resize-handle" onMouseDown={startDrag}></div>
+        <div className={styles.sideSheetContent}>{sheetBody}</div>
+        <div className={styles.resizeHandle} onMouseDown={startDrag}></div>
       </div>
     </div>
   );

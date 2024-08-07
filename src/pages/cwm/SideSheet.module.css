@@ -1,0 +1,55 @@
+/* SideSheet.module.css */
+.sideSheetContainer {
+    position: fixed;
+    top: 60px;
+    right: 0;
+    width: 50%;
+    height: 100%;
+    background: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    z-index: 99;
+    overflow-y: auto;
+  }
+  
+  .sideSheetContainer.open {
+    transform: translateX(0);
+  }
+  
+  .sideSheet {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .sheetHeader {
+    display: flex;
+    justify-content: flex-end;
+    padding: 1rem 1rem 0rem 1rem;
+  }
+  
+  .closeBtn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #333;
+    cursor: pointer;
+  }
+  
+  .sideSheetContent {
+    flex: 1;
+    padding: 0rem 1rem 1rem 1rem;
+    overflow-y: auto;
+  }
+  
+  .resizeHandle {
+    position: absolute;
+    width: 10px;
+    height: 100%;
+    right: 0;
+    top: 0;
+    cursor: ew-resize;
+  }
+  

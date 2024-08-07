@@ -1,389 +1,408 @@
 .work-content-container {
-    display: flex;
-    flex-direction: column;
-    /* align-items: center; */
-    padding: 20px;
-    font-family: Arial, sans-serif;
-  }
-  
-  .edit-button-container {
-    display: flex;
-    justify-content: flex-end;
-    width: 100%;
-    max-width: 800px; /* Adjust max-width as needed */
-  }
-  
-  .edit-button {
-    padding: 10px 20px;
-    border: none;
-    background-color: #007bff;
-    color: white;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .edit-button:hover {
-    background-color: #0056b3;
-  }
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
 
-  hr {
-    border: none;
-    border-top: 0.5px solid #aaaaaa;
-    width: 100%;
-  }  
-  
-  .details-container {
-    width: 100%;
-    /* max-width: 800px; Adjust max-width as needed */
-    margin-top: 20px;
-  }
-  
-  .detail-columns {
-    display: flex;
-    justify-content: space-between;
-    gap: 30px; /* Space between columns */
-    margin-bottom: 20px;
-  }
-  
-  .cater-column {
-    flex: 1;
-  }
-  
-  .full-width-row {
-    width: 100%;
-    /* max-width: 800px;  */
-    margin-top: 20px;
-  }
+.edit-button-container {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  max-width: 800px;
+  /* Adjust max-width as needed */
+}
 
-  .text-field {
-    display: inline-block;
-    padding: 2px 5px 6px 7px; /* Adjust padding to match input field if necessary */
-    font-weight: bold;
-    font-size: 12px;
-    color: #333; /* Adjust text color if necessary */
-  }
-  
-  
-  .detail-row {
-    display: flex;
-    width: 100%;
-    align-items: center;
-    margin-bottom: 5px;
-  }
-  
-  .work-label {
-    font-weight: light;
-    padding: 4px;
-    margin-right: 10px;
-    min-width: 100px;
-    font-size: 12px;
-    text-align: right;
-  }
-  
-  .job-label {
-    font-weight: light;
-    padding: 4px;
-    margin-right: 10px;
-    min-width: 100px;
-    font-size: 12px;
-    text-align: left;
-  }
 
-  .input-field,
-  .textarea-field {
-    flex: 1;
-    padding: 4px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 12px;
-    font-family: inherit;
-  }
-  
-  .textarea-field {
-    height: 100px;
-    resize: vertical;
-  }
-  
-  .activities-container {
-    width: 100%;
-    margin-top: 20px;
-  }
-  
-  .activity-list {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .activity-item {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    width: 100%;
-  }
-  
-  .activity-item:hover {
-    background-color: #f9f9f9;
-  }
-  
-  .activity-item.selected {
-    background-color: #e9ecef;
-    border-color: #007bff;
-  }
-  
-  .activity-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  
-  .activity-header span {
-    margin-left: 10px;
-  }
-  
-  .activity-status {
-    margin-top: 10px;
-  }
-  
-  .activity-status-label {
-    font-weight: bold;
-  }
-  
-  .activity-sidebar-container {
-    display: flex;
-    flex-direction: column;
-    background-color: #f8f9fa;
-    border-left: 1px solid #ddd;
-    overflow-y: auto;
-    transition: all 0.3s;
-    width: 100%;
-    visibility: hidden;
-    opacity: 0;
-  }
-  
-  .activity-sidebar-container.open {
-    width: 100%;
-    visibility: visible;
-    opacity: 1;
-  }
-  
-  .job-detail {
-    padding: 20px;
-  }
+
+.edit-button {
+  padding: 10px 20px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.edit-button:hover {
+  background-color: #0056b3;
+}
+
+hr {
+  border: none;
+  border-top: 0.5px solid #aaaaaa;
+  width: 100%;
+}
+
+.details-container {
+  width: 100%;
+  /* max-width: 800px; Adjust max-width as needed */
+  margin-top: 20px;
+}
+
+.detail-columns {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+  /* Space between columns */
+  margin-bottom: 20px;
+}
+
+.cater-column {
+  flex: 1;
+}
+
+.full-width-row {
+  width: 100%;
+  /* max-width: 800px;  */
+  margin-top: 20px;
+}
+
+.text-field {
+  display: inline-block;
+  padding: 2px 5px 6px 7px;
+  /* Adjust padding to match input field if necessary */
+  font-weight: bold;
+  font-size: 12px;
+  color: #333;
+  /* Adjust text color if necessary */
+}
+
+
+.detail-row {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.work-label {
+  font-weight: light;
+  padding: 4px;
+  margin-right: 10px;
+  min-width: 100px;
+  font-size: 12px;
+  text-align: right;
+}
+
+.job-label {
+  font-weight: light;
+  padding: 4px;
+  margin-right: 10px;
+  min-width: 100px;
+  font-size: 12px;
+  text-align: left;
+}
+
+.input-field,
+.textarea-field {
+  flex: 1;
+  padding: 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: inherit;
+}
+
+.textarea-field {
+  height: 100px;
+  resize: vertical;
+}
+
+.activities-container {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.activity-list {
+  list-style: none;
+  padding: 0;
+}
+
+.activity-item {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: 100%;
+}
+
+.activity-item:hover {
+  background-color: #f9f9f9;
+}
+
+.activity-item.selected {
+  background-color: #e9ecef;
+  border-color: #007bff;
+}
+
+.activity-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.activity-header span {
+  margin-left: 10px;
+}
+
+.activity-status {
+  margin-top: 10px;
+}
+
+.activity-status-label {
+  font-weight: bold;
+}
+
+.activity-sidebar-container {
+  display: flex;
+  flex-direction: column;
+  background-color: #f8f9fa;
+  border-left: 1px solid #ddd;
+  overflow-y: auto;
+  transition: all 0.3s;
+  width: 100%;
+  visibility: hidden;
+  opacity: 0;
+}
+
+.activity-sidebar-container.open {
+  width: 100%;
+  visibility: visible;
+  opacity: 1;
+}
+
+.job-detail {
+  padding: 20px;
+}
 
 .tabs-container {
-    margin-top: 20px;
-    width: 100%;
-  }
-  
-  .tab-buttons {
-    display: flex;
-    justify-content: flex-start; /* Align buttons to the left */
-    border-bottom: 1px solid #ddd;
+  margin-top: 20px;
+  width: 100%;
 }
-  
-  .tab-button {
-    /* background-color: #f0f0f0; */
-    color: #333;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    border-radius: 5px 5px 0 0;
-  }
-  
-  .tab-button.active {
-    background-color: #ddd;
-    font-weight: bold;
-  }
-  
-  .tab-content {
-    border: 1px solid #ddd;
-    border-top: none;
-    padding: 20px;
-    border-radius: 0 0 5px 5px;
-  }
-  
-  .header-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .save-button {
-    background: linear-gradient(135deg, #afafaf, #404040);
-    border: none;
-    border-radius: 8px;
-    color: white;
-    padding: 5px 10px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background 0.3s, transform 0.3s;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  .save-button:hover {
-    background: linear-gradient(135deg, rgb(144, 20, 20), rgb(88, 12, 12));
-    transform: translateY(-2px);
-  }
-  
-  .save-button:active {
-    transform: translateY(0);
-  }
-  
-  .save-button:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(107, 115, 255, 0.5);
-  }
- 
-  .tasks-header-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  
-  .modern-button {
-    background-color: rgba(144, 21, 21, 1); /* Blue background */
-    color: white; /* White text */
-    border: none; /* No border */
-    border-radius: 5px; /* Rounded corners */
-    padding: 5px 10px; /* Padding */
-    font-size: 16px; /* Font size */
-    cursor: pointer; /* Pointer cursor on hover */
-    transition: background-color 0.3s; /* Smooth transition for background color */
-  }
-  
-  .modern-button:hover {
-    background-color: rgb(88, 12, 12); /* Darker blue on hover */
-  }
-  
-  .button-container {
-    display: flex;
-    align-items: center;
-  }
 
-  .status-change-container {
-    border-left: 4px solid rgb(88, 12, 12); /* Change color as needed */
-    padding: 10px;
-    margin-bottom: 10px;
-    background-color: #f9f9f9; /* Light background for contrast */
-  }
-  
-  .status-change-header {
-    display: flex;
-    justify-content: space-between;
-    font-weight: bold;
-    margin-bottom: 5px;
-  }
-  
-  .status-change-body {
-    padding-left: 10px;
-    color: #333; /* Darker text color for status */
-  }
-  
-  .comments-section {
-    margin-top: 20px;
-  }
-  
-  .comment-form {
-    display: flex;
+.tab-buttons {
+  display: flex;
+  justify-content: flex-start;
+  /* Align buttons to the left */
+  border-bottom: 1px solid #ddd;
+}
+
+.tab-button {
+  /* background-color: #f0f0f0; */
+  color: #333;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-radius: 5px 5px 0 0;
+}
+
+.tab-button.active {
+  background-color: #ddd;
+  font-weight: bold;
+}
+
+.tab-content {
+  border: 1px solid #ddd;
+  border-top: none;
+  padding: 20px;
+  border-radius: 0 0 5px 5px;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.save-button {
+  background: linear-gradient(135deg, #afafaf, #404040);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  padding: 5px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.3s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.save-button:hover {
+  background: linear-gradient(135deg, rgb(144, 20, 20), rgb(88, 12, 12));
+  transform: translateY(-2px);
+}
+
+.save-button:active {
+  transform: translateY(0);
+}
+
+.save-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(107, 115, 255, 0.5);
+}
+
+.tasks-header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modern-button {
+  background-color: rgba(144, 21, 21, 1);
+  /* Blue background */
+  color: white;
+  /* White text */
+  border: none;
+  /* No border */
+  border-radius: 5px;
+  /* Rounded corners */
+  padding: 5px 10px;
+  /* Padding */
+  font-size: 16px;
+  /* Font size */
+  cursor: pointer;
+  /* Pointer cursor on hover */
+  transition: background-color 0.3s;
+  /* Smooth transition for background color */
+}
+
+.modern-button:hover {
+  background-color: rgb(88, 12, 12);
+  /* Darker blue on hover */
+}
+
+.button-container {
+  display: flex;
+  align-items: center;
+}
+
+.status-change-container {
+  border-left: 4px solid rgb(88, 12, 12);
+  /* Change color as needed */
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #f9f9f9;
+  /* Light background for contrast */
+}
+
+.status-change-header {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.status-change-body {
+  padding-left: 10px;
+  color: #333;
+  /* Darker text color for status */
+}
+
+.comments-section {
+  margin-top: 20px;
+}
+
+.comment-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.replying-to {
+  background-color: #f1f1f1;
+  padding: 5px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.replying-to p {
+  margin: 0;
+}
+
+.replying-to button {
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+}
+
+.comment-input {
+  height: 80px;
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.add-comment-button {
+  align-self: flex-start;
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.add-comment-button:hover {
+  background-color: #0056b3;
+}
+
+.comment-list {
+  margin-top: 20px;
+}
+
+.comment-item {
+  background-color: #f8f9fa;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  position: relative;
+}
+
+.comment-item p {
+  margin: 0 0 5px;
+}
+
+.comment-item span {
+  font-size: 0.8em;
+  color: #6c757d;
+}
+
+.comment-item button {
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+}
+
+.replies {
+  margin-left: 20px;
+  margin-top: 10px;
+}
+
+
+@media (max-width: 768px) {
+  .work-content-container {
     flex-direction: column;
   }
-  
-  .replying-to {
-    background-color: #f1f1f1;
-    padding: 5px;
-    border-radius: 5px;
-    margin-bottom: 10px;
-  }
-  
-  .replying-to p {
-    margin: 0;
-  }
-  
-  .replying-to button {
-    background: none;
-    border: none;
-    color: #007bff;
-    cursor: pointer;
-  }
-  
-  .comment-input {
-    height: 80px;
-    margin-bottom: 10px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  .add-comment-button {
-    align-self: flex-start;
-    padding: 8px 16px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .add-comment-button:hover {
-    background-color: #0056b3;
-  }
-  
-  .comment-list {
-    margin-top: 20px;
-  }
-  
-  .comment-item {
-    background-color: #f8f9fa;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 4px;
-    position: relative;
-  }
-  
-  .comment-item p {
-    margin: 0 0 5px;
-  }
-  
-  .comment-item span {
-    font-size: 0.8em;
-    color: #6c757d;
-  }
-  
-  .comment-item button {
-    background: none;
-    border: none;
-    color: #007bff;
-    cursor: pointer;
-    position: absolute;
-    right: 10px;
-    bottom: 10px;
-  }
-  
-  .replies {
-    margin-left: 20px;
-    margin-top: 10px;
-  }
-  
 
-  @media (max-width: 768px) {
-    .work-content-container {
-      flex-direction: column;
-    }
-  
-    .activity-sidebar-container.open {
-      max-width: 100%;
-    }
-  
-    .detail-columns {
-      flex-direction: column;
-      gap: 10px; /* Adjust gap as needed */
-    }
-  
-    .column {
-      margin-bottom: 20px;
-    }
+  .activity-sidebar-container.open {
+    max-width: 100%;
   }
-  
+
+  .detail-columns {
+    flex-direction: column;
+    gap: 10px;
+    /* Adjust gap as needed */
+  }
+
+  .column {
+    margin-bottom: 20px;
+  }
+}

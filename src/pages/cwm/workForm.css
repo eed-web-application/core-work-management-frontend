@@ -40,37 +40,48 @@
     font-size: 14px;
 }
 
-.workform-textarea {
-    width: 100%;
-    /* min-height: 100px; */
-    resize: vertical;
-    border: 1px solid #ccc;
-    padding: 4px;
-    font-size: 12px;
-    box-sizing: border-box;
+.form-input.error {
+    border: 1px solid red;
+}
+
+/* Optional: Add a visual cue for the length limit */
+.form-input::after {
+    content: " (max 100 characters)";
+    font-size: 0.875em;
+    color: #888;
 }
 
 .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     width: 100%;
+    display: flex; /* Use flexbox to align items horizontally */
+    align-items: center; /* Align items vertically centered */
+    gap: 10px; /* Add space between the label and input field */
 }
 
 .form-group label {
-    display: block;
+    flex: 0 0 150px; /* Fixed width for the label, adjust as needed */
     font-size: 12px;
     font-weight: light;
-    padding: 4px;
-    margin-right: 10px;
-    text-align: left;
+    text-align: right; /* Align text to the right */
 }
 
 .form-group input,
-.form-group select {
-    width: 100%;
+.form-group select,
+.form-group textarea {
+    flex: 1; /* Make the input field take up the remaining space */
     padding: 4px;
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 12px;
+    font-family: Arial, sans-serif; /* Ensure font family is set */
+    box-sizing: border-box;
+}
+
+
+.workform-textarea {
+    min-height: 50px; /* Minimum height for the textarea */
+    resize: vertical; /* Allows vertical resizing */
 }
 
 .form-button {
@@ -86,6 +97,14 @@
 
 .form-button:hover {
     background-color: #0056b3;
+}
+
+.form-group-checkbox {
+    display: flex;
+    /* justify-content: flex-end; */
+    align-items: center;
+    margin-bottom: 20px;
+    width: 100%;
 }
 
 .form-checkbox-label {
@@ -106,9 +125,53 @@
     outline: none;
 }
 
+
 hr {
     border: none;
     border-top: 0.5px solid #aaaaaa;
     width: 100%;
     margin: 20px 0;
+}
+
+.info-icon {
+    margin-left: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #b1b1b1;
+}
+
+.info-icon:hover {
+    color: #0056b3;
+}
+
+.error-text {
+    color: red;
+    display: block;
+    margin-top: 0.25rem; /* Adjust spacing as needed */
+}
+
+.form-input.error {
+    border-color: red;
+}
+
+.location-manager {
+    display: block;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #333;
+    font-family: Arial, sans-serif;
+}
+
+/* Style for the location-manager label */
+.location-manager-label {
+    display: block;
+    margin-top: 5px;
+    margin-right: 5px;
+    font-size: 16px;
+    color: #333;
+    font-weight: bold;
 }
