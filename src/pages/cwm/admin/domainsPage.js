@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { createWorkDomain, fetchWorkDomain } from '../../services/api.js';
+import { createWorkDomain, fetchWorkDomain } from '../../../services/api.js';
 import './adminPage.css'; // Assuming this is where your .user-list styles are
 
 const DomainsPage = ({ openSheet, isSheetOpen }) => {

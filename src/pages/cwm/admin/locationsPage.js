@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { createLocation, fetchLocations } from '../../services/api.js';
-import './adminPage.css'; // Assuming this is where your .user-list styles are
+import { createLocation, fetchLocations } from '../../../services/api.js';
+import './adminPage.css'; 
 
 const LocationsPage = ({ openSheet, isSheetOpen }) => {
   const [locations, setLocations] = useState([]);

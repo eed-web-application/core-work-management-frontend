@@ -6,8 +6,7 @@ import "./cwm.css";
 // Lazy load components
 const SearchPage = lazy(() => import("./searchPage.js"));
 const ReportsPage = lazy(() => import("./reportsPage.js"));
-const CalendarPage = lazy(() => import("./calendarPage.js"));
-const AdminPage = lazy(() => import("./adminPage.js"));
+const AdminPage = lazy(() => import("./admin/adminPage.js"));
 
 function Cwm() {
   const location = useLocation(); // Hook from react-router-dom to get the current location
@@ -59,9 +58,6 @@ function Cwm() {
           <Switch>
             <Route path="/cwm/admin">
               <AdminPage />
-            </Route>
-            <Route path="/cwm/calendar">
-              <CalendarPage />
             </Route>
             <Route path="/cwm/search">
               <SearchPage selectedDomain={selectedDomain} />

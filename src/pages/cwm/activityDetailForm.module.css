@@ -1,0 +1,121 @@
+.workForm {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.formGroup {
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.formLabel {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 12px;
+  color: #333;
+}
+
+.formInput,
+.formSelect,
+.formCheckbox {
+  width: 100%;
+  padding: 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: inherit;
+}
+
+.formSelect {
+  width: 100%;
+}
+
+.formCheckbox {
+  width: auto;
+  margin-right: 8px;
+}
+
+.formCheckboxGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.formCheckboxItem {
+  flex: 1 1 200px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.formCheckboxLabel {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  color: #333;
+}
+
+.formSection {
+  margin-top: 20px;
+}
+
+.formSectionHeader {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.formButton {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.formButton:hover {
+  background-color: #0056b3;
+}
+
+.headerContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.saveButton {
+  background: linear-gradient(135deg, #afafaf, #404040);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  padding: 5px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.3s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.saveButton:hover {
+  background: linear-gradient(135deg, rgb(144, 20, 20), rgb(88, 12, 12));
+  transform: translateY(-2px);
+}
+
+.saveButton:active {
+  transform: translateY(0);
+}
+
+.saveButton:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(107, 115, 255, 0.5);
+}
+
+@media (max-width: 768px) {
+  .workForm {
+    flex-direction: column;
+  }
+}

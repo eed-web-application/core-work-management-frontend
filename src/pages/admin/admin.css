@@ -42,11 +42,11 @@
   background-color: #ffffff;
   min-width: 160px;
   box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-  padding: 8px 0; /* Add some padding */
+  padding: 8px 0; 
   z-index: 1;
-  border-radius: 4px; /* Add rounded corners */
-  top: 105px; /* Adjust vertical position to align with the button */
-  right: 20px; /* Adjust horizontal position */
+  border-radius: 4px; 
+  top: 105px;
+  right: 20px;
 }
 
 /* Position the dropdown options */
@@ -73,22 +73,22 @@
 
 /* Style the dropdown button */
 .admin-dropbtn {
-  background-color: #007bff; /* Blue background color */
-  color: #ffffff; /* White text color */
-  padding: 10px 20px; /* Add some padding */
-  font-size: 16px; /* Increase font size */
-  border: none; /* Remove border */
+  background-color: #007bff;
+  color: #ffffff;
+  padding: 10px 20px;
+  font-size: 16px; 
+  border: none; 
   cursor: pointer;
-  border-radius: 4px; /* Add rounded corners */
-  transition: background-color 0.3s ease; /* Add transition effect */
+  border-radius: 4px; 
+  transition: background-color 0.3s ease; 
   position: absolute;
-  top: 70px; /* Adjust vertical position */
-  right: 20px; /* Adjust horizontal position */
+  top: 70px; 
+  right: 20px; 
 }
 
 /* Change background color on hover */
 .admin-dropbtn:hover {
-  background-color: #0056b3; /* Darker blue color on hover */
+  background-color: #0056b3; 
 }
 
 /* Styles for the welcome message */
@@ -134,8 +134,6 @@ h1 {
   left: 50%;
   transform: translate(-50%, -50%);
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  /* height: 70%;
-  overflow-y: auto; */
 }
 .class-form {
   margin-top: 20px;
@@ -179,7 +177,7 @@ h1 {
   top: 60px;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  background-color: rgba(0, 0, 0, 0.5); 
   overflow: auto;
 }
 
@@ -191,13 +189,12 @@ h1 {
   top: 67px;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  background-color: rgba(0, 0, 0, 0.5);
   overflow: auto;
 }
 
 .elementForm-content {
   background-color: #fefefe;
-  /* margin-top: 200px; */
   padding: 20px;
   border: 1px solid #888;
   width: 60%;
@@ -274,11 +271,11 @@ h1 {
 /* Card content styles */
 .card-content {
   padding: 20px;
-  display: flex; /* Added */
+  display: flex; 
   flex-direction: column;
-  justify-content: space-between; /* Added */
-  align-items: center; /* Added */
-  height: 80%; /* Updated */
+  justify-content: space-between; 
+  align-items: center;
+  height: 80%;
   text-align: left;
 }
 
@@ -299,18 +296,18 @@ h1 {
   border: 1px solid #ccc;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  position: relative; /* Added */
-  display: flex; /* Added */
+  position: relative; 
+  display: flex; 
   flex-direction: column;
 }
 
 .card-icon {
-  display: flex; /* Added */
-  justify-content: right; /* Added */
-  align-items: right; /* Added */
-  flex-grow: 1; /* Added */
-  font-size: 80px; /* Adjust as needed */
-  color: #333; /* Adjust color as needed */
+  display: flex; 
+  justify-content: right; 
+  align-items: right;
+  flex-grow: 1;
+  font-size: 80px;
+  color: #333;
 }
 
 /* Card action styles */
@@ -335,7 +332,6 @@ h1 {
 /* Styles for the dropdown button */
 .dropbtn {
   background-color: #007bff;
-  /* background-color: #3498db; */
   color: white;
   padding: 10px 15px;
   font-size: 16px;
@@ -398,7 +394,6 @@ h1 {
   margin-left: auto;
   margin-right: auto;
   justify-content: center;
-  /* align-items: center; */
 }
 
 .admin-page {
@@ -414,8 +409,8 @@ h1 {
 
 .table-container {
   max-height: 400px;
-  overflow-y: auto; /* Enable vertical scrolling */
-  overflow-x: auto; /* Enable horizontal scrolling, if needed */
+  overflow-y: auto; 
+  overflow-x: auto;
 }
 
 .class-table {
@@ -439,7 +434,6 @@ h1 {
   text-overflow: ellipsis;
   box-sizing: border-box;
   padding: 15px;
-  /* text-align: center; */
   width: 10%; /* Set a specific width for each column */
 }
 
@@ -470,20 +464,18 @@ h1 {
   margin: 25px;
 }
 
-/* LocationForm.css */
-
 /* Style for dropdown menu */
 .class-form select {
-  width: calc(100% - 20px); /* Adjust width to match other input fields */
-  padding: 8px; /* Adjust padding as needed */
-  margin-bottom: 10px; /* Add margin bottom for spacing */
+  width: calc(100% - 20px);
+  padding: 8px; 
+  margin-bottom: 10px; 
 }
 
 /* Style for input fields */
 .class-form input[type="text"] {
-  width: calc(100% - 20px); /* Adjust width to match dropdown */
-  padding: 8px; /* Match padding with dropdown */
-  margin-bottom: 10px; /* Add margin bottom for spacing */
+  width: calc(100% - 20px); 
+  padding: 8px; 
+  margin-bottom: 10px; 
 }
 
 

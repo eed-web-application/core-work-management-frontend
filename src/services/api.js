@@ -99,7 +99,7 @@ export const fetchAActivity = async (workId, activityId, token) => {
   return fetchData(`/api/cwm/v1/work/${workId}/activity/${activityId}`, 'GET', null, token);
 };
 
-export const fetchActivity = async (workId, token) => {
+export const fetchActivitiesOfWork = async (workId, token) => {
   return fetchData(`/api/cwm/v1/work/${workId}/activity`, 'GET', null, token);
 };
 

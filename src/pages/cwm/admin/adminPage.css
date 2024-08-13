@@ -1,5 +1,3 @@
-/* adminPage.css */
-
 .admin-dashboard {
     position: relative;
     top: 40px;
@@ -71,7 +69,7 @@
     border: 1px solid #ddd;
     transition: transform 0.3s ease;
     transform: translateX(100%); /* Initially hidden */
-    z-index: 101; /* Above overlay */
+    z-index: 101;
     overflow-y: auto;
   }
   
@@ -89,15 +87,15 @@
   .close-btn {
     background: none;
     border: none;
-    font-size: 1.5rem; /* Adjust size as needed */
-    color: #333; /* Color for the "X" */
+    font-size: 1.5rem; 
+    color: #333;
     cursor: pointer;
     padding: 0;
     margin: 0;
   }
   
   .close-btn:hover {
-    color: red; /* Change color on hover */
+    color: red; 
   }
   
   .side-sheet-content {

@@ -1,297 +1,176 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import DatePicker from 'react-datepicker'; // Importing React Datepicker
-import 'react-datepicker/dist/react-datepicker.css';
-import { createActivity, fetchActivityType, fetchAWork, fetchLovValuesForField, createActivityLog } from '../../services/api';
-import { toast } from 'react-toastify'; // Import toast
+import React, { useState, useEffect } from "react";
+import { fetchAActivity, fetchActivityType, fetchActivitySubtype, fetchLovValuesForField } from "../../services/api";
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import './activityForm.css';
+import "./workDetails.css";
 
-function ActivityForm({ showActivityForm, setShowActivityForm }) {
-    const { workId } = useParams();
-    const [activityData, setActivityData] = useState({
-        title: '',
-        description: '',
-        activityTypeId: '',
-        activityTypeSubtype: "BugFix",
-        customFields: [],
-        customFieldValues: {},
+const ActivityForm = ({ workId, activity, onClose }) => {
+  const [activityData, setActivityData] = useState({});
+  const [activityTypes, setActivityTypes] = useState([]);
+  const [activitySubtypes, setActivitySubtypes] = useState([]);
+  const [customFields, setCustomFields] = useState([]);
+  const [lovValuesDictionary, setLovValuesDictionary] = useState({});
+  const [safetyForms, setSafetyForms] = useState({
+    radSafetyWorkCtlForm: false,
+    lockAndTag: false,
+    ppsInterlocked: false,
+    atmosphericWorkControlForm: false,
+    electricSysWorkCtlForm: false,
+  });
+
+  useEffect(() => {
+    const fetchCustomData = async (workId, activityId) => {
+      try {
+        const workResponse = await fetchAActivity(workId, activityId);
+        const { title, description, activityType, activityTypeSubtype, customFields } = workResponse.payload;
+        const activityTypeId = activityType ? activityType.id : "";
+
+        setActivityData({
+          title,
+          description,
+          activityTypeId,
+          activityTypeSubtype,
+        });
+
+        setCustomFields(customFields);
+
+        const typeResponse = await fetchActivityType();
+        setActivityTypes(typeResponse.payload || []);
+
+        const subtypeResponse = await fetchActivitySubtype();
+        setActivitySubtypes(subtypeResponse.payload || []);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchCustomData(workId, activity.id);
+  }, [workId, activity.id]);
+
+  useEffect(() => {
+    const fetchLovValues = async () => {
+      const dictionary = {};
+      for (const field of customFields) {
+        try {
+          const lovValuesResponse = await fetchLovValuesForField("Activity", activityData.activityTypeId, field.name);
+          if (lovValuesResponse.errorCode === 0) {
+            const lovValues = lovValuesResponse.payload.map((value) => ({
+              id: value.id,
+              value: value.value,
+            }));
+            dictionary[field.name] = lovValues;
+          } else {
+            console.error("Error fetching LOV values:", lovValuesResponse.errorMessage);
+          }
+        } catch (error) {
+          console.error("Error fetching LOV values for field:", field.name, error);
+        }
+      }
+      setLovValuesDictionary(dictionary);
+    };
+
+    fetchLovValues();
+  }, [activityData.activityTypeId, customFields]);
+
+  const handleInputChange = (e) => {
+    setActivityData({
+      ...activityData,
+      [e.target.name]: e.target.value,
     });
-    const [activityTypes, setActivityTypes] = useState([]);
-    const [activityTypesFetched, setActivityTypesFetched] = useState(false);
-    const [createActivityLogChecked, setCreateActivityLogChecked] = useState(false); // State for checkbox
+  };
 
-    useEffect(() => {
-        const fetchWorkAndActivityData = async () => {
-            try {
-                const worktypeResponse = await fetchAWork(workId);
-                const title = worktypeResponse.payload.workType.title;
+  const handleCustomFieldChange = (fieldName, value) => {
+    setActivityData({
+      ...activityData,
+      [fieldName]: value,
+    });
+  };
 
-                if (!activityTypesFetched) {
-                    const typeResponse = await fetchActivityType();
-                    setActivityTypes(typeResponse.payload || []);
-                    setActivityTypesFetched(true);
-                }
+  const handleSafetyFormChange = (formName) => {
+    setSafetyForms((prevForms) => ({
+      ...prevForms,
+      [formName]: !prevForms[formName],
+    }));
+    setActivityData((prevData) => ({
+      ...prevData,
+      [formName]: !prevForms[formName] ? "true" : "false",
+    }));
+  };
 
-                let defaultActivityTypeId = '';
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      toast.success("Activity updated successfully!");
+      onClose();
+    } catch (error) {
+      console.error("Error updating activity:", error);
+      toast.error("Failed to update activity.");
+    }
+  };
 
-                if (title.startsWith("Software")) {
-                    const softwareTask = activityTypes.find(type => type.title === "Software Task");
-                    defaultActivityTypeId = softwareTask ? softwareTask.id : '';
-                } else if (title.startsWith("Hardware")) {
-                    const hardwareTask = activityTypes.find(type => type.title === "Hardware Task");
-                    defaultActivityTypeId = hardwareTask ? hardwareTask.id : '';
-                } else if (title.startsWith("General")) {
-                    const generalTask = activityTypes.find(type => type.title === "General Task");
-                    defaultActivityTypeId = generalTask ? generalTask.id : '';
-                }
-
-                if (defaultActivityTypeId) {
-                    handleActivityTypeChange(defaultActivityTypeId);
-                }
-            } catch (error) {
-                console.error('Error fetching activity data:', error);
-            }
-        };
-
-        fetchWorkAndActivityData();
-    }, [activityTypesFetched, workId]);
-    
-    const fetchCustomFieldsData = async (typeId, customFields) => {
-        try {
-            const customFieldsData = await Promise.all(
-                customFields.map(async field => {
-                    try {
-                        if (!field.isLov) {
-                            return {
-                                ...field,
-                                isLov: false,
-                                valueType: field.valueType
-                            };
-                        } else {
-                            const lovValuesResponse = await fetchLovValuesForField("Activity", typeId, field.name);
-                            if (lovValuesResponse.errorCode === 0) {
-                                return {
-                                    ...field,
-                                    isLov: true,
-                                    valueType: lovValuesResponse.payload.map(value => ({ id: value.id, value: value.value }))
-                                };
-                            } else {
-                                console.error('Error fetching LOV values for field:', field.name, lovValuesResponse.errorMessage);
-                                throw new Error(lovValuesResponse.errorMessage);
-                            }
-                        }
-                    } catch (error) {
-                        console.error('Error fetching LOV values for field:', field.name, error.message);
-                        throw new Error(error.message);
-                    }
-                })
-            );
-            return customFieldsData;
-        } catch (error) {
-            console.error('Error fetching custom fields data:', error);
-            throw new Error(error.message);
-        }
-    };
-
-    const handleActivityTypeChange = async (typeId) => {
-        try {
-            const type = activityTypes.find(type => type.id === typeId);
-            if (type) {
-                const customFieldsData = await fetchCustomFieldsData(typeId, type.customFields || []);
-                setActivityData({
-                    ...activityData,
-                    activityTypeId: typeId,
-                    customFields: customFieldsData
-                });
-            }
-        } catch (error) {
-            console.error('Error fetching custom fields:', error);
-        }
-    };
-
-    const handleCustomFieldDateValueChange = (date, fieldId) => {
-        const formattedDate = date ? new Date(date).toLocaleString('en-US', { timeZone: 'UTC', month: '2-digit', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
-        setActivityData({
-            ...activityData,
-            customFieldValues: {
-                ...activityData.customFieldValues,
-                [fieldId]: formattedDate
-            }
-        });
-    };
-
-    const handleCustomFieldValueChange = (e, fieldId) => {
-        const { value } = e.target;
-        setActivityData({
-            ...activityData,
-            customFieldValues: {
-                ...activityData.customFieldValues,
-                [fieldId]: value
-            }
-        });
-    };
-
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        try {
-            const customFieldValues = activityData.customFields.reduce((acc, field) => {
-                const value = activityData.customFieldValues[field.id];
-                if (value !== null && value !== undefined && value !== '') {
-                    const formattedValue = {
-                        type: field.valueType === "Boolean" ? "Boolean" :
-                              field.valueType === "Date" ? "Date" :
-                              field.valueType === "Number" ? "Number" : "String",
-                        value: field.valueType === "Boolean" ? (value === "true") :
-                               field.valueType === "Date" ? new Date(value).toISOString() :
-                               field.valueType === "Number" ? parseFloat(value) : value
-                    };
-                    acc.push({ id: field.id, value: formattedValue });
-                }
-                return acc;
-            }, []);
-
-            const formData = {
-                title: activityData.title,
-                description: activityData.description,
-                activityTypeId: activityData.activityTypeId,
-                activityTypeSubtype: activityData.activityTypeSubtype,
-                schedulingProperty: activityData.schedulingProperty,
-                customFieldValues: customFieldValues,
-            };
-
-
-            console.log(formData);
-            const createdActivity = await createActivity(workId, formData);
-            const activityId = createdActivity.payload;
-
-            if (createActivityLogChecked) {
-                const entryData = {
-                    title: activityData.title,
-                    description: activityData.description
-                };
-        
-                const formData = new FormData();
-                formData.append('title', entryData.title); // Add the title to the formData
-                formData.append('text', entryData.description);
-                console.log("creating work log...")
-                await createActivityLog(workId, activityId, formData);
-            }
-            setShowActivityForm(false);
-            window.location.reload();
-            toast.success("Activity created successfully!");
-        } catch (error) {
-            console.error('Error creating activity:', error, error.message);
-            toast.error(`Error creating activity: ${error.message || "Please try again."}`);
-        }
-    };
-
-    const renderCustomFieldInput = (field) => {
-        if (field.isLov) {
-            return (
-                <select id={field.id} name={field.id} value={activityData.customFieldValues[field.id] || ''} onChange={(e) => handleCustomFieldValueChange(e, field.id)} className="form-select">
-                    <option value="">Select</option>
-                    {field.valueType.map((value, index) => (<option key={index} value={value.id}>{value.value}</option>))}
-                </select>
-            );
-        } else {
-            if (field.valueType === "Boolean") {
-                return (
-                    <select id={field.id} name={field.id} value={activityData.customFieldValues[field.id] || ''} onChange={(e) => handleCustomFieldValueChange(e, field.id)} className="form-select">
-                        <option value="">Select</option>
-                        <option value="true">True</option>
-                        <option value="false">False</option>
-                    </select>
-                );
-            } else if (field.valueType === "Date") {
-                return (<DatePicker selected={activityData.customFieldValues[field.id] ? new Date(activityData.customFieldValues[field.id]) : null} onChange={(date) => handleCustomFieldDateValueChange(date, field.id)} className="form-input" />);
-            } else if (field.valueType === "Number") {
-                return (<input id={field.id} name={field.id} type="number" value={activityData.customFieldValues[field.id] || ''} onChange={(e) => handleCustomFieldValueChange(e, field.id)} className="form-input" />);
-            } else {
-                return (<input id={field.id} name={field.id} value={activityData.customFieldValues[field.id] || ''} onChange={(e) => handleCustomFieldValueChange(e, field.id)} className="form-input" />);
-            }
-        }
-    };
-
-    const renderCustomFieldsBySection = () => {
-        const sections = {};
-        activityData.customFields.forEach(field => {
-            const section = field.group || "Other";
-            if (!sections[section]) {
-                sections[section] = [];
-            }
-            sections[section].push(field);
-        });
-
-        return Object.keys(sections).map(section => (
-            <div key={section}>
-                <h3 style={{ color: 'black' }}>{section}</h3>
-                {sections[section].map(field => (
-                    <div key={field.id} className="form-group">
-                        <label htmlFor={field.id} className="form-label">{field.label}</label>
-                        {renderCustomFieldInput(field)}
-                    </div>
-                ))}
-            </div>
-        ));
-    };
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setActivityData({ ...activityData, [name]: value });
-    };
-
-    const renderNewFields = () => {
-        const fields = [{ id: 'title', label: 'Title', type: 'text', section: 'General Information' }, { id: 'description', label: 'Description', type: 'textarea', section: 'General Information' }];
-        return fields.map(field => (
-            <div key={field.id} className="form-group">
-                <label htmlFor={field.id} className="form-label">{field.label}<span className="required">*</span></label>
-                {field.type === 'textarea' ? (
-                    <textarea id={field.id} name={field.id} value={activityData[field.id] || ''} onChange={handleInputChange} className="form-input" required={field.required}></textarea>
-                ) : (
-                    <input id={field.id} name={field.id} type={field.type} value={activityData[field.id] || ''} onChange={handleInputChange} className="form-input" required={field.required} />
-                )}
-            </div>
-        ));
-    };
-
-    return (
-        <div className={`modal ${showActivityForm ? "show" : "hide"}`}>
-            <div className="activityform-content">
-                <span className="close" onClick={() => setShowActivityForm(false)}>&times;</span>
-                <p className="activityform-title">New Task</p>
-                <hr className="line" /><br></br>
-                <form onSubmit={handleSubmit} className="work-form">
-                    <div className="form-group">
-                        <label className="form-label">Type<span className="required">*</span></label>
-                        <div className="button-group">
-                            {activityTypes.map(type => (
-                                <button key={type.id} type="button" className={`activity-type-button ${activityData.activityTypeId === type.id ? 'selected' : ''}`} onClick={() => handleActivityTypeChange(type.id)}>{type.title}</button>
-                            ))}
-                        </div>
-                    </div>
-
-                    {renderNewFields()}
-                    {renderCustomFieldsBySection()}
-
-                    {/* <div className="form-group">
-                        <label htmlFor="createActivityLog" className="form-checkbox-label">
-                            <input
-                                type="checkbox"
-                                id="createActivityLog"
-                                name="createActivityLog"
-                                checked={createActivityLogChecked}
-                                onChange={() => setCreateActivityLogChecked(!createActivityLogChecked)}
-                            />
-                            <span>Select to create Log Entry for this Task</span>
-                        </label>
-                    </div> */}
-
-                    <button type="submit" className="activityform-button">Create Task</button>
-                </form>
-            </div>
+  return (
+    <div className="job-detail">
+      <h1 className="form-title">Task Details</h1>
+      <form onSubmit={handleSubmit} className="work-form">
+        <div className="form-group">
+          <label htmlFor="title" className="form-label">Title</label>
+          <input type="text" id="title" name="title" value={activityData.title || ""} onChange={handleInputChange} className="form-input" />
         </div>
-    );
-}
+        <div className="form-group">
+          <label htmlFor="description" className="form-label">Description</label>
+          <input type="text" id="description" name="description" value={activityData.description || ""} onChange={handleInputChange} className="form-input" />
+        </div>
+        <div className="form-group">
+          <label htmlFor="activityTypeId" className="form-label">Activity Type</label>
+          <select id="activityTypeId" name="activityTypeId" value={activityData.activityTypeId || ""} onChange={handleInputChange} className="form-select">
+            {activityTypes.map((type) => (
+              <option key={type.id} value={type.id}>{type.title}</option>
+            ))}
+          </select>
+        </div>
+        <div className="form-group">
+          <label htmlFor="activityTypeSubtype" className="form-label">Activity Subtype</label>
+          <select id="activityTypeSubtype" name="activityTypeSubtype" value={activityData.activityTypeSubtype || ""} onChange={handleInputChange} className="form-select">
+            <option value="">Select Activity Subtype</option>
+            {activitySubtypes.map((subtype, index) => (
+              <option key={index} value={subtype}>{subtype}</option>
+            ))}
+          </select>
+        </div>
+        <div className="safety-forms-section">
+          <h3>Safety Forms Required</h3>
+          {Object.keys(safetyForms).map((formName) => (
+            <div key={formName} className="form-group">
+              <label htmlFor={formName} className="form-label">{formName.replace(/([A-Z])/g, " $1")}</label>
+              <input type="checkbox" id={formName} name={formName} checked={safetyForms[formName]} onChange={() => handleSafetyFormChange(formName)} className="form-checkbox" />
+            </div>
+          ))}
+        </div>
+        {customFields.map((field) => (
+          <div key={field.id} className="form-group">
+            <label htmlFor={field.name} className="form-label">{field.label}</label>
+            {field.valueType === "Date" ? (
+              <input type="date" id={field.name} name={field.name} value={activityData[field.name] || ""} onChange={(e) => handleCustomFieldChange(field.name, e.target.value)} className="form-input" />
+            ) : field.name in lovValuesDictionary && field.valueType !== 'Boolean' ? (
+              <select id={field.name} name={field.name} value={activityData[field.name] || ""} onChange={(e) => handleCustomFieldChange(field.name, e.target.value)} className="form-select">
+                {lovValuesDictionary[field.name].map((option) => (
+                  <option key={option.id} value={option.id}>{option.value}</option>
+                ))}
+              </select>
+            ) : field.valueType === "Boolean" ? (
+              <select id={field.name} name={field.name} value={activityData[field.name] || ""} onChange={(e) => handleCustomFieldChange(field.name, e.target.value)} className="form-select">
+                <option value="true">True</option>
+                <option value="false">False</option>
+              </select>
+            ) : (
+              <input type="text" id={field.name} name={field.name} value={activityData[field.name] || ""} onChange={(e) => handleCustomFieldChange(field.name, e.target.value)} className="form-input" />
+            )}
+          </div>
+        ))}
+        <button type="submit" className="form-button">Update Activity</button>
+      </form>
+    </div>
+  );
+};
 
 export default ActivityForm;

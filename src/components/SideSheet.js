@@ -1,7 +1,6 @@
 import React, { useCallback, useRef } from 'react';
-import styles from '../pages/cwm/SideSheet.module.css'; // Import CSS module
 
-const SideSheet = ({ sheetBody, isOpen, onClose }) => {
+const SideSheet = ({ sheetBody, isOpen, onClose, styles }) => {
   const sheetRef = useRef(null);
 
   const mouseMoveHandler = useCallback((e) => {

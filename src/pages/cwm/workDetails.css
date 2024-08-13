@@ -1,7 +1,6 @@
 .work-content-container {
   display: flex;
   flex-direction: column;
-  /* align-items: center; */
   padding: 20px;
   font-family: Arial, sans-serif;
 }
@@ -11,10 +10,7 @@
   justify-content: flex-end;
   width: 100%;
   max-width: 800px;
-  /* Adjust max-width as needed */
 }
-
-
 
 .edit-button {
   padding: 10px 20px;
@@ -37,7 +33,6 @@ hr {
 
 .details-container {
   width: 100%;
-  /* max-width: 800px; Adjust max-width as needed */
   margin-top: 20px;
 }
 
@@ -45,7 +40,6 @@ hr {
   display: flex;
   justify-content: space-between;
   gap: 30px;
-  /* Space between columns */
   margin-bottom: 20px;
 }
 
@@ -55,18 +49,15 @@ hr {
 
 .full-width-row {
   width: 100%;
-  /* max-width: 800px;  */
   margin-top: 20px;
 }
 
 .text-field {
   display: inline-block;
   padding: 2px 5px 6px 7px;
-  /* Adjust padding to match input field if necessary */
   font-weight: bold;
   font-size: 12px;
   color: #333;
-  /* Adjust text color if necessary */
 }
 
 
@@ -186,12 +177,10 @@ hr {
 .tab-buttons {
   display: flex;
   justify-content: flex-start;
-  /* Align buttons to the left */
   border-bottom: 1px solid #ddd;
 }
 
 .tab-button {
-  /* background-color: #f0f0f0; */
   color: #333;
   border: none;
   padding: 10px 20px;
@@ -252,26 +241,17 @@ hr {
 
 .modern-button {
   background-color: rgba(144, 21, 21, 1);
-  /* Blue background */
   color: white;
-  /* White text */
   border: none;
-  /* No border */
   border-radius: 5px;
-  /* Rounded corners */
   padding: 5px 10px;
-  /* Padding */
   font-size: 16px;
-  /* Font size */
   cursor: pointer;
-  /* Pointer cursor on hover */
   transition: background-color 0.3s;
-  /* Smooth transition for background color */
 }
 
 .modern-button:hover {
   background-color: rgb(88, 12, 12);
-  /* Darker blue on hover */
 }
 
 .button-container {
@@ -281,11 +261,9 @@ hr {
 
 .status-change-container {
   border-left: 4px solid rgb(88, 12, 12);
-  /* Change color as needed */
   padding: 10px;
   margin-bottom: 10px;
   background-color: #f9f9f9;
-  /* Light background for contrast */
 }
 
 .status-change-header {
@@ -298,7 +276,6 @@ hr {
 .status-change-body {
   padding-left: 10px;
   color: #333;
-  /* Darker text color for status */
 }
 
 .comments-section {
@@ -399,7 +376,6 @@ hr {
   .detail-columns {
     flex-direction: column;
     gap: 10px;
-    /* Adjust gap as needed */
   }
 
   .column {

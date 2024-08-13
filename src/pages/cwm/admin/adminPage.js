@@ -7,7 +7,8 @@ import GroupsPage from './groupsPage';
 import DomainsPage from './domainsPage';
 import ShopgroupsPage from './shopgroupsPage';
 import LocationsPage from './locationsPage';
-import SideSheet from '../../components/SideSheet';
+import SideSheet from '../../../components/SideSheet';
+import adminStyles from './adminSideSheet.module.css';
 import './adminPage.css';
 
 const AdminPage = () => {
@@ -84,7 +85,7 @@ const AdminPage = () => {
         {isSheetOpen && (
             <>
           <div className="side-sheet-overlay" onClick={handleCloseSheet}></div>
-          <SideSheet sheetBody={sheetContent} onClose={handleCloseSheet} className={isSheetOpen ? 'open' : ''} />
+          <SideSheet sheetBody={sheetContent} onClose={handleCloseSheet} className={isSheetOpen ? 'open' : ''} styles={adminStyles} />
           </>
         )}
       </div>
