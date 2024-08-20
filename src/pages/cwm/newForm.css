@@ -1,9 +1,24 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent grey */
+    z-index: 9998; /* Below the modal */
+    display: none; /* Hidden by default */
+}
+
+.modal-overlay.show {
+    display: block; /* Show the overlay when modal is open */
+}
+
 .modal {
     position: fixed;
-    top: 60%;
+    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    /* background-color: white; */
+    background-color: white;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
@@ -12,6 +27,8 @@
     flex-direction: column;
     align-items: center;
     font-family: Arial, sans-serif;
+    width: 80%;
+    max-width: 600px;
 }
 
 .modal.hide {
@@ -38,50 +55,54 @@
 .form-subtitle {
     color: grey;
     font-size: 14px;
+    margin: 0px;
 }
 
 .form-input.error {
     border: 1px solid red;
 }
 
-/* Optional: Add a visual cue for the length limit */
-.form-input::after {
-    content: " (max 100 characters)";
-    font-size: 0.875em;
-    color: #888;
-}
-
 .form-group {
     margin-bottom: 10px;
     width: 100%;
-    display: flex; /* Use flexbox to align items horizontally */
-    align-items: center; /* Align items vertically centered */
-    gap: 10px; /* Add space between the label and input field */
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .form-group label {
-    flex: 0 0 150px; /* Fixed width for the label, adjust as needed */
+    flex: 0 0 150px;
     font-size: 12px;
-    font-weight: light;
-    text-align: right; /* Align text to the right */
+    text-align: right;
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
-    flex: 1; /* Make the input field take up the remaining space */
+    flex: 1;
     padding: 4px;
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 12px;
-    font-family: Arial, sans-serif; /* Ensure font family is set */
+    font-family: Arial, sans-serif;
     box-sizing: border-box;
+    width: 100%;
 }
 
+.work-form {
+    width: 100%;
+}
 
 .workform-textarea {
-    min-height: 50px; /* Minimum height for the textarea */
-    resize: vertical; /* Allows vertical resizing */
+    min-height: 50px;
+    resize: vertical;
+}
+
+.button-container {
+    width: 100%;
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
 }
 
 .form-button {
@@ -92,45 +113,31 @@
     border-radius: 4px;
     font-size: 16px;
     cursor: pointer;
-    align-self: flex-start;
+    margin-top: 20px;
+    align-self: center; 
 }
 
 .form-button:hover {
     background-color: #0056b3;
 }
 
-.form-group-checkbox {
+
+.form-content {
     display: flex;
-    /* justify-content: flex-end; */
+    flex-direction: column;
     align-items: center;
-    margin-bottom: 20px;
     width: 100%;
 }
-
-.form-checkbox-label {
-    display: flex;
-    align-items: center;
-    font-size: 12px;
-    color: #333;
-}
-
-.form-checkbox-label input[type="checkbox"] {
-    margin-right: 10px;
-    width: 20px;
-    height: 20px;
-    vertical-align: middle;
-}
-
-.form-checkbox-label input[type="checkbox"]:focus {
-    outline: none;
-}
-
 
 hr {
     border: none;
     border-top: 0.5px solid #aaaaaa;
     width: 100%;
     margin: 20px 0;
+}
+
+.required {
+    color: red;
 }
 
 .info-icon {
@@ -147,26 +154,9 @@ hr {
 .error-text {
     color: red;
     display: block;
-    margin-top: 0.25rem; /* Adjust spacing as needed */
+    margin-top: 0.25rem;
 }
 
-.form-input.error {
-    border-color: red;
-}
-
-.location-manager {
-    display: block;
-    margin-top: 5px;
-    margin-bottom: 15px;
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 12px;
-    color: #333;
-    font-family: Arial, sans-serif;
-}
-
-/* Style for the location-manager label */
 .location-manager-label {
     display: block;
     margin-top: 5px;
@@ -174,4 +164,31 @@ hr {
     font-size: 16px;
     color: #333;
     font-weight: bold;
+}
+
+.form-group-checkbox {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.form-checkbox-label {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    font-size: 12px;
+    margin-right: 10px;
+    color: #333;
+}
+
+.form-checkbox-label input[type="checkbox"] {
+    margin-right: 10px;
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+}
+
+.form-checkbox-label input[type="checkbox"]:focus {
+    outline: none;
 }

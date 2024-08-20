@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Breadcrumb from "../../components/Breadcrumb";
 import ProgressBar from "../../components/ProgressBar/ProgressBar";
-import ActivityForm from "./activityForm";
+import ActivityForm from "./taskForm";
 import SideSheet from "../../components/SideSheet";
 import ActivityDetailForm from './activityDetailForm';
 import activityStyles from './activitySideSheet.module.css';
@@ -16,7 +16,7 @@ const WorkDetails = () => {
   const [loading, setLoading] = useState(true);
 
   const [workDetails, setWorkDetails] = useState(null);
-  const [showActivityForm, setShowActivityForm] = useState(false);
+  const [showTaskForm, setShowTaskForm] = useState(false);
   const [activities, setActivities] = useState([]);
   const [selectedActivity, setSelectedActivity] = useState(null);
   const sidebarRef = useRef(null);
@@ -79,7 +79,7 @@ const WorkDetails = () => {
     try {
       const activityResponse = await fetchAActivity(workId, activityId);
       console.log(activityResponse.payload);
-      const { title, description, activityType, activityTypeSubtype, customFields } = activityResponse.payload;
+      const { title, description, activityNumber, activityType, activityTypeSubtype, customFields } = activityResponse.payload;
       const activityTypeId = activityType ? activityType.id : "";
 
       setActivityType(activityType);
@@ -92,6 +92,7 @@ const WorkDetails = () => {
       setActivityData({
         title,
         description,
+        activityNumber,
         activityTypeId,
         activityTypeSubtype,
         ...customFieldsData,
@@ -212,11 +213,12 @@ const WorkDetails = () => {
       console.error("Error fetching activity:", error);
     }
   };
-  
+
   useEffect(() => {
     if (selectedActivity && activityData) {
       const content = (
         <ActivityDetailForm
+          workDetails={workDetails}
           activity={selectedActivity}
           activityTypes={activityTypes}
           activityType={activityType}
@@ -232,7 +234,7 @@ const WorkDetails = () => {
       setShowSideSheet(true);
     }
   }, [selectedActivity, activityData]);
-  
+
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -260,7 +262,7 @@ const WorkDetails = () => {
   };
 
   const handleShowForm = () => {
-    setShowActivityForm(true);
+    setShowTaskForm(true);
   };
 
   const handleCustomFieldChange = (e, id) => {
@@ -457,9 +459,9 @@ const WorkDetails = () => {
         <div className="activities-container">
           <div className="tasks-header-container">
             <h3>Tasks</h3>
-            <div className="button-container">
+            <div className="newTask-button-container">
               <button className="modern-button" onClick={handleShowForm}> + </button>
-              {showActivityForm && <ActivityForm showActivityForm={showActivityForm} setShowActivityForm={setShowActivityForm} />}
+              {showTaskForm && <ActivityForm showTaskForm={showTaskForm} setShowTaskForm={setShowTaskForm} />}
             </div>
           </div>
 
@@ -480,7 +482,7 @@ const WorkDetails = () => {
           </ul>
         </div>
 
-        {showSideSheet && <SideSheet sheetBody={sideSheetContent} isOpen={showSideSheet} onClose={() => setShowSideSheet(false)} styles={activityStyles}/>}
+        {showSideSheet && <SideSheet sheetBody={sideSheetContent} isOpen={showSideSheet} onClose={() => setShowSideSheet(false)} styles={activityStyles} />}
         <hr /><br />
 
         <Tabs

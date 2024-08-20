@@ -135,8 +135,22 @@ export const createWork = async (workData, logIf = false, token) => {
     ...workData,
     logIf,
   };
-  return await fetchData("/api/cwm/v1/work", 'POST', workDataWithLog, token);
+
+  try {
+    const response = await fetchData("/api/cwm/v1/work", 'POST', workDataWithLog, token);
+    const workId = response.payload; // Extract the work ID from the response payload
+
+    if (typeof workId !== 'string') {
+      throw new Error("Invalid response format: work ID is missing or not a string");
+    }
+
+    return workId;
+  } catch (error) {
+    console.error('Error creating work:', error);
+    throw error;
+  }
 };
+
 
 export const fetchWorkType = async (token) => {
   return await fetchData('/api/cwm/v1/work/work-type', 'GET', null, token);

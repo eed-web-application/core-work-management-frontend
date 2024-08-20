@@ -254,7 +254,7 @@ hr {
   background-color: rgb(88, 12, 12);
 }
 
-.button-container {
+.newTask-button-container {
   display: flex;
   align-items: center;
 }

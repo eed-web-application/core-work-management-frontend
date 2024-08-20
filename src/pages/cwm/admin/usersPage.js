@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { fetchUsers } from '../../../services/api.js';
-import './adminPage.css'; // Assuming this is where your .user-list styles are
+import './adminPage.css';
 
 const UsersPage = ({ openSheet, isSheetOpen }) => {
   const [users, setUsers] = useState([]);

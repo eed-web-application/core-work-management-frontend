@@ -40,7 +40,6 @@
   .sideSheetContent {
     flex: 1;
     padding: 0rem 1rem 1rem 1rem;
-    overflow-y: auto;
   }
   
   .resizeHandle {

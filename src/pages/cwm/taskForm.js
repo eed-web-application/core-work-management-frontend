@@ -1,11 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { createWork, fetchWorkType, fetchLocations, fetchShopGroups, fetchLovValuesForField } from '../../services/api';
-import { toast } from 'react-toastify'; // Import toast
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import './workForm.css';
+import './newForm.css';
+
+const fetchData = async (fetchers) => {
+    try {
+        const results = await Promise.all(fetchers.map(fetcher => fetcher()));
+        return results.map(result => result.payload);
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        throw error;
+    }
+};
 
 function TaskForm({ showTaskForm, setShowTaskForm, selectedDomain }) {
-    // State to manage form input values
     const [workData, setWorkData] = useState({
         domainId: selectedDomain,
         title: '',
@@ -20,65 +29,32 @@ function TaskForm({ showTaskForm, setShowTaskForm, selectedDomain }) {
     const [locations, setLocations] = useState([]);
     const [shopGroups, setShopGroups] = useState([]);
     const [subsystemGroups, setSubsystemGroups] = useState([]);
-    const [createWorkLogChecked, setCreateWorkLogChecked] = useState(false); // State for checkbox
+    const [createWorkLogChecked, setCreateWorkLogChecked] = useState(false);
 
     useEffect(() => {
-        const fetchWorkTypes = async () => {
+        const fetchInitialData = async () => {
             try {
-                const typesResponse = await fetchWorkType();
-                setWorkTypes(typesResponse.payload);
-            } catch (error) {
-                console.error('Error fetching work types:', error);
-            }
-        };
-    
-        fetchWorkTypes();
-    }, []);
-    
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                // Fetch locations and shopGroups for the selected domain
-                const [locationsResponse, shopGroupsResponse] = await Promise.all([
-                    fetchLocations(),
-                    fetchShopGroups()
+                const [types, locs, shops, subsystems] = await fetchData([
+                    fetchWorkType,
+                    fetchLocations,
+                    fetchShopGroups,
+                    () => fetchLovValuesForField("Activity", "664ba5674481b14757807930", "subsystem"),
                 ]);
-    
-                // Set locations filtered by selectedDomain
-                setLocations(locationsResponse.payload.filter(location => location.domain.id === selectedDomain) || []);
-                // Set shopGroups filtered by selectedDomain
-                setShopGroups(shopGroupsResponse.payload.filter(shopGroup => shopGroup.domain.id === selectedDomain) || []);
+                setWorkTypes(types);
+                setLocations(locs.filter(location => location.domain.id === selectedDomain));
+                setShopGroups(shops.filter(shopGroup => shopGroup.domain.id === selectedDomain));
+                setSubsystemGroups(subsystems);
             } catch (error) {
-                console.error('Error fetching data:', error);
+                console.error('Error fetching initial data:', error);
             }
         };
-    
-        fetchData();
+        fetchInitialData();
     }, [selectedDomain]);
-
-    useEffect(() => {
-        const fetchSubSystemGroups = async () => {
-            try {
-                const lovValuesResponse = await fetchLovValuesForField("Activity", "664ba5674481b14757807930", "subsystem");
-                setSubsystemGroups(lovValuesResponse.payload);
-            } catch (error) {
-                console.error('Error fetching subsystem groups:', error);
-            }
-        };
-
-        fetchSubSystemGroups();
-    }, []);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            console.log(workData);
-            const createdWork = await createWork(workData, createWorkLogChecked); // Passes createWorkLogChecked as logIf
-            console.log(createdWork);
-            const workId = createdWork.payload;
-            console.log(workId);
-    
+            const createdWork = await createWork(workData, createWorkLogChecked);
             toast.success("Task created successfully!");
             setShowTaskForm(false);
             window.location.reload();
@@ -87,148 +63,110 @@ function TaskForm({ showTaskForm, setShowTaskForm, selectedDomain }) {
             toast.error("Error creating work. Please try again.");
         }
     };
-    
 
-    // Function to handle input changes
     const handleInputChange = (e) => {
-        const { name, value, type } = e.target;
-
-        // Check if the input field is a select element with multiple options
-        if (type === 'select-multiple') {
-            // Get an array of selected option values
-            const selectedValues = Array.from(e.target.selectedOptions).map(option => option.value);
-            setWorkData({ ...workData, [name]: selectedValues });
-        } else {
-            // For other input types, simply update the value in the state
-            setWorkData({ ...workData, [name]: value });
-        }
+        const { name, value, type, selectedOptions } = e.target;
+        setWorkData(prevState => ({
+            ...prevState,
+            [name]: type === 'select-multiple'
+                ? Array.from(selectedOptions).map(option => option.value)
+                : value,
+        }));
     };
 
     return (
-        <div className={`modal ${showTaskForm ? "show" : "hide"}`}>
-            <div className="form-content">
-                <span className="close" onClick={() => setShowTaskForm(false)}>
-                    &times;
-                </span>
-
-                <h1 className="workform-title">Create a New Task</h1> {/* Title for the form */}
-                <p className="form-subtitle">Please create a task</p>
-                <hr className="line" /><br></br>
-
-                <form onSubmit={handleSubmit} className="work-form">
-
-                    <div className="form-group">
-                        <label htmlFor="workTypeId" className="form-label">Type<span className="required">*</span></label>
-                        <select
-                            id="workTypeId"
-                            name="workTypeId"
-                            value={workData.workTypeId}
-                            onChange={handleInputChange}
-                            className="form-select"
-                            required
-                        >
+        <>
+            <div className={`modal-overlay ${showTaskForm ? "show" : ""}`}></div>
+            <div className={`modal ${showTaskForm ? "show" : "hide"}`}>
+                <div className="form-content">
+                    <span className="close" onClick={() => setShowTaskForm(false)}>&times;</span>
+                    <h1 className="workform-title">Create a New Task</h1>
+                    <p className="form-subtitle">Please create a task</p>
+                    <hr className="line" />
+                    <form onSubmit={handleSubmit} className="work-form">
+                        <FormGroup label="Type" id="workTypeId" name="workTypeId" value={workData.workTypeId} onChange={handleInputChange} required>
                             <option value="">Select Work Type</option>
                             {workTypes.map(type => (
                                 <option key={type.id} value={type.id}>{type.title}</option>
                             ))}
-                        </select>
-                    </div>
+                        </FormGroup>
 
-                    <div className="form-group">
-                        <label htmlFor="title" className="form-label">Title<span className="required">*</span></label>
-                        <input
-                            type="text"
-                            id="title"
-                            name="title"
-                            value={workData.title}
-                            onChange={handleInputChange}
-                            className="form-input"
-                            required
-                        />
-                    </div>
+                        <FormGroup label="Title" id="title" name="title" value={workData.title} onChange={handleInputChange} required />
 
-                    <div className="form-group">
-                        <label htmlFor="description" className="form-label">Description<span className="required">*</span></label>
-                        <input
-                            // type="text"
-                            id="description"
-                            name="description"
-                            value={workData.description}
-                            onChange={handleInputChange}
-                            className="workform-textarea"
-                            required
-                        />
-                    </div>
+                        <FormGroup label="Description" id="description" name="description" value={workData.description} onChange={handleInputChange} required />
 
-                    <div className="form-group">
-                        <label htmlFor="locationId" className="form-label">Location<span className="required">*</span></label>
-                        <select
-                            id="locationId"
-                            name="locationId"
-                            value={workData.locationId}
-                            onChange={handleInputChange}
-                            className="form-select"
-                            required
-                        >
+                        <FormGroup label="Location" id="locationId" name="locationId" value={workData.locationId} onChange={handleInputChange} required>
                             <option value="">Select Location</option>
                             {locations.map(location => (
                                 <option key={location.id} value={location.id}>{location.name}</option>
                             ))}
-                        </select>
-                    </div>
+                        </FormGroup>
 
-                    <div className="form-group">
-                        <label htmlFor="shopGroupId" className="form-label">Shop Group<span className="required">*</span></label>
-                        <select
-                            id="shopGroupId"
-                            name="shopGroupId"
-                            value={workData.shopGroupId}
-                            onChange={handleInputChange}
-                            className="form-select"
-                        >
+                        <FormGroup label="Shop Group" id="shopGroupId" name="shopGroupId" value={workData.shopGroupId} onChange={handleInputChange}>
                             <option value="">Select Shop Group</option>
                             {shopGroups.map(group => (
                                 <option key={group.id} value={group.id}>{group.name}</option>
                             ))}
-                        </select>
-                    </div>
+                        </FormGroup>
 
-                    <div className="form-group">
-                        <label htmlFor="subsystemGroupId" className="form-label">Subsystem Group<span className="required">*</span></label>
-                        <select
-                            id="subsystemGroupId"
-                            name="subsystemGroupId"
-                            value={workData.subsystemGroupId}
-                            onChange={handleInputChange}
-                            className="form-select"
-                            required
-                        >
+                        <FormGroup label="Subsystem Group" id="subsystemGroupId" name="subsystemGroupId" value={workData.subsystemGroupId} onChange={handleInputChange} required>
                             <option value="">Select Subsystem Group</option>
                             {subsystemGroups.map(group => (
                                 <option key={group.id} value={group.id}>{group.value}</option>
                             ))}
-                        </select>
-                    </div>
+                        </FormGroup>
 
-                    <div className="form-group">
-                        <label htmlFor="createWorkLog" className="form-checkbox-label">
-                            <input
-                                type="checkbox"
-                                id="createWorkLog"
-                                name="createWorkLog"
-                                checked={createWorkLogChecked}
-                                onChange={() => setCreateWorkLogChecked(!createWorkLogChecked)}
-                            />
-                            <span>Select to create Work Log for this Problem Ticket</span>
-                        </label>
-                    </div>
+                        <div>
+                            <label htmlFor="createWorkLog" className="form-checkbox-label">
+                                <input
+                                    type="checkbox"
+                                    id="createWorkLog"
+                                    name="createWorkLog"
+                                    checked={createWorkLogChecked}
+                                    onChange={() => setCreateWorkLogChecked(prev => !prev)}
+                                />
+                                <span>Select to create Work Log for this Problem Ticket</span>
+                            </label>
+                        </div>
 
-                    <button type="submit" className="form-button">Create Work</button>
-                </form>
-
+                        <button type="submit" className="form-button">Create Work</button>
+                    </form>
+                </div>
             </div>
-        </div>
+        </>
     );
 }
+
+// Reusable FormGroup component
+const FormGroup = ({ label, id, name, value, onChange, required, children }) => (
+    <div className="form-group">
+        <label htmlFor={id} className="form-label">
+            {label}<span className="required">{required ? '*' : ''}</span>
+        </label>
+        {children ? (
+            <select
+                id={id}
+                name={name}
+                value={value}
+                onChange={onChange}
+                className="form-select"
+                required={required}
+                multiple={name.includes('[]')} // Handle multi-select if needed
+            >
+                {children}
+            </select>
+        ) : (
+            <input
+                type={name === 'description' ? 'textarea' : 'text'}
+                id={id}
+                name={name}
+                value={value}
+                onChange={onChange}
+                className={name === 'description' ? 'workform-textarea' : 'form-input'}
+                required={required}
+            />
+        )}
+    </div>
+);
 
 export default TaskForm;
