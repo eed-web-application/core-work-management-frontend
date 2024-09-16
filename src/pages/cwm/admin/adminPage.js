@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Switch, NavLink } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, NavLink, Redirect } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faPeopleGroup, faLayerGroup, faHelmetSafety, faLocationDot } from '@fortawesome/free-solid-svg-icons';
 import UsersPage from './usersPage';
@@ -75,6 +75,11 @@ const AdminPage = () => {
 
         <div className="admin-content">
           <Switch>
+            {/* Default route to redirect to /cwm/admin/users */}
+            <Route exact path="/cwm/admin">
+              <Redirect to="/cwm/admin/users" />
+            </Route>
+
             <Route path="/cwm/admin/users" component={() => <UsersPage openSheet={handleOpenSheet} isSheetOpen={isSheetOpen} />} />
             <Route path="/cwm/admin/groups" component={() => <GroupsPage openSheet={handleOpenSheet} />} />
             <Route path="/cwm/admin/domains" component={() => <DomainsPage openSheet={handleOpenSheet} />} />
@@ -82,10 +87,11 @@ const AdminPage = () => {
             <Route path="/cwm/admin/locations" component={() => <LocationsPage openSheet={handleOpenSheet} />} />
           </Switch>
         </div>
+
         {isSheetOpen && (
-            <>
-          <div className="side-sheet-overlay" onClick={handleCloseSheet}></div>
-          <SideSheet sheetBody={sheetContent} onClose={handleCloseSheet} className={isSheetOpen ? 'open' : ''} styles={adminStyles} />
+          <>
+            <div className="side-sheet-overlay" onClick={handleCloseSheet}></div>
+            <SideSheet sheetBody={sheetContent} onClose={handleCloseSheet} className={isSheetOpen ? 'open' : ''} styles={adminStyles} />
           </>
         )}
       </div>

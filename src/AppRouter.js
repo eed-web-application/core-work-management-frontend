@@ -9,6 +9,7 @@ import AdminPage from './pages/cwm/admin/adminPage';
 import WorkDetails from './pages/cwm/workDetails';
 import Elog from './pages/elog/elog';
 import Meeting from './pages/meeting/meeting';
+import DashboardPage from './pages/cwm/dashboardPage';
 
 function AppRouter() {
   return (
@@ -16,12 +17,13 @@ function AppRouter() {
       <Layout>
         <Switch>
           <Route exact path="/" component={Home} />
+          <Route path="/cwm/dashboard" component={Cwm} />
           <Route path="/cwm/admin" component={AdminPage} />
           <Route path="/cwm/pmm" component={Pmm} />
           <Route path="/cwm/:workId/:activityId" component={WorkDetails} />
           <Route path="/cwm/:workId" component={WorkDetails} />
           <Route path="/home" component={Home} />
-          <Route path="/cwm" component={Cwm} />
+          {/* <Route path="/cwm" component={Cwm} /> */}
           <Route path="/elog" component={Elog} />
           <Route path="/815" component={Meeting} />
           <Route path="/settings" component={Settings} />

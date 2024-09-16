@@ -166,7 +166,7 @@
     left: 60px;
     width: calc(100% - 60px);
     display: flex;
-    justify-content: space-around;
+    /* justify-content: space-around; */
     align-items: center;
     background-color: white;
     z-index: 98;

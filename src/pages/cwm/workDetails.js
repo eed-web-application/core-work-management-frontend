@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { fetchAWork, fetchActivitiesOfWork, fetchShopGroups, fetchLocations, fetchAActivity, updateWork, fetchShopGroup, fetchLovValuesForField, fetchActivityType, fetchActivitySubtype } from "../../services/api";
+import { fetchAActivity, updateWork, fetchLovValuesForField, fetchActivityType, fetchActivitySubtype } from "../../services/api";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Breadcrumb from "../../components/Breadcrumb";
@@ -9,71 +9,47 @@ import ActivityForm from "./taskForm";
 import SideSheet from "../../components/SideSheet";
 import ActivityDetailForm from './activityDetailForm';
 import activityStyles from './activitySideSheet.module.css';
+import useWorkDetails from '../../hooks/useWorkDetails';
+import SelectField from "../../components/SelectField";
+import Tabs from "../../components/Tabs";
+import CommentsSection from "../../components/CommentsSection";
 import "./workDetails.css";
 
 const WorkDetails = () => {
   const { workId, activityId } = useParams();
-  const [loading, setLoading] = useState(true);
-
-  const [workDetails, setWorkDetails] = useState(null);
   const [showTaskForm, setShowTaskForm] = useState(false);
-  const [activities, setActivities] = useState([]);
   const [selectedActivity, setSelectedActivity] = useState(null);
   const sidebarRef = useRef(null);
   const [activeTab, setActiveTab] = useState("activityLog");
-  const [shopGroupUsers, setShopGroupUsers] = useState([]);
-  const [locations, setLocations] = useState([]);
-  const [shopgroups, setShopgroups] = useState([]);
-  const [lovValues, setLovValues] = useState([]);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
-  const [initialAssignedTo, setInitialAssignedTo] = useState(null);
   const [showSideSheet, setShowSideSheet] = useState(false);
   const [sideSheetContent, setSideSheetContent] = useState(null);
+  const [lovValuesDictionary, setLovValuesDictionary] = useState({});
 
   const [activityData, setActivityData] = useState({});
   const [activityTypes, setActivityTypes] = useState([]);
   const [activityType, setActivityType] = useState(null);
   const [activitySubtypes, setActivitySubtypes] = useState([]);
   const [customFields, setCustomFields] = useState([]);
-  const [lovValuesDictionary, setLovValuesDictionary] = useState({});
+
+  const {
+    workDetails,
+    activities,
+    shopGroupUsers,
+    locations,
+    shopgroups,
+    lovValues,
+    initialAssignedTo,
+    loading,
+    setWorkDetails,
+  } = useWorkDetails(workId);
 
   const breadcrumbItems = useMemo(() => [
     { label: "Home", link: "/" },
     { label: "Issues", link: "/cwm" },
     { label: "Issue Details", link: `/cwm/${workId}` },
   ], [workId]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [workResponse, activityResponse] = await Promise.all([
-          fetchAWork(workId),
-          fetchActivitiesOfWork(workId),
-        ]);
-        setWorkDetails(workResponse.payload);
-        setInitialAssignedTo(workResponse.payload.assignedTo);
-        setActivities(activityResponse.payload);
-
-        // populate assignedTo, locations, and shop groups dropdowns
-        const shopGroupResponse = await fetchShopGroup(workResponse.payload.shopGroup.id);
-        setShopGroupUsers(shopGroupResponse.payload.users.map(user => user.user));
-        const locationsResponse = await fetchLocations();
-        setLocations(locationsResponse.payload);
-        const shopgroupsResponse = await fetchShopGroups();
-        setShopgroups(shopgroupsResponse.payload);
-
-        // Fetch LOV values for subsystem
-        const subsystemValues = await fetchLovValuesForField("Activity", "664ba5664481b1475780792e", "subsystem");
-        setLovValues(subsystemValues.payload);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [workId]);
 
   const fetchActivityData = async (workId, activityId) => {
     try {
@@ -169,39 +145,6 @@ const WorkDetails = () => {
       return 'Created';
     }
     return 'Pending Assignment';
-  };
-
-  const addComment = (text, parentId = null) => {
-    const newComment = {
-      id: Date.now(),
-      text,
-      date: new Date(),
-      replies: [],
-      parentId,
-    };
-    setComments((prevComments) => {
-      if (parentId) {
-        const updateComments = (comments) => {
-          return comments.map(comment => {
-            if (comment.id === parentId) {
-              return {
-                ...comment,
-                replies: [...comment.replies, newComment],
-              };
-            }
-            if (comment.replies.length) {
-              return {
-                ...comment,
-                replies: updateComments(comment.replies),
-              };
-            }
-            return comment;
-          });
-        };
-        return updateComments(prevComments);
-      }
-      return [...prevComments, newComment];
-    });
   };
 
   const handleActivityClick = async (activity) => {
@@ -323,35 +266,6 @@ const WorkDetails = () => {
     </div>
   );
 
-  const SelectField = ({ label, value, options, onChange }) => (
-    <DetailRow label={label}>
-      <select value={value} className="input-field" onChange={onChange}>
-        {options.map((option) => (
-          <option key={option.id} value={option.value}>
-            {option.name || option.value}
-          </option>
-        ))}
-      </select>
-    </DetailRow>
-  );
-
-  const Tabs = ({ activeTab, handleTabChange, tabs }) => (
-    <div className="tabs-container">
-      <div className="tab-buttons">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            className={`tab-button ${activeTab === tab.id ? "active" : ""}`}
-            onClick={() => handleTabChange(tab.id)}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-      <div className="tab-content">{tabs.find((tab) => tab.id === activeTab)?.content}</div>
-    </div>
-  );
-
   const ActivityLog = ({ workDetails }) => (
     <div className="status-log-container">
       {workDetails?.statusHistory?.length ? (
@@ -369,24 +283,6 @@ const WorkDetails = () => {
       ) : (
         <p>No status history available.</p>
       )}
-    </div>
-  );
-
-  const CommentsSection = ({ comments, newComment, setNewComment, handleCommentSubmit }) => (
-    <div className="comments-section">
-      <h3>Comments</h3>
-      <div className="comment-form">
-        <textarea
-          className="comment-input"
-          placeholder="Add a comment..."
-          value={newComment}
-          onChange={(e) => setNewComment(e.target.value)}
-        />
-        <button className="add-comment-button" onClick={handleCommentSubmit}>Post Comment</button>
-      </div>
-      <div className="comment-list">
-        {comments.length > 0 ? comments.map((comment) => <Comment key={comment.id} comment={comment} />) : <p>No comments yet</p>}
-      </div>
     </div>
   );
 

@@ -1,21 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { createWork, fetchWorkType, fetchLocations, fetchShopGroups, fetchLovValuesForField } from '../../services/api';
+import { createWork, fetchWorkType, fetchLocations, fetchShopGroups, fetchLovValuesForField, fetchLovValues } from '../../services/api';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './newForm.css';
-
-const projects = [
-    "CBXFEL", "COMMON", "DASEL", "FACET", "FACET User Area", "LCLS", "LCLS-II", "LCLS-II HE", "OTHER"
-];
-
-const urgencies = [
-    { value: "Scheduled", label: "Scheduled" },
-    { value: "Immediate", label: "Immediate" },
-    { value: "Downtime", label: "Downtime" },
-    { value: "Low Priority", label: "Low Priority" }
-];
 
 function WorkForm({ showWorkForm, setShowWorkForm, selectedDomain }) {
     const [workData, setWorkData] = useState({
@@ -36,20 +25,26 @@ function WorkForm({ showWorkForm, setShowWorkForm, selectedDomain }) {
     const [createWorkLogChecked, setCreateWorkLogChecked] = useState(false);
     const [errors, setErrors] = useState({});
     const [selectedLocationManager, setSelectedLocationManager] = useState('');
+    const [projectGroup, setProjectGroup] = useState([]);
+    const [urgencyGroup, setUrgencyGroup] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [typesResponse, locationsResponse, shopGroupsResponse, subsystemGroupsResponse] = await Promise.all([
+                const [typesResponse, locationsResponse, shopGroupsResponse, subsystemGroupsResponse, projectGroupsResponse, urgencyGroupsResponse] = await Promise.all([
                     fetchWorkType(),
                     fetchLocations(),
                     fetchShopGroups(),
-                    fetchLovValuesForField("Activity", "664ba5664481b1475780792e", "subsystem")
+                    fetchLovValuesForField("Activity", "664ba5664481b1475780792e", "subsystem"),
+                    fetchLovValuesForField("Activity", "664ba5664481b1475780792e", "project"),
+                    fetchLovValuesForField("Work", "664ba5644481b147578078bc", "urgency")
                 ]);
                 setWorkTypes(typesResponse.payload);
                 setLocations(locationsResponse.payload.filter(location => location.domain.id === selectedDomain) || []);
                 setShopGroups(shopGroupsResponse.payload.filter(shopGroup => shopGroup.domain.id === selectedDomain) || []);
                 setSubsystemGroups(subsystemGroupsResponse.payload);
+                setProjectGroup(projectGroupsResponse.payload);
+                setUrgencyGroup(urgencyGroupsResponse.payload);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -188,8 +183,8 @@ function WorkForm({ showWorkForm, setShowWorkForm, selectedDomain }) {
                                         className={`form-select ${errors[key] ? 'error' : ''}`}
                                     >
                                         <option value="">Select {label}</option>
-                                        {key === 'project' ? renderSelectOptions(projects.map(p => ({ id: p, value: p }))) :
-                                         key === 'urgency' ? renderSelectOptions(urgencies) :
+                                        {key === 'project' ? renderSelectOptions(projectGroup) :
+                                         key === 'urgency' ? renderSelectOptions(urgencyGroup) :
                                          key === 'workTypeId' ? renderSelectOptions(workTypes) :
                                          key === 'locationId' ? renderSelectOptions(locations) :
                                          key === 'shopGroupId' ? renderSelectOptions(shopGroups) :

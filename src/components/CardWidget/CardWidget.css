@@ -1,73 +1,28 @@
-/* CardWidget.css */
-.home-page {
-  display: flex;
-  justify-content: center;
-}
-
-.card {
-  border-radius: 10px;
-  padding: 30px;
-  margin: 10px;
-  justify-content: center;
-  background-color: white;
-  width: 100%;
-}
-  
-.card h3 {
-  margin-bottom: 10px;
-  font-size: 18px;
-}
-  
-.card-table {
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  padding-left: 20px;
-  padding-right: 20px;
-  height: 300px;
-  overflow-y: auto;
-}
-
-.table-header {
-  display: flex;
-  justify-content: space-between;
-  border-bottom: 1px solid #ccc;
-  background-color: white;
-  font-weight: bold;
-  padding-bottom: 5px;
-  padding-left: 20px;
-  padding-right: 20px;
-  position: sticky;
-  top: 0;
-  z-index: 1;
-}
-
-.table-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 5px 0;
-  padding-top: 15px;
-  padding-bottom: 15px;
+.card-widget {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  text-align: center;
+  transition: transform 0.2s ease-in-out;
   cursor: pointer;
-  padding-left: 20px;
-  padding-right: 20px;
 }
 
-.table-row:hover {
-  background-color: #f0f0f0; /* Change the color as desired */
-  border-radius: 10px;
+.card-widget:hover {
+  transform: translateY(-5px);
 }
 
-/* Styles for medium-sized screens */
-@media (max-width: 768px) {
-  .card {
-    width: 100%;
-  }
+.card-icon {
+  font-size: 3rem;
+  margin-bottom: 15px;
 }
 
-/* Styles for smaller screens */
-@media (max-width: 480px) {
-  .card {
-    width: 100%;
-  }
+.card-content h2 {
+  font-size: 1.5rem;
+  margin: 10px 0;
+}
+
+.card-content p {
+  font-size: 1rem;
+  color: #555;
 }

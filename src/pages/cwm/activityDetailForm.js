@@ -233,7 +233,7 @@ const ActivityDetailForm = ({
                                             className={styles.formSelect}
                                         >
                                             <option value="">Select {camelToNormalCase(field.label)}</option>
-                                            {lovValues[field.name]?.map((option) => (
+                                            {(lovValues[field.name] || []).map((option) => (
                                                 <option key={option.id} value={option.value}>
                                                     {option.value}
                                                 </option>
@@ -249,6 +249,7 @@ const ActivityDetailForm = ({
                                             className={styles.formInput}
                                         />
                                     )}
+                                    
                                 </div>
                             ))
                         )}

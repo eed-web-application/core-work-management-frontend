@@ -7,7 +7,7 @@ import "./Sidebar.css";
 function Sidebar() {
   const location = useLocation();
   const [isCollapsed, setIsCollapsed] = useState(true);
-  const [activeButton, setActiveButton] = useState(localStorage.getItem("activeButton") || "/cwm");
+  const [activeButton, setActiveButton] = useState(localStorage.getItem("activeButton") || "/cwm/dashboard");
 
   useEffect(() => {
     const path = location.pathname;
@@ -16,8 +16,8 @@ function Sidebar() {
       setActiveButton("/cwm/pmm");
     } else if (path.startsWith("/cwm/admin")) {
       setActiveButton("/cwm/admin");
-    } else if (path.startsWith("/cwm")) {
-      setActiveButton("/cwm");
+    } else if (path.startsWith("/cwm/dashboard")) {
+      setActiveButton("/cwm/dashboard");
     } else if (path.startsWith("/cis")) {
       setActiveButton("/cis");
     } else if (path.startsWith("/admin")) {
@@ -31,14 +31,14 @@ function Sidebar() {
     const currentURL = window.location.href;
     if (currentURL.includes("/cwm/pmm")) {
       setActiveButton("/cwm/pmm");
-    } else if (currentURL.includes("/cwm")) {
-      setActiveButton("/cwm");
+    } else if (currentURL.includes("/cwm/dashboard")) {
+      setActiveButton("/cwm/dashboard");
     }
   }, []);
 
   const buttons = [
     { path: "/home", icon: faHome, label: "Home" },
-    { path: "/cwm", icon: faTicket, label: "Issues" },
+    { path: "/cwm/dashboard", icon: faTicket, label: "Issues" },
     { path: "/cwm/pmm", icon: faScrewdriverWrench, label: "PMM" },
     { path: "/815", icon: faClock, label: "8:15" },
     { path: "/cis", icon: faBox, label: "Inventory" },

@@ -33,6 +33,11 @@
   align-items: flex-start;
 }
 
+* {
+  box-sizing: border-box;
+}
+
+
 .labelColumn {
   display: flex;
   flex-direction: column;
@@ -55,7 +60,8 @@
 
 .formLabel {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 5px;
+  margin-top: 6px;
   font-size: 12px;
   color: #333;
   justify-content: center;
@@ -155,24 +161,25 @@
 
 .tabContainer {
   display: flex;
-  margin-top: 20px;
+  overflow-x: auto;
+  white-space: nowrap;
+  width: 100%;
 }
 
 .tabButton {
-  padding: 10px 20px;
+  padding: 5px 10px;
   cursor: pointer;
   background-color: #f1f1f1;
   border: 1px solid #ccc;
-  margin-right: 5px;
   border-radius: 4px 4px 0 0;
-  font-size: 14px;
+  font-size: 12px;
   font-family: inherit;
 }
 
 .activeTab {
   background-color: #007bff;
   color: white;
-  border-bottom: 2px solid white;
+  border-bottom: 1px solid white;
 }
 
 .tabButton:not(.activeTab):hover {
