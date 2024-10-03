@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
-import { fetchAllActivity, createBucket, fetchAllBuckets, fetchBucketTypes, fetchBucketStatus } from '../../services/api';
+import { fetchAllActivity, createBucket, fetchAllBucket, fetchBucketTypes, fetchBucketStatus } from '../../services/api';
 import 'react-datepicker/dist/react-datepicker.css';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -20,24 +20,24 @@ function Pmm() {
     const [allJobsData, setAllJobsData] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
 
-    useEffect(() => {
-        if (activeTab === 'All Jobs') {
-            fetchAllActivity()
-                .then(data => {
-                    setAllJobsData(data.payload);
-                })
-                .catch(error => {
-                    console.error('Error fetching activities:', error);
-                });
-        }
-    }, [activeTab]);
+    // useEffect(() => {
+    //     if (activeTab === 'All Jobs') {
+    //         fetchAllActivity()
+    //             .then(data => {
+    //                 setAllJobsData(data.payload);
+    //             })
+    //             .catch(error => {
+    //                 console.error('Error fetching activities:', error);
+    //             });
+    //     }
+    // }, [activeTab]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const data = await fetchBucketTypes();
                 const status = await fetchBucketStatus();
-                const bucket = await fetchAllBuckets();
+                const bucket = await fetchAllBucket();
                 setBuckets(bucket.payload);
                 setBucketTypes(data.payload);
                 setBucketStatus(status.payload);

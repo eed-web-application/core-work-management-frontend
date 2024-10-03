@@ -1,0 +1,78 @@
+/* Modal Overlay */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modalContent {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 500px;
+    max-width: 90%;
+  }
+  
+  .formGroup {
+    margin-bottom: 15px;
+  }
+  
+  .formGroup label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .formGroup input,
+  .formGroup textarea,
+  .formGroup select {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+  }
+  
+  .modalActions {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .modalActions button {
+    padding: 10px 15px;
+    margin-top: 10px;
+    cursor: pointer;
+  }
+  
+  /* Work Type Button Styles */
+  .workTypeButtons {
+    display: flex;
+    flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+    gap: 10px; /* Add spacing between buttons */
+  }
+  
+  .workTypeButton {
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.2s;
+  }
+  
+  .workTypeButton:hover {
+    background-color: #e0e0e0; /* Highlight on hover */
+  }
+  
+  .selected {
+    background-color: #007bff; /* Highlight color for selected button */
+    color: white; /* Change text color for better contrast */
+    border: 1px solid #007bff; /* Same border color as background */
+    transform: scale(1.05); /* Slightly enlarge selected button */
+  }
+  

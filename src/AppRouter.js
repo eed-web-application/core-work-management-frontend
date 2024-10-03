@@ -17,11 +17,11 @@ function AppRouter() {
       <Layout>
         <Switch>
           <Route exact path="/" component={Home} />
-          <Route path="/cwm/dashboard" component={Cwm} />
-          <Route path="/cwm/admin" component={AdminPage} />
           <Route path="/cwm/pmm" component={Pmm} />
-          <Route path="/cwm/:workId/:activityId" component={WorkDetails} />
+          <Route exact path="/cwm/dashboard" component={Cwm} />
+          {/* <Route path="/cwm/:workId/:activityId" component={WorkDetails} /> */}
           <Route path="/cwm/:workId" component={WorkDetails} />
+          <Route path="/cwm/admin" component={AdminPage} />
           <Route path="/home" component={Home} />
           {/* <Route path="/cwm" component={Cwm} /> */}
           <Route path="/elog" component={Elog} />

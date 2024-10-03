@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { createWorkDomain, fetchWorkDomain } from '../../../services/api.js';
-import './adminPage.css'; // Assuming this is where your .user-list styles are
+import { createDomain, fetchAllDomain } from '../../../services/api.js';
+import './adminPage.css'; 
 
 const DomainsPage = ({ openSheet, isSheetOpen }) => {
   const [domains, setDomains] = useState([]);
@@ -11,7 +11,7 @@ const DomainsPage = ({ openSheet, isSheetOpen }) => {
 
   useEffect(() => {
     const fetchDomainData = async () => {
-      const response = await fetchWorkDomain();
+      const response = await fetchAllDomain();
       setDomains(response.payload);
       setFilteredDomains(response.payload);
     };
@@ -52,8 +52,8 @@ const handleCloseModal = () => {
 
 const handleSaveDomain = async () => {
     const newDomain = { name: newDomainName };
-    await createWorkDomain(newDomain);
-    const response = await fetchWorkDomain();
+    await createDomain(newDomain);
+    const response = await fetchAllDomain();
     setDomains(response.payload);
     setFilteredDomains(response.payload);
     handleCloseModal();

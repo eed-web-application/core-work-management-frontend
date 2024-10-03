@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from 'react-router-dom';
-import { fetchShopGroups, fetchLocations, fetchWorkDomain, createWorkDomain } from "../../services/api.js";
+import { fetchAllShopGroup, fetchAllLocation, fetchAllDomain, createDomain } from "../../services/api.js";
 import ShopGroupForm from "./shopGroupForm.js";
 import LocationForm from '../cwm/locationForm.js';
 import "./admin.css";
@@ -19,7 +19,7 @@ function CWMadmin() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const workDomainData = await fetchWorkDomain();
+        const workDomainData = await fetchAllDomain();
         setSelectedDomain(workDomainData.payload[0].id); // Set default domain
         setDomains(workDomainData.payload);
       } catch (error) {
@@ -33,13 +33,13 @@ function CWMadmin() {
 useEffect(() => {
   const fetchDataForDomain = async () => {
     try {
-      const locationsData = await fetchLocations();
+      const locationsData = await fetchAllLocation();
       if (selectedDomain !== '') {
         setLocations(locationsData.payload.filter(location => location.domain.id === selectedDomain));
       } else {
         setLocations(locationsData.payload);
       }
-      const shopGroupsData = await fetchShopGroups();
+      const shopGroupsData = await fetchAllShopGroup();
       if (selectedDomain !== '') {
         setShopGroups(shopGroupsData.payload.filter(shopGroup => shopGroup.domain.id === selectedDomain));
       } else {
@@ -69,7 +69,7 @@ useEffect(() => {
   const handleDomainFormSubmit = async (event) => {
     event.preventDefault();
     try {
-      await createWorkDomain(newDomainData);
+      await createDomain(newDomainData);
       setNewDomainData({ name: '', description: '' });
       setShowDomainForm(false);
       setSelectedDomain(''); // Reset selected domain to trigger useEffect

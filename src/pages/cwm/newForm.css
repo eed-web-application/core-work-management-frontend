@@ -6,7 +6,7 @@
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent grey */
     z-index: 9998; /* Below the modal */
-    display: none; /* Hidden by default */
+    /* display: none;  */
 }
 
 .modal-overlay.show {

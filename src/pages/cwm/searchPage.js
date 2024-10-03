@@ -1,36 +1,70 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useTable, useSortBy, usePagination, useFilters } from 'react-table';
-import { fetchWork } from "../../services/api.js";
-import SubHeader from './subHeader.js';
+import { fetchAllWork, fetchAllDomain, fetchWorkType } from "../../services/api.js";
 import './searchPage.css';
-import { useHistory } from "react-router-dom"; 
+import { useHistory } from "react-router-dom";
 import SearchCard from './searchCard';
 
-const SearchPage = ({ selectedDomain }) => {
+const SearchPage = () => {
   const [state, setState] = useState({
     searchInput: "",
     work: [],
     totalResults: 0,
     hasMore: true,
+    selectedDomain: "",
+    domains: [],
   });
+
   const [sortOptions, setSortOptions] = useState("date");
   const itemsPerPage = 10;
   const history = useHistory();
 
   useEffect(() => {
-    fetchData();
-  }, [selectedDomain]);
+    const fetchDomains = async () => {
+      try {
+        const domainData = await fetchAllDomain();
+        if (domainData?.payload?.length > 0) {
+          const defaultDomainId = domainData.payload[0].id;
+          setState(prevState => ({
+            ...prevState,
+            domains: domainData.payload,
+            selectedDomain: defaultDomainId, 
+          }));
+        }
+      } catch (error) {
+        console.error("Error fetching domains:", error);
+      }
+    };
+
+    fetchDomains();
+  }, []);
+
+  useEffect(() => {
+    console.log("SelectedDomain", state.selectedDomain);
+  }, [state.selectedDomain]); 
+
+  useEffect(() => {
+    if (state.selectedDomain) {
+      fetchData();
+    }
+  }, [state.selectedDomain, state.searchInput]);
+
+  useEffect(() => {
+    if (state.selectedDomain) {
+      fetchWorkType(state.selectedDomain);
+    }
+  }, [state.selectedDomain]);
+
 
   const fetchData = async () => {
     try {
-      const response = await fetchWork(null, itemsPerPage, null, state.searchInput);
+      const response = await fetchAllWork(itemsPerPage, null, state.searchInput);
       if (response?.payload) {
-        const filteredWork = response.payload.filter(item => item.domain.id === selectedDomain);
         setState(prevState => ({
           ...prevState,
-          work: filteredWork,
+          work: response.payload,
           totalResults: response.totalCount,
-          hasMore: filteredWork.length === itemsPerPage,
+          hasMore: response.payload.length === itemsPerPage,
         }));
       }
     } catch (error) {
@@ -41,38 +75,19 @@ const SearchPage = ({ selectedDomain }) => {
   const data = useMemo(() => state.work, [state.work]);
 
   const columns = useMemo(() => [
-    {
-      Header: 'Work Number',
-      accessor: 'workNumber',
-    },
-    {
-      Header: 'Title',
-      accessor: 'description',
-    },
-    {
-      Header: 'Created By',
-      accessor: 'createdBy',
-    },
-    {
-      Header: 'Assigned To',
-      accessor: 'assignedTo',
-    },
-    {
-      Header: 'Shop',
-      accessor: 'shopGroup.name',
-    },
-    {
-      Header: 'Area',
-      accessor: 'location.name',
-    },
+    { Header: 'Work Number', accessor: 'workNumber' },
+    { Header: 'Title', accessor: 'description' },
+    { Header: 'Created By', accessor: 'createdBy' },
+    { Header: 'Assigned To', accessor: 'assignedTo' },
+    { Header: 'Shop', accessor: 'shopGroup.name' },
+    { Header: 'Area', accessor: 'location.name' },
   ], []);
 
-  // Define table instance with the useTable hook
   const tableInstance = useTable(
     { columns, data },
-    useFilters, // Enable column filters
-    useSortBy,  // Enable sorting by column
-    usePagination // Enable pagination
+    useFilters,
+    useSortBy,
+    usePagination
   );
 
   const {
@@ -89,42 +104,44 @@ const SearchPage = ({ selectedDomain }) => {
     state: { pageIndex },
   } = tableInstance;
 
-  // Function to handle row click and navigate to the work details page
   const handleRowClick = (workId) => {
-    history.push(`/cwm/${workId}`); // <-- Navigate to work details page
+    history.push(`/cwm/${workId}`);
+    window.location.reload();
   };
 
   const handleSearch = () => {
-    fetchData(); // <-- Trigger search
+    fetchData();
   };
 
   const handleNew = (type) => {
-    alert(`Create a new ${type}`); // <-- Handle "New +" button dropdown
+    alert(`Create a new ${type}`);
   };
+
+  // Handle domain change
+  const handleDomainChange = (event) => {
+    const selectedDomainId = event.target.value;
+    setState(prevState => ({
+      ...prevState,
+      selectedDomain: selectedDomainId,
+    }));
+  };
+  
 
   return (
     <div>
-      {/* <SubHeader
-        searchInput={state.searchInput}
-        setSearchInput={(value) => setState(prevState => ({ ...prevState, searchInput: value }))}
-        handleSearch={fetchData}
-        selectedDomain={selectedDomain}
-      /> */}
-
-{/* Add SearchCard component here */}
-<SearchCard
+      <SearchCard
         searchInput={state.searchInput}
         setSearchInput={(value) => setState(prevState => ({ ...prevState, searchInput: value }))}
         handleSearch={handleSearch}
-        selectedDomain={selectedDomain}
-        setSelectedDomain={(domain) => setState(prevState => ({ ...prevState, selectedDomain: domain }))}
+        selectedDomain={state.selectedDomain}
+        setSelectedDomain={(value) => setState(prevState => ({ ...prevState, selectedDomain: value }))}
         sortOptions={sortOptions}
         handleSortChange={setSortOptions}
         handleNew={handleNew}
+        domains={state.domains}
       />
 
       <div className="table-container">
-        {/* Pagination moved above the table */}
         <div className="pagination">
           <button onClick={() => previousPage()} disabled={!canPreviousPage}>
             Previous
@@ -139,8 +156,7 @@ const SearchPage = ({ selectedDomain }) => {
             Next
           </button>
         </div>
-        
-        {/* Table with clickable rows */}
+
         <table {...getTableProps()} className="search-table">
           <thead>
             {headerGroups.map(headerGroup => (
@@ -160,8 +176,11 @@ const SearchPage = ({ selectedDomain }) => {
             {page.map(row => {
               prepareRow(row);
               return (
-                // Add onClick to each row
-                <tr {...row.getRowProps()} onClick={() => handleRowClick(row.original.id)} style={{ cursor: 'pointer' }}>
+                <tr
+                  {...row.getRowProps()}
+                  onClick={() => handleRowClick(row.original.id)}
+                  style={{ cursor: 'pointer' }}
+                >
                   {row.cells.map(cell => (
                     <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
                   ))}

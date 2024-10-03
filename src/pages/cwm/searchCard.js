@@ -1,11 +1,26 @@
 import React, { useState } from "react";
+import RequestForm from './requestForm'; 
 import './searchCard.css';
 
-const SearchCard = ({ searchInput, setSearchInput, handleSearch, selectedDomain, setSelectedDomain, sortOptions, handleSortChange, handleNew }) => {
+const SearchCard = ({ searchInput, setSearchInput, handleSearch, selectedDomain, setSelectedDomain, sortOptions, handleSortChange, handleNew, domains }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const openModal = () => {
+    setIsModalOpen(true);  // Set the modal to open only when the "Request" button is clicked
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);  // Close the modal on submission or cancellation
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    closeModal();  // Close the modal after submission
   };
 
   return (
@@ -22,17 +37,26 @@ const SearchCard = ({ searchInput, setSearchInput, handleSearch, selectedDomain,
           />
         </div>
 
+        {/* Updated Domain Dropdown */}
         <div className="input-group">
           <label htmlFor="domain-select">Domain</label>
           <select
             id="domain-select"
             value={selectedDomain}
             onChange={(e) => setSelectedDomain(e.target.value)}
+            disabled={domains.length === 0}  // Disable if there are no domains
           >
-            <option value="all">All Domains</option>
-            <option value="domain1">TEC</option>
-            <option value="domain2">LCLS</option>
+            {domains.length > 0 ? (
+              domains.map(domain => (
+                <option key={domain.id} value={domain.id}>
+                  {domain.name}
+                </option>
+              ))
+            ) : (
+              <option value="" disabled>No domains available</option>
+            )}
           </select>
+
         </div>
 
         <div className="input-group">
@@ -55,13 +79,22 @@ const SearchCard = ({ searchInput, setSearchInput, handleSearch, selectedDomain,
         </button>
         {isDropdownOpen && (
           <div className="dropdown-menu">
-            {/* Example dropdown options */}
             <button onClick={() => handleNew("Report")}>Report</button>
-            <button onClick={() => handleNew("Request")}>Request</button>
+            <button onClick={openModal}>Request</button> {/* Only open modal here */}
             <button onClick={() => handleNew("Record")}>Record</button>
           </div>
         )}
       </div>
+
+      {/* Only render RequestForm when isModalOpen is true */}
+      {isModalOpen && (
+        <RequestForm
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          handleSubmit={handleSubmit}
+          selectedDomain={selectedDomain}  
+        />
+      )}
     </div>
   );
 };

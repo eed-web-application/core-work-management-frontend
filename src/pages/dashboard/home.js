@@ -55,7 +55,7 @@ function Home() {
   ];
 
   return (
-    <div className="dashboard-container">
+    <div style={{ marginTop: "0px" }} className="dashboard-container">
       <h1>Dashboard</h1>
 
       <div className="dashboard-grid">

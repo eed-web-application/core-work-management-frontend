@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { createLocation, fetchUsers, fetchAllElements, fetchWorkDomain } from '../../services/api';
+import { createLocation, fetchUsers, fetchAllElements, fetchAllDomain } from '../../services/api';
 import { toast } from 'react-toastify'; // Import toast
 import 'react-toastify/dist/ReactToastify.css';
 import './locationForm.css';
@@ -45,15 +45,15 @@ function LocationForm({ showLocationForm, setShowLocationForm, selectedDomain })
   }, [debouncedQuery]);
 
   useEffect(() => {
-    const fetchDomains = async () => {
+    const fetchAllDomains = async () => {
       try {
-        const workDomainData = await fetchWorkDomain();
+        const workDomainData = await fetchAllDomain();
         setDomains(workDomainData.payload);
       } catch (error) {
         console.error('Error fetching data:', error.message);
       }
     };
-    fetchDomains();
+    fetchAllDomains();
   }, [selectedDomain]);
 
   const handleInputChange = (event) => {

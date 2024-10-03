@@ -47,7 +47,7 @@ const DashboardPage = ({ user = { id: 123, name: 'User 1' }, selectedDomain }) =
   return (
     <div className="dashboard-container">
       <div className="welcome-header">
-        <h2>Welcome, {user.name}!</h2>
+        <h2>Welcome</h2>
         <p>Here’s what’s happening with your tickets today.</p>
       </div>
 

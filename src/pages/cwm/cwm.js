@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Suspense, lazy } from "react";
 import { BrowserRouter as Router, Switch, Route, Link, useLocation } from "react-router-dom";
-import { fetchWorkDomain } from "../../services/api.js";
+import { fetchAllDomain } from "../../services/api.js";
 import "./cwm.css";
 
 // Lazy load components
@@ -17,7 +17,7 @@ function Cwm() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const fetchedDomains = await fetchWorkDomain();
+        const fetchedDomains = await fetchAllDomain();
         setDomains(fetchedDomains.payload);
         if (fetchedDomains.payload.length > 0) {
           setSelectedDomain(fetchedDomains.payload[0].id);

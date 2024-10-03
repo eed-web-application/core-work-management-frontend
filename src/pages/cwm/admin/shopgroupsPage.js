@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { createShopGroup, fetchShopGroups } from '../../../services/api.js';
+import { createShopGroup, fetchAllShopGroup } from '../../../services/api.js';
 import './adminPage.css';
 
 const ShopgroupsPage = ({ openSheet, isSheetOpen }) => {
@@ -11,7 +11,7 @@ const ShopgroupsPage = ({ openSheet, isSheetOpen }) => {
 
   useEffect(() => {
     const fetchShopGroup = async () => {
-      const response = await fetchShopGroups();
+      const response = await fetchAllShopGroup();
       setShopgroups(response.payload);
       setFilteredShopgroups(response.payload);
     };
@@ -53,7 +53,7 @@ const handleCloseModal = () => {
 const handleSaveShopgroup = async () => {
     const newShopgroup = { name: newShopgroupName };
     await createShopGroup(newShopgroup);
-    const response = await fetchShopGroups();
+    const response = await fetchAllShopGroup();
     setShopgroups(response.payload);
     setFilteredShopgroups(response.payload);
     handleCloseModal();

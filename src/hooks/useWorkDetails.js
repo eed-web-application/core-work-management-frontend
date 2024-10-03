@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { fetchAWork, fetchActivitiesOfWork, fetchShopGroups, fetchLocations, fetchShopGroup, fetchLovValuesForField } from "../services/api";
+import { fetchWork, fetchAllShopGroup, fetchAllLocation, fetchShopGroup } from "../services/api";
 
 const useWorkDetails = (workId) => {
   const [workDetails, setWorkDetails] = useState(null);
@@ -10,29 +10,37 @@ const useWorkDetails = (workId) => {
   const [lovValues, setLovValues] = useState([]);
   const [initialAssignedTo, setInitialAssignedTo] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [customFields, setCustomFields] = useState([]); // New state for custom fields
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [workResponse, activityResponse] = await Promise.all([
-          fetchAWork(workId),
-          fetchActivitiesOfWork(workId),
+        const [workResponse] = await Promise.all([
+          fetchWork(workId),
+          // fetchActivitiesOfWork(workId),
         ]);
+        
+        // Set work details
         setWorkDetails(workResponse.payload);
         setInitialAssignedTo(workResponse.payload.assignedTo);
-        setActivities(activityResponse.payload);
 
-        const shopGroupResponse = await fetchShopGroup(workResponse.payload.shopGroup.id);
+        // Extract custom fields from workType
+        const customFieldsData = workResponse.payload.workType.customFields || [];
+        setCustomFields(customFieldsData);
+
+        // Fetch other necessary data
+        const shopGroupResponse = await fetchShopGroup(workResponse.payload.shopGroup.id, "66f5cb9de9c61524e1cec2e3");
         setShopGroupUsers(shopGroupResponse.payload.users.map(user => user.user));
 
-        const locationsResponse = await fetchLocations();
+        const locationsResponse = await fetchAllLocation("66f5cb9de9c61524e1cec2e3");
         setLocations(locationsResponse.payload);
 
-        const shopgroupsResponse = await fetchShopGroups();
+        const shopgroupsResponse = await fetchAllShopGroup("66f5cb9de9c61524e1cec2e3");
         setShopgroups(shopgroupsResponse.payload);
-
-        const subsystemValues = await fetchLovValuesForField("Activity", "664ba5664481b1475780792e", "subsystem");
-        setLovValues(subsystemValues.payload);
+        
+        // Optional: Fetch lov values if needed
+        // const subsystemValues = await fetchLovValuesForField("Activity", "664ba5664481b1475780792e", "subsystem");
+        // setLovValues(subsystemValues.payload);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -52,6 +60,7 @@ const useWorkDetails = (workId) => {
     lovValues,
     initialAssignedTo,
     loading,
+    customFields, // Return custom fields
     setWorkDetails,
   };
 };

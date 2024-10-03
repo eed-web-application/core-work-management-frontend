@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { createWork, fetchWorkType, fetchLocations, fetchShopGroups, fetchLovValuesForField } from '../../services/api';
+import { createWork, fetchWorkType, fetchAllLocation, fetchAllShopGroup, fetchLovValuesForField } from '../../services/api';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './newForm.css';
@@ -36,8 +36,8 @@ function TaskForm({ showTaskForm, setShowTaskForm, selectedDomain }) {
             try {
                 const [types, locs, shops, subsystems] = await fetchData([
                     fetchWorkType,
-                    fetchLocations,
-                    fetchShopGroups,
+                    fetchAllLocation,
+                    fetchAllShopGroup,
                     () => fetchLovValuesForField("Activity", "664ba5674481b14757807930", "subsystem"),
                 ]);
                 setWorkTypes(types);

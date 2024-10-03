@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { fetchAActivity, updateWork, fetchLovValuesForField, fetchActivityType, fetchActivitySubtype } from "../../services/api";
+import { updateWork } from "../../services/api";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Breadcrumb from "../../components/Breadcrumb";
 import ProgressBar from "../../components/ProgressBar/ProgressBar";
 import ActivityForm from "./taskForm";
 import SideSheet from "../../components/SideSheet";
-import ActivityDetailForm from './activityDetailForm';
 import activityStyles from './activitySideSheet.module.css';
 import useWorkDetails from '../../hooks/useWorkDetails';
 import SelectField from "../../components/SelectField";
@@ -16,7 +15,7 @@ import CommentsSection from "../../components/CommentsSection";
 import "./workDetails.css";
 
 const WorkDetails = () => {
-  const { workId, activityId } = useParams();
+  const { workId } = useParams();
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState(null);
   const sidebarRef = useRef(null);
@@ -25,13 +24,6 @@ const WorkDetails = () => {
   const [newComment, setNewComment] = useState("");
   const [showSideSheet, setShowSideSheet] = useState(false);
   const [sideSheetContent, setSideSheetContent] = useState(null);
-  const [lovValuesDictionary, setLovValuesDictionary] = useState({});
-
-  const [activityData, setActivityData] = useState({});
-  const [activityTypes, setActivityTypes] = useState([]);
-  const [activityType, setActivityType] = useState(null);
-  const [activitySubtypes, setActivitySubtypes] = useState([]);
-  const [customFields, setCustomFields] = useState([]);
 
   const {
     workDetails,
@@ -42,6 +34,7 @@ const WorkDetails = () => {
     lovValues,
     initialAssignedTo,
     loading,
+    customFields,
     setWorkDetails,
   } = useWorkDetails(workId);
 
@@ -50,43 +43,6 @@ const WorkDetails = () => {
     { label: "Issues", link: "/cwm" },
     { label: "Issue Details", link: `/cwm/${workId}` },
   ], [workId]);
-
-  const fetchActivityData = async (workId, activityId) => {
-    try {
-      const activityResponse = await fetchAActivity(workId, activityId);
-      console.log(activityResponse.payload);
-      const { title, description, activityNumber, activityType, activityTypeSubtype, customFields } = activityResponse.payload;
-      const activityTypeId = activityType ? activityType.id : "";
-
-      setActivityType(activityType);
-
-      const customFieldsData = {};
-      customFields.forEach((field) => {
-        customFieldsData[field.name] = field.value.value;
-      });
-
-      setActivityData({
-        title,
-        description,
-        activityNumber,
-        activityTypeId,
-        activityTypeSubtype,
-        ...customFieldsData,
-      });
-      console.log("setActivityData", activityData);
-
-      setCustomFields(customFields);
-
-      const typeResponse = await fetchActivityType();
-      setActivityTypes(typeResponse.payload || []);
-
-      const subtypeResponse = await fetchActivitySubtype();
-      setActivitySubtypes(subtypeResponse.payload || []);
-      console.log(activitySubtypes);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -100,84 +56,18 @@ const WorkDetails = () => {
     };
   }, []);
 
-
-  useEffect(() => {
-    // Fetch LOV values for each field and create the dictionary
-    const fetchLovValues = async () => {
-      const dictionary = {};
-      for (const field of customFields) {
-        try {
-          const lovValuesResponse = await fetchLovValuesForField("Activity", activityData.activityTypeId, field.name);
-          if (lovValuesResponse.errorCode === 0) {
-            const lovValues = lovValuesResponse.payload.map((value) => ({
-              id: value.id,
-              value: value.value,
-            }));
-            if (lovValues.length > 0) { // Check if LOV values are not empty
-              dictionary[field.name] = lovValues;
-            }
-          } else {
-            console.error(
-              "Error fetching LOV values for field:",
-              field.name,
-              lovValuesResponse.errorMessage
-            );
-          }
-        } catch (error) {
-          console.error("Error fetching LOV values for field:", field.name, error);
-        }
-      }
-      setLovValuesDictionary(dictionary);
-      console.log("setLovValuesDictionary", lovValuesDictionary);
-    };
-
-    fetchLovValues();
-  }, [activityData.activityTypeId, customFields]);
-
   const getCurrentStatus = () => {
     if (workDetails) {
       if (activities.length > 0) {
         return 'Job Created';
       }
-      if (initialAssignedTo) { // Use initialAssignedTo to determine status
+      if (initialAssignedTo) {
         return 'Assigned Personnel';
       }
       return 'Created';
     }
     return 'Pending Assignment';
   };
-
-  const handleActivityClick = async (activity) => {
-    try {
-      const response = await fetchAActivity(workId, activity.id);
-      setSelectedActivity(response.payload);
-      await fetchActivityData(workId, activity.id);
-    } catch (error) {
-      console.error("Error fetching activity:", error);
-    }
-  };
-
-  useEffect(() => {
-    if (selectedActivity && activityData) {
-      const content = (
-        <ActivityDetailForm
-          workDetails={workDetails}
-          activity={selectedActivity}
-          activityTypes={activityTypes}
-          activityType={activityType}
-          activitySubtypes={activitySubtypes}
-          handleInputChange={handleInputChange}
-          handleCustomFieldChange={handleCustomFieldChange}
-          camelToNormalCase={camelToNormalCase}
-          activityData={activityData}
-          handleSubmit={handleSubmit}
-        />
-      );
-      setSideSheetContent(content);
-      setShowSideSheet(true);
-    }
-  }, [selectedActivity, activityData]);
-
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -208,23 +98,12 @@ const WorkDetails = () => {
     setShowTaskForm(true);
   };
 
-  const handleCustomFieldChange = (e, id) => {
-    setWorkDetails({
-      ...workDetails,
-      customFieldValues: workDetails.customFieldValues.map(field =>
-        field.id === id ? { ...field, value: { ...field.value, value: e.target.value } } : field
-      ),
-    });
-  };
-
   const handleSubmit = async () => {
     console.log("Submitting form...");
     try {
       await updateWork(workId, workDetails);
       console.log("Work details updated successfully!");
       toast.success("Work details updated successfully!");
-      setInitialAssignedTo(workDetails.assignedTo); // Update initialAssignedTo after saving
-      // Call getCurrentStatus again to update the progress bar status
       const updatedStatus = getCurrentStatus();
       console.log("Updated status:", updatedStatus);
     } catch (error) {
@@ -296,8 +175,6 @@ const WorkDetails = () => {
     return new Intl.DateTimeFormat('en-US', options).format(new Date(dateTimeString));
   };
 
-  const camelToNormalCase = (str) => str.replace(/([A-Z])/g, " $1").replace(/^./, (char) => char.toUpperCase());
-
   return (
     <div>
       <div style={{ marginLeft: "20px" }}>
@@ -350,6 +227,35 @@ const WorkDetails = () => {
         )}
 
         <br /><br />
+
+        {/* Display custom fields */}
+        <h2>Custom Fields</h2>
+        <div className="custom-fields-container">
+          {customFields.length > 0 ? (
+            <div className="custom-fields-grid">
+              {customFields.map((field) => (
+                <DetailRow key={field.id} label={field.description}>
+                  {field.valueType === "LOV" ? (
+                    <select className="input-field">
+                      {field.lovValues.map((lov) => (
+                        <option key={lov.id} value={lov.value}>
+                          {lov.description}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      className="input-field"
+                      type={field.valueType === "Double" ? "number" : "text"}
+                    />
+                  )}
+                </DetailRow>
+              ))}
+            </div>
+          ) : (
+            <p>No custom fields available.</p>
+          )}
+        </div>
         <hr />
 
         <div className="activities-container">

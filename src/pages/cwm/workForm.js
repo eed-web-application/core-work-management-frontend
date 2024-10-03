@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { createWork, fetchWorkType, fetchLocations, fetchShopGroups, fetchLovValuesForField, fetchLovValues } from '../../services/api';
+import { createWork, fetchWorkType, fetchAllLocation, fetchAllShopGroup, fetchLovValuesForField, fetchLovValues } from '../../services/api';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import { toast } from 'react-toastify';
@@ -33,8 +33,8 @@ function WorkForm({ showWorkForm, setShowWorkForm, selectedDomain }) {
             try {
                 const [typesResponse, locationsResponse, shopGroupsResponse, subsystemGroupsResponse, projectGroupsResponse, urgencyGroupsResponse] = await Promise.all([
                     fetchWorkType(),
-                    fetchLocations(),
-                    fetchShopGroups(),
+                    fetchAllLocation(),
+                    fetchAllShopGroup(),
                     fetchLovValuesForField("Activity", "664ba5664481b1475780792e", "subsystem"),
                     fetchLovValuesForField("Activity", "664ba5664481b1475780792e", "project"),
                     fetchLovValuesForField("Work", "664ba5644481b147578078bc", "urgency")
