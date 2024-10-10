@@ -66,8 +66,8 @@ export const fetchWork = async (workId, token) => {
   return fetchData(`/api/cwm/v1/domain/66f5cb9de9c61524e1cec2e3/work/${workId}`, 'GET', null, token);
 };
 
-export const updateWork = async (workId, workData, token) => {
-  return fetchData(`/api/cwm/v1/domain/66f5cb9de9c61524e1cec2e3/work/${workId}`, 'PUT', workData, token);
+export const updateWork = async (domainId, workId, workData, token) => {
+  return fetchData(`/api/cwm/v1/domain/${domainId}/work/${workId}`, 'PUT', workData, token);
 };
 
 export const createWork = async (workData, logIf = false, token) => {
@@ -78,18 +78,15 @@ export const createWork = async (workData, logIf = false, token) => {
 
   try {
     const response = await fetchData("/api/cwm/v1/domain/66f5cb9de9c61524e1cec2e3/work", 'POST', workDataWithLog, token);
-    const workId = response.payload; // Extract the work ID from the response payload
-
-    if (typeof workId !== 'string') {
-      throw new Error("Invalid response format: work ID is missing or not a string");
-    }
-
-    return workId;
+    
+    // Return the entire response for better handling in the calling component
+    return response; 
   } catch (error) {
     console.error('Error creating work:', error);
     throw error;
   }
 };
+
 
 // DOMAIN-CONTROLLER
 export const fetchAllDomain = async (token) => {
@@ -109,7 +106,7 @@ export const fetchWorkType = async (domainId, token) => {
 };
 
 export const fetchAllLocation = async (domainId, token) => {
-  return await fetchData(`/api/cwm/v1/domain/${domainId}/location`, 'GET', null, token);
+  return await fetchData(`/api/cwm/v1/domain/66f5cb9de9c61524e1cec2e3/location`, 'GET', null, token);
 };
 
 export const fetchLocation = async (locationId, token) => {
@@ -117,7 +114,7 @@ export const fetchLocation = async (locationId, token) => {
 };
 
 export const createLocation = async (locationData, domainId, token) => {
-  const response = await fetchData(`/api/cwm/v1/domain/${domainId}/location`, 'POST', locationData, token);
+  const response = await fetchData(`/api/cwm/v1/domain/66f5cb9de9c61524e1cec2e3/location`, 'POST', locationData, token);
 };
 
 // missing createChildLocation
@@ -155,6 +152,10 @@ export const createBucket = async (bucketData, token) => {
 
 export const fetchBucket = async (bucketId, token) => {
   return await fetchData(`/api/cwm/v1/maintenance/bucket/${bucketId}`, 'GET', null, token);
+};
+
+export const addToBucket = async (domainId, workId, bucketId, token) => {
+  return await fetchData(`/api/cwm/v1/domain/${domainId}/work/${workId}/buket/${bucketId}`, 'PUT', null, token)
 };
 
 // NEED

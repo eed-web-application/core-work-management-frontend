@@ -1,12 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import styles from './requestForm.module.css';
+import { useHistory } from 'react-router-dom';
 import { fetchWorkType, fetchAllLocation, fetchAllShopGroup, fetchSubsystems, createWork } from '../../services/api.js';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+const workTypesData = [
+  { id: '66f5cb9ee9c61524e1cec2e5', title: 'Report - HW', subtitle: 'A problem that needs attention' },
+  { id: '66f5cb9de9c61524e1cec2e4', title: 'Request - HW', subtitle: 'Work to be done' }
+];
+
+// Define the project options
+const projectOptions = [
+  "CBXFEL Project", 
+  "COMMON", 
+  "DASEL", 
+  "FACET", 
+  "FACET User Area", 
+  "LCLS", 
+  "LCLS-II", 
+  "LCLS-II HE Project", 
+  "OTHER"
+];
 
 const RequestForm = ({ isOpen, onClose, selectedDomain }) => {
+  const history = useHistory();
   const [locations, setLocations] = useState([]);
   const [shopGroups, setShopGroups] = useState([]);
   const [subsystems, setSubsystems] = useState([]);
-  const [workTypes, setWorkTypes] = useState([]); // For storing work types
+  // const [workTypes, setWorkTypes] = useState([]); // For storing work types
   const [selectedWorkType, setSelectedWorkType] = useState(''); // To track selected work type
   const [selectedAreaManager, setSelectedAreaManager] = useState('');
   const [selectedArea, setSelectedArea] = useState('');
@@ -29,7 +51,7 @@ const RequestForm = ({ isOpen, onClose, selectedDomain }) => {
       setLocations(locationsData.payload);
       setShopGroups(shopGroupsData.payload);
       setSubsystems(subsystemsData.payload);
-      setWorkTypes(workTypesData.payload);
+      // setWorkTypes(workTypesData.payload);
       console.log("SELECTED DOMAIN", selectedDomain);
     };
     loadDropdownData();
@@ -63,7 +85,7 @@ const RequestForm = ({ isOpen, onClose, selectedDomain }) => {
 
     // Package data into an object for the createWork API
     const requestData = {
-    workTypeId: selectedWorkType,
+      workTypeId: selectedWorkType,
       title: formData.title,
       description: formData.description,
       locationId: selectedArea,
@@ -75,15 +97,22 @@ const RequestForm = ({ isOpen, onClose, selectedDomain }) => {
       const response = await createWork(requestData);
 
       // Handle successful API response (you can modify this based on your response structure)
-      if (response && response.success) {
-        alert('Work request created successfully!');
-        onClose(); // Close the form after successful submission
+      if (response && response.payload) {
+        toast.success('Work request created successfully!');
+        console.log(response.payload);
+
+        // Set a delay for history push
+        setTimeout(() => {
+          history.push(`/cwm/${response.payload}`);
+          window.location.reload(); // Reload the page if necessary
+          onClose();
+        }, 1000);
       } else {
-        alert('Failed to create work request.');
+        toast.error('Failed to create work request.');
       }
     } catch (error) {
       console.error('Error creating work request:', error);
-      alert('An error occurred while creating the work request.');
+      toast.error('An error occurred while creating the work request.');
     }
   };
 
@@ -97,8 +126,46 @@ const RequestForm = ({ isOpen, onClose, selectedDomain }) => {
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
+        {/* X Icon for closing */}
+        <button className={styles.closeButton} onClick={onClose}>
+          &times;
+        </button>
         <h2>Create a New Request</h2>
         <form onSubmit={handleSubmit}>
+{/* Work Type Selection with subtitles */}
+<div className={styles.formGroup}>
+      <label>Work Type</label>
+      <div className={styles.workTypeButtons}>
+        {workTypesData.map((type) => (
+          <button
+            key={type.id}
+            type="button"
+            className={`${styles.workTypeButton} ${selectedWorkType === type.id ? styles.selected : ''}`}
+            onClick={() => handleWorkTypeClick(type.id)}
+          >
+            <span className={styles.workTypeTitle}>{type.title}</span>
+            <span className={styles.subtitle}>{type.subtitle}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+          {/* Work Type Selection as Buttons */}
+          {/* <div className={styles.formGroup}>
+            <label>Work Type</label>
+            <div className={styles.workTypeButtons}>
+              {workTypes.map((type) => (
+                <button
+                  key={type.id}
+                  type="button"
+                  className={`${styles.workTypeButton} ${selectedWorkType === type.id ? styles.selected : ''}`}
+                  onClick={() => handleWorkTypeClick(type.id)}
+                >
+                  {type.title}
+                </button>
+              ))}
+            </div>
+          </div> */}
+
           <div className={styles.formGroup}>
             <label htmlFor="title">Title</label>
             <input
@@ -173,17 +240,22 @@ const RequestForm = ({ isOpen, onClose, selectedDomain }) => {
             </select>
           </div>
 
-          {/* Group Input */}
           <div className={styles.formGroup}>
             <label htmlFor="group">Project</label>
-            <input
-              type="text"
+            <select
               id="group"
               name="group"
               value={formData.group}
               onChange={handleInputChange}
               required
-            />
+            >
+              <option value="">Select a Project</option>
+              {projectOptions.map((project, index) => (
+                <option key={index} value={project}>
+                  {project}
+                </option>
+              ))}
+            </select>
           </div>
 
           {/* Shop Dropdown */}
@@ -205,29 +277,9 @@ const RequestForm = ({ isOpen, onClose, selectedDomain }) => {
             </select>
           </div>
 
-          {/* Work Type Selection as Buttons */}
-          <div className={styles.formGroup}>
-            <label>Work Type</label>
-            <div className={styles.workTypeButtons}>
-              {workTypes.map((type) => (
-                <button
-                  key={type.id}
-                  type="button"
-                  className={`${styles.workTypeButton} ${selectedWorkType === type.id ? styles.selected : ''}`}
-                  onClick={() => handleWorkTypeClick(type.id)}
-                >
-                  {type.title}
-                </button>
-              ))}
-            </div>
-          </div>
-
           {/* Actions */}
           <div className={styles.modalActions}>
             <button type="submit">Submit</button>
-            <button type="button" onClick={onClose}>
-              Cancel
-            </button>
           </div>
         </form>
       </div>

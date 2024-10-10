@@ -6,21 +6,17 @@ const SearchCard = ({ searchInput, setSearchInput, handleSearch, selectedDomain,
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
-
   const openModal = () => {
-    setIsModalOpen(true);  // Set the modal to open only when the "Request" button is clicked
+    setIsModalOpen(true);
   };
 
   const closeModal = () => {
-    setIsModalOpen(false);  // Close the modal on submission or cancellation
+    setIsModalOpen(false);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    closeModal();  // Close the modal after submission
+    closeModal();
   };
 
   return (
@@ -74,19 +70,12 @@ const SearchCard = ({ searchInput, setSearchInput, handleSearch, selectedDomain,
       </div>
 
       <div className="search-card-right">
-        <button className="new-button" onClick={toggleDropdown}>
+        <button className="new-button" onClick={openModal}>
           New +
         </button>
-        {isDropdownOpen && (
-          <div className="dropdown-menu">
-            <button onClick={() => handleNew("Report")}>Report</button>
-            <button onClick={openModal}>Request</button> {/* Only open modal here */}
-            <button onClick={() => handleNew("Record")}>Record</button>
-          </div>
-        )}
       </div>
 
-      {/* Only render RequestForm when isModalOpen is true */}
+
       {isModalOpen && (
         <RequestForm
           isOpen={isModalOpen}

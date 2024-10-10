@@ -4,14 +4,11 @@ import './ProgressBar.css';
 const ProgressBar = ({ currentStatus }) => {
   const steps = [
     'Created',
-    'Assigned Personnel',
-    'Job Created',
-    'Pending Paperwork',
     'Pending Approval',
     'Ready for Work',
     'Work in Progress',
     'Work Complete',
-    'Issue Resolved'
+    'Closed'
   ];
 
   const getStepClass = (step) => {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
-import { fetchAllActivity, createBucket, fetchAllBucket, fetchBucketTypes, fetchBucketStatus } from '../../services/api';
+import { createBucket, fetchAllBucket, fetchBucketTypes, fetchBucketStatus } from '../../services/api';
 import 'react-datepicker/dist/react-datepicker.css';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -14,8 +14,8 @@ function Pmm() {
     const [description, setDescription] = useState('');
     const [selectedType, setSelectedType] = useState('');
     const [selectedStatus, setSelectedStatus] = useState('');
-    const [bucketTypes, setBucketTypes] = useState([]);
-    const [bucketStatus, setBucketStatus] = useState([]);
+    const [bucketTypes, setBucketTypes] = useState(["POMM", "PAMM"]);
+    const [bucketStatus, setBucketStatus] = useState(["Active"]);
     const [buckets, setBuckets] = useState([]);
     const [allJobsData, setAllJobsData] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
@@ -39,8 +39,8 @@ function Pmm() {
                 const status = await fetchBucketStatus();
                 const bucket = await fetchAllBucket();
                 setBuckets(bucket.payload);
-                setBucketTypes(data.payload);
-                setBucketStatus(status.payload);
+                // setBucketTypes(data.payload);
+                // setBucketStatus(status.payload);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -56,18 +56,19 @@ function Pmm() {
         event.preventDefault();
 
         const newSlot = {
-            description: description,
-            type: selectedType,
-            status: selectedStatus,
+            domainIds: ["66f5cb9de9c61524e1cec2e3"],
+            description: "description",
+            type: "66f5cb9ee9c61524e1cec2ec",
+            status: "66f5cb9ee9c61524e1cec2ed",
             from: startDate ? startDate.toISOString() : null,
-            to: endDate ? endDate.toISOString() : null
+            to: endDate ? endDate.toISOString() : null,
+            admittedWorkTypeIds: [{"domainId": "66f5cb9de9c61524e1cec2e3", "workTypeId": "66f5cb9de9c61524e1cec2e4"}],
         };
 
         createBucket(newSlot)
             .then(response => {
                 console.log('New slot created:', response);
                 toast.success('New slot created successfully!');
-                // Optionally, refresh the job list or handle UI updates here
                 setStartDate(null);
                 setEndDate(null);
                 setDescription('');
@@ -228,7 +229,7 @@ function Pmm() {
                                 >
                                     <option value="">Select type</option>
                                     {bucketTypes.map((type) => (
-                                        <option key={type.id} value={type.id}>{type.value}</option>
+                                        <option key={type} value={type}>{type}</option>
                                     ))}
                                 </select>
                             </label>
@@ -242,7 +243,7 @@ function Pmm() {
                                 >
                                     <option value="">Select Status</option>
                                     {bucketStatus.map((type) => (
-                                        <option key={type.id} value={type.id}>{type.value}</option>
+                                        <option key={type} value={type}>{type}</option>
                                     ))}
                                 </select>
                             </label>
