@@ -44,24 +44,51 @@ function Sidebar() {
     };
 
     const renderButtons = () => {
-        return buttons.map((button, index) => (
-            <div key={index}>
-                <Link to={button.path}>
-                    <button
-                        onClick={() => handleClick(button.path)}
-                        className={`icon-button ${activeButton === button.path || (activeButton === "/cwm/dashboard" && button.path === "/cwm/dashboard") || (activeButton === "/cwm/pmm" && button.path === "/cwm/pmm") || (activeButton === "/cwm/admin" && button.path === "/cwm/admin") ? "active-button" : ""}`}
-                    >
-                        <div className="button-label">
-                            <FontAwesomeIcon icon={button.icon} className="icon" title={button.label} />
-                            <div className="small-label">{button.label}</div>
-                            <span className="label">{button.label}</span>
-                        </div>
-                    </button>
-                </Link>
-            </div>
-        ));
+        return buttons.map((button, index) => {
+            if (button.path === "/elog") {
+                // For the eLogs button, open a new tab with the external URL
+                return (
+                    <div key={index}>
+                        <a
+                            href="https://accel-webapp-dev.slac.stanford.edu/elog/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <button
+                                onClick={() => handleClick(button.path)}
+                                className={`icon-button ${activeButton === button.path ? "active-button" : ""}`}
+                            >
+                                <div className="button-label">
+                                    <FontAwesomeIcon icon={button.icon} className="icon" title={button.label} />
+                                    <div className="small-label">{button.label}</div>
+                                    <span className="label">{button.label}</span>
+                                </div>
+                            </button>
+                        </a>
+                    </div>
+                );
+            } else {
+                // Use Link for internal navigation
+                return (
+                    <div key={index}>
+                        <Link to={button.path}>
+                            <button
+                                onClick={() => handleClick(button.path)}
+                                className={`icon-button ${activeButton === button.path ? "active-button" : ""}`}
+                            >
+                                <div className="button-label">
+                                    <FontAwesomeIcon icon={button.icon} className="icon" title={button.label} />
+                                    <div className="small-label">{button.label}</div>
+                                    <span className="label">{button.label}</span>
+                                </div>
+                            </button>
+                        </Link>
+                    </div>
+                );
+            }
+        });
     };
-
+    
     useEffect(() => {
         const handleResize = () => {
             if (window.innerWidth < 768) {
