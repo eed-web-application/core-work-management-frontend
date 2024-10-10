@@ -23,8 +23,6 @@ function Sidebar() {
             setActiveButton("/cwm/dashboard"); // Default to Issues for any other /cwm paths
         } else if (path.startsWith("/cis")) {
             setActiveButton("/cis");
-        } else if (path.startsWith("/admin")) {
-            setActiveButton("/admin/generalAdmin");
         } else {
             setActiveButton(path); // Default to current path
         }
@@ -37,7 +35,6 @@ function Sidebar() {
         { path: "/815", icon: faClock, label: "8:15" },
         { path: "/cis", icon: faBox, label: "Inventory" },
         { path: "/elog", icon: faNewspaper, label: "eLogs" },
-        { path: "/cwm/admin", icon: faLock, label: "Admin" },
         { path: "/settings", icon: faCog, label: "Settings" },
     ];
 
