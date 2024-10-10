@@ -16,7 +16,7 @@ const SearchPage = () => {
   });
 
   const [sortOptions, setSortOptions] = useState("date");
-  const itemsPerPage = 10;
+  const itemsPerPage = 20;
   const history = useHistory();
 
   useEffect(() => {
@@ -28,7 +28,7 @@ const SearchPage = () => {
           setState(prevState => ({
             ...prevState,
             domains: domainData.payload,
-            selectedDomain: defaultDomainId, 
+            selectedDomain: defaultDomainId,
           }));
         }
       } catch (error) {
@@ -41,7 +41,7 @@ const SearchPage = () => {
 
   useEffect(() => {
     console.log("SelectedDomain", state.selectedDomain);
-  }, [state.selectedDomain]); 
+  }, [state.selectedDomain]);
 
   useEffect(() => {
     if (state.selectedDomain) {
@@ -125,7 +125,6 @@ const SearchPage = () => {
       selectedDomain: selectedDomainId,
     }));
   };
-  
 
   return (
     <div>

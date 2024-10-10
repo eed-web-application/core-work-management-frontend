@@ -21,15 +21,15 @@ const ShopgroupsPage = ({ openSheet, isSheetOpen }) => {
 
   useEffect(() => {
     setFilteredShopgroups(
-        shopgroups.filter(shopgroup =>
-            shopgroup.name.toLowerCase().includes(searchQuery.toLowerCase())
-        )
+      shopgroups.filter(shopgroup =>
+        shopgroup.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
     );
-}, [searchQuery, shopgroups]);
+  }, [searchQuery, shopgroups]);
 
-const handleSearchChange = (e) => {
+  const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
-};
+  };
 
   const handleOpenSheet = (shopgroup) => {
     openSheet(
@@ -43,34 +43,34 @@ const handleSearchChange = (e) => {
 
   const handleAddShopgroup = () => {
     setIsModalOpen(true);
-};
+  };
 
-const handleCloseModal = () => {
+  const handleCloseModal = () => {
     setIsModalOpen(false);
     setNewShopgroupName('');
-};
+  };
 
-const handleSaveShopgroup = async () => {
+  const handleSaveShopgroup = async () => {
     const newShopgroup = { name: newShopgroupName };
     await createShopGroup(newShopgroup);
     const response = await fetchAllShopGroup();
     setShopgroups(response.payload);
     setFilteredShopgroups(response.payload);
     handleCloseModal();
-};
+  };
 
   return (
     <div className={`user-list-container ${isSheetOpen ? 'shifted' : ''}`}>
-            <div className="user-list-header">
-                <input
-                    type="text"
-                    placeholder="Search..."
-                    value={searchQuery}
-                    onChange={handleSearchChange}
-                    className="user-search"
-                />
-                <button onClick={handleAddShopgroup} className="add-user-button">+ Shop Group</button>
-            </div>
+      <div className="user-list-header">
+        <input
+          type="text"
+          placeholder="Search..."
+          value={searchQuery}
+          onChange={handleSearchChange}
+          className="user-search"
+        />
+        <button onClick={handleAddShopgroup} className="add-user-button">+ Shop Group</button>
+      </div>
 
       <ul className="user-list">
         {shopgroups.length > 0 ? (
@@ -85,23 +85,23 @@ const handleSaveShopgroup = async () => {
       </ul>
 
       {isModalOpen && (
-                <div className="modal-overlay">
-                    <div className="modal-content">
-                        <h3>Add New Shop Group</h3>
-                        <input
-                            type="text"
-                            placeholder="Shopgroup Name"
-                            value={newShopgroupName}
-                            onChange={(e) => setNewShopgroupName(e.target.value)}
-                            className="modal-input"
-                        />
-                        <div className="modal-buttons">
-                            <button onClick={handleSaveShopgroup} className="save-button">Save</button>
-                            <button onClick={handleCloseModal} className="cancel-button">Cancel</button>
-                        </div>
-                    </div>
-                </div>
-            )}
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3>Add New Shop Group</h3>
+            <input
+              type="text"
+              placeholder="Shopgroup Name"
+              value={newShopgroupName}
+              onChange={(e) => setNewShopgroupName(e.target.value)}
+              className="modal-input"
+            />
+            <div className="modal-buttons">
+              <button onClick={handleSaveShopgroup} className="save-button">Save</button>
+              <button onClick={handleCloseModal} className="cancel-button">Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

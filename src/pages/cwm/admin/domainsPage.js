@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createDomain, fetchAllDomain } from '../../../services/api.js';
-import './adminPage.css'; 
+import './adminPage.css';
 
 const DomainsPage = ({ openSheet, isSheetOpen }) => {
   const [domains, setDomains] = useState([]);
@@ -21,15 +21,15 @@ const DomainsPage = ({ openSheet, isSheetOpen }) => {
 
   useEffect(() => {
     setFilteredDomains(
-        domains.filter(domain =>
-            domain.name.toLowerCase().includes(searchQuery.toLowerCase())
-        )
+      domains.filter(domain =>
+        domain.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
     );
-}, [searchQuery, domains]);
+  }, [searchQuery, domains]);
 
-const handleSearchChange = (e) => {
+  const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
-};
+  };
 
   const handleOpenSheet = (domains) => {
     openSheet(
@@ -43,34 +43,34 @@ const handleSearchChange = (e) => {
 
   const handleAddDomain = () => {
     setIsModalOpen(true);
-};
+  };
 
-const handleCloseModal = () => {
+  const handleCloseModal = () => {
     setIsModalOpen(false);
     setNewDomainName('');
-};
+  };
 
-const handleSaveDomain = async () => {
+  const handleSaveDomain = async () => {
     const newDomain = { name: newDomainName };
     await createDomain(newDomain);
     const response = await fetchAllDomain();
     setDomains(response.payload);
     setFilteredDomains(response.payload);
     handleCloseModal();
-};
+  };
 
   return (
     <div className={`user-list-container ${isSheetOpen ? 'shifted' : ''}`}>
-            <div className="user-list-header">
-                <input
-                    type="text"
-                    placeholder="Search..."
-                    value={searchQuery}
-                    onChange={handleSearchChange}
-                    className="user-search"
-                />
-                <button onClick={handleAddDomain} className="add-user-button">+ Domain</button>
-            </div>
+      <div className="user-list-header">
+        <input
+          type="text"
+          placeholder="Search..."
+          value={searchQuery}
+          onChange={handleSearchChange}
+          className="user-search"
+        />
+        <button onClick={handleAddDomain} className="add-user-button">+ Domain</button>
+      </div>
 
       <ul className="user-list">
         {domains.length > 0 ? (
@@ -85,23 +85,23 @@ const handleSaveDomain = async () => {
       </ul>
 
       {isModalOpen && (
-                <div className="modal-overlay">
-                    <div className="modal-content">
-                        <h3>Add New Domain</h3>
-                        <input
-                            type="text"
-                            placeholder="Domain Name"
-                            value={newDomainName}
-                            onChange={(e) => setNewDomainName(e.target.value)}
-                            className="modal-input"
-                        />
-                        <div className="modal-buttons">
-                            <button onClick={handleSaveDomain} className="save-button">Save</button>
-                            <button onClick={handleCloseModal} className="cancel-button">Cancel</button>
-                        </div>
-                    </div>
-                </div>
-            )}
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3>Add New Domain</h3>
+            <input
+              type="text"
+              placeholder="Domain Name"
+              value={newDomainName}
+              onChange={(e) => setNewDomainName(e.target.value)}
+              className="modal-input"
+            />
+            <div className="modal-buttons">
+              <button onClick={handleSaveDomain} className="save-button">Save</button>
+              <button onClick={handleCloseModal} className="cancel-button">Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -5,7 +5,6 @@ import "./cwm.css";
 
 // Lazy load components
 const SearchPage = lazy(() => import("./searchPage.js"));
-const ReportsPage = lazy(() => import("./reportsPage.js"));
 const AdminPage = lazy(() => import("./admin/adminPage.js"));
 const DashboardPage = lazy(() => import("./dashboardPage.js"));
 

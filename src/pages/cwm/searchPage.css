@@ -1,128 +1,127 @@
 .table-container {
-    position: relative;
-    top: 40px;
-  }
-  
-  .search-table th {
-    font-weight: bold;
-    background-color: #f0f0f0;
-    padding: 12px;
-    text-align: left;
-    border-top: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
+  position: relative;
+  top: 40px;
+}
+
+.search-table th {
+  font-weight: bold;
+  background-color: #f0f0f0;
+  padding: 12px;
+  text-align: left;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
 }
 
 /* Styling for the leftmost (first) column */
-.search-table td:first-child, 
+.search-table td:first-child,
 .search-table th:first-child {
-  border-left: 1px solid #ddd; 
+  border-left: 1px solid #ddd;
 }
 
 /* Styling for the rightmost (last) column */
-.search-table td:last-child, 
+.search-table td:last-child,
 .search-table th:last-child {
-  border-right:1px solid #ddd; 
+  border-right: 1px solid #ddd;
 }
 
 .search-table td {
-    padding: 10px;
-    border-bottom: 1px solid #ddd; 
-  }
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
 
-  .search-table tr:hover {
-    background-color: #f9f9f9;
-  }
+.search-table tr:hover {
+  background-color: #f9f9f9;
+}
 
-  .search-table tr {
-    border: none;
-  }
-  
-  .table-container {
-    width: 95%;
-    margin: 0 auto; 
-    box-sizing: border-box;
-    margin-bottom: 100px;
-  }
-  
-  .search-table {
-    width: 100%;
-    border-collapse: collapse; 
-  }
-  
+.search-table tr {
+  border: none;
+}
+
+.table-container {
+  width: 95%;
+  margin: 0 auto;
+  box-sizing: border-box;
+  margin-bottom: 100px;
+}
+
+.search-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
 .pagination {
-    display: flex;
-    justify-content: flex-end; 
-    margin-top: 20px;
-    margin-bottom: 10px;
-  }
-  
-  .pagination button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    margin-left: 5px; 
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .pagination button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-  }
-  
-  .pagination button:hover:not(:disabled) {
-    background-color: #0056b3;
-  }
-  
-  .pagination span {
-    font-size: 14px;
-    margin: 0 10px;
-    margin-top: 5px;
-  }
-  
-  .assets-cards-container {
-    width: 100%;
-    top: 100px;
-  }
-  
-  .work-cards {
-    display: flex;
-    border-radius: 5px;
-    background-color: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    margin-bottom: 10px;
-    padding: 10px;
-  }
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
 
-  .first-column {
-    margin-left: 20px;
-    width: 85%;
-    padding: 5px;
-    color: #333;
-    overflow: hidden;
-  }
-  
-  .second-column {
-    width: 15%;
-    padding: 5px;
-    font-size: 12px;
-    color: #333;
-  }
-  
-  .colored-tag {
-    background-color: #28a745;
-    color: #fff;
-    padding: 3px 8px;
-    border-radius: 3px;
-    margin-right: 5px;
-    font-size: 10px;
-  }
-  
-  .additional-info p {
-    margin: 5px 0;
-    font-size: 12px;
-    color: #6c757d;
-  }
-  
+.pagination button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  margin-left: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.pagination button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+.pagination span {
+  font-size: 14px;
+  margin: 0 10px;
+  margin-top: 5px;
+}
+
+.assets-cards-container {
+  width: 100%;
+  top: 100px;
+}
+
+.work-cards {
+  display: flex;
+  border-radius: 5px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  margin-bottom: 10px;
+  padding: 10px;
+}
+
+.first-column {
+  margin-left: 20px;
+  width: 85%;
+  padding: 5px;
+  color: #333;
+  overflow: hidden;
+}
+
+.second-column {
+  width: 15%;
+  padding: 5px;
+  font-size: 12px;
+  color: #333;
+}
+
+.colored-tag {
+  background-color: #28a745;
+  color: #fff;
+  padding: 3px 8px;
+  border-radius: 3px;
+  margin-right: 5px;
+  font-size: 10px;
+}
+
+.additional-info p {
+  margin: 5px 0;
+  font-size: 12px;
+  color: #6c757d;
+}

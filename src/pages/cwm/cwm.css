@@ -77,7 +77,6 @@
   justify-content: center;
 }
 
-/* Styling for a card element */
 .cwm-card {
   border-radius: 8px;
   margin: 20px;
@@ -90,7 +89,6 @@
   width: calc(100% - 40px);
 }
 
-/* Styling for the search page */
 .cwm-search-page {
   position: relative;
   justify-content: center;
@@ -100,7 +98,6 @@
   padding-right: 20px;
 }
 
-/* Styling for the assets table and its elements */
 .assets-table {
   margin-top: 20px;
   height: 500px;
@@ -108,7 +105,6 @@
   align-items: center;
 }
 
-/* Styling for table headers in the assets table */
 .assets-table th {
   background-color: white;
   font-weight: bold;
@@ -117,7 +113,6 @@
   border-radius: 10px;
 }
 
-/* Styling for table cells in the assets table */
 .assets-table td {
   padding: 10px 20px;
   border-bottom: 1px solid #ddd;
@@ -125,14 +120,12 @@
   text-align: center;
 }
 
-/* Styling for table rows on hover in the assets table */
 .assets-table tbody tr:hover {
   background-color: #f0f0f0;
   border-radius: 10px;
   cursor: pointer;
 }
 
-/* Styling for a top-right element */
 .top-right {
   margin: 10px;
 }
@@ -141,7 +134,7 @@
   position: fixed;
   top: 60px;
   left: 60px;
-  width: calc(100% - 60px); /* Corrected width calculation */
+  width: calc(100% - 60px); 
   display: flex;
   justify-content: space-around;
   align-items: center;

@@ -68,13 +68,15 @@
   background-color: white;
   border: 1px solid #ddd;
   transition: transform 0.3s ease;
-  transform: translateX(100%); /* Initially hidden */
+  transform: translateX(100%);
+  /* Initially hidden */
   z-index: 101;
   overflow-y: auto;
 }
 
 .side-sheet.open {
-  transform: translateX(0); /* Slide in from the right */
+  transform: translateX(0);
+  /* Slide in from the right */
 }
 
 .sheet-header {
@@ -87,7 +89,7 @@
 .close-btn {
   background: none;
   border: none;
-  font-size: 1.5rem; 
+  font-size: 1.5rem;
   color: #333;
   cursor: pointer;
   padding: 0;
@@ -95,7 +97,7 @@
 }
 
 .close-btn:hover {
-  color: red; 
+  color: red;
 }
 
 .side-sheet-content {
@@ -219,7 +221,8 @@
   justify-content: space-between;
 }
 
-.save-button, .cancel-button {
+.save-button,
+.cancel-button {
   padding: 8px 16px;
   border: none;
   border-radius: 4px;

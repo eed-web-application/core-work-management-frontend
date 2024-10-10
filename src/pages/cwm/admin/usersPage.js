@@ -19,7 +19,7 @@ const UsersPage = ({ openSheet, isSheetOpen }) => {
 
   useEffect(() => {
     setFilteredUsers(
-      users.filter(user => 
+      users.filter(user =>
         user.uid.toLowerCase().includes(searchQuery.toLowerCase())
       )
     );
