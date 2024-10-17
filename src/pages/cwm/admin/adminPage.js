@@ -11,7 +11,7 @@ import SideSheet from '../../../components/SideSheet';
 import adminStyles from './adminSideSheet.module.css';
 import './adminPage.css';
 
-const AdminPage = () => {
+const AdminPage = ({selectedDomain}) => {
   const [sheetContent, setSheetContent] = useState(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
@@ -80,11 +80,11 @@ const AdminPage = () => {
               <Redirect to="/cwm/admin/users" />
             </Route>
 
-            <Route path="/cwm/admin/users" component={() => <UsersPage openSheet={handleOpenSheet} isSheetOpen={isSheetOpen} />} />
-            <Route path="/cwm/admin/groups" component={() => <GroupsPage openSheet={handleOpenSheet} />} />
+            <Route path="/cwm/admin/users" component={() => <UsersPage selectedDomain={selectedDomain} openSheet={handleOpenSheet} isSheetOpen={isSheetOpen} />} />
+            <Route path="/cwm/admin/groups" component={() => <GroupsPage selectedDomain={selectedDomain} openSheet={handleOpenSheet} />} />
             <Route path="/cwm/admin/domains" component={() => <DomainsPage openSheet={handleOpenSheet} />} />
-            <Route path="/cwm/admin/shopgroups" component={() => <ShopgroupsPage openSheet={handleOpenSheet} />} />
-            <Route path="/cwm/admin/locations" component={() => <LocationsPage openSheet={handleOpenSheet} />} />
+            <Route path="/cwm/admin/shopgroups" component={() => <ShopgroupsPage selectedDomain={selectedDomain} openSheet={handleOpenSheet} />} />
+            <Route path="/cwm/admin/locations" component={() => <LocationsPage selectedDomain={selectedDomain} openSheet={handleOpenSheet} />} />
           </Switch>
         </div>
 

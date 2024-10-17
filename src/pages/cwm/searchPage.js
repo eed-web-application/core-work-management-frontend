@@ -1,64 +1,35 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useTable, useSortBy, usePagination, useFilters } from 'react-table';
-import { fetchAllWork, fetchAllDomain, fetchWorkType } from "../../services/api.js";
+import { fetchAllWork, fetchWorkType } from "../../services/api.js";
 import './searchPage.css';
 import { useHistory } from "react-router-dom";
 import SearchCard from './searchCard';
 
-const SearchPage = () => {
+const SearchPage = ({selectedDomain}) => {
   const [state, setState] = useState({
     searchInput: "",
     work: [],
     totalResults: 0,
     hasMore: true,
-    selectedDomain: "",
-    domains: [],
   });
 
   const [sortOptions, setSortOptions] = useState("date");
   const itemsPerPage = 20;
   const history = useHistory();
 
-  useEffect(() => {
-    const fetchDomains = async () => {
-      try {
-        const domainData = await fetchAllDomain();
-        if (domainData?.payload?.length > 0) {
-          const defaultDomainId = domainData.payload[0].id;
-          setState(prevState => ({
-            ...prevState,
-            domains: domainData.payload,
-            selectedDomain: defaultDomainId,
-          }));
-        }
-      } catch (error) {
-        console.error("Error fetching domains:", error);
-      }
-    };
 
-    fetchDomains();
-  }, []);
-
-  useEffect(() => {
-    console.log("SelectedDomain", state.selectedDomain);
-  }, [state.selectedDomain]);
-
-  useEffect(() => {
-    if (state.selectedDomain) {
-      fetchData();
-    }
-  }, [state.selectedDomain, state.searchInput]);
-
-  useEffect(() => {
-    if (state.selectedDomain) {
-      fetchWorkType(state.selectedDomain);
-    }
-  }, [state.selectedDomain]);
-
-
+ // Effect to fetch data when component mounts or when selectedDomain or searchInput changes
+ useEffect(() => {
   const fetchData = async () => {
+    if (!selectedDomain) {
+      console.error("No domain selected, cannot fetch work.");
+      return;
+    }
+
     try {
-      const response = await fetchAllWork(itemsPerPage, null, state.searchInput);
+      const response = await fetchAllWork(itemsPerPage, selectedDomain, state.searchInput);
+      console.log("API Response:", response); // Log the response
+      console.log("SEARCHPAGE", selectedDomain);
       if (response?.payload) {
         setState(prevState => ({
           ...prevState,
@@ -66,11 +37,16 @@ const SearchPage = () => {
           totalResults: response.totalCount,
           hasMore: response.payload.length === itemsPerPage,
         }));
+      } else {
+        console.log("No payload found in response");
       }
     } catch (error) {
       console.error("Error fetching work:", error);
     }
   };
+
+  fetchData(); // Call the fetch function
+}, [selectedDomain, state.searchInput]); 
 
   const data = useMemo(() => state.work, [state.work]);
 
@@ -116,28 +92,20 @@ const SearchPage = () => {
   const handleNew = (type) => {
     alert(`Create a new ${type}`);
   };
-
-  // Handle domain change
-  const handleDomainChange = (event) => {
-    const selectedDomainId = event.target.value;
-    setState(prevState => ({
-      ...prevState,
-      selectedDomain: selectedDomainId,
-    }));
-  };
+  console.log('searchPage selectedDomain:', selectedDomain);
 
   return (
     <div>
       <SearchCard
         searchInput={state.searchInput}
         setSearchInput={(value) => setState(prevState => ({ ...prevState, searchInput: value }))}
-        handleSearch={handleSearch}
-        selectedDomain={state.selectedDomain}
-        setSelectedDomain={(value) => setState(prevState => ({ ...prevState, selectedDomain: value }))}
+        // handleSearch={handleSearch}
+        selectedDomain={selectedDomain}
+        // setSelectedDomain={(value) => setState(prevState => ({ ...prevState, selectedDomain: value }))}
         sortOptions={sortOptions}
         handleSortChange={setSortOptions}
         handleNew={handleNew}
-        domains={state.domains}
+        // domains={state.domains}
       />
 
       <div className="table-container">

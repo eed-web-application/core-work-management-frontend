@@ -1,5 +1,3 @@
-// src/services/api.js
-
 // Set domain id
 export const setDomainId = async () => {
   try {
@@ -62,22 +60,22 @@ export const fetchAllWork = async (limit = 100, anchorId = null, search = "", to
   return fetchData(url.toString(), 'GET', null, token);
 };
 
-export const fetchWork = async (workId, token) => {
-  return fetchData(`/api/cwm/v1/domain/66f5cb9de9c61524e1cec2e3/work/${workId}`, 'GET', null, token);
+export const fetchWork = async (domain_id, workId, token) => {
+  return fetchData(`/api/cwm/v1/domain/${domain_id}/work/${workId}`, 'GET', null, token);
 };
 
 export const updateWork = async (domainId, workId, workData, token) => {
   return fetchData(`/api/cwm/v1/domain/${domainId}/work/${workId}`, 'PUT', workData, token);
 };
 
-export const createWork = async (workData, logIf = false, token) => {
+export const createWork = async (domainId, workData, logIf = false, token) => {
   const workDataWithLog = {
     ...workData,
     logIf,
   };
 
   try {
-    const response = await fetchData("/api/cwm/v1/domain/66f5cb9de9c61524e1cec2e3/work", 'POST', workDataWithLog, token);
+    const response = await fetchData(`/api/cwm/v1/domain/${domainId}/work`, 'POST', workDataWithLog, token);
     
     // Return the entire response for better handling in the calling component
     return response; 
@@ -106,15 +104,15 @@ export const fetchWorkType = async (domainId, token) => {
 };
 
 export const fetchAllLocation = async (domainId, token) => {
-  return await fetchData(`/api/cwm/v1/domain/66f5cb9de9c61524e1cec2e3/location`, 'GET', null, token);
+  return await fetchData(`/api/cwm/v1/domain/${domainId}/location`, 'GET', null, token);
 };
 
 export const fetchLocation = async (locationId, token) => {
-  return await fetchData(`/api/cwm/v1/location/${locationId}`, 'GET', null, token);
+  return await fetchData(`/api/cwm/v1/domain/${domainId}/location/${locationId}`, 'GET', null, token);
 };
 
-export const createLocation = async (locationData, domainId, token) => {
-  const response = await fetchData(`/api/cwm/v1/domain/66f5cb9de9c61524e1cec2e3/location`, 'POST', locationData, token);
+export const createLocation = async (domainId, locationData, token) => {
+  const response = await fetchData(`/api/cwm/v1/domain/${domainId}/location`, 'POST', locationData, token);
 };
 
 // missing createChildLocation
@@ -123,11 +121,11 @@ export const fetchAllShopGroup = async (domainId, token) => {
   return await fetchData(`/api/cwm/v1/domain/${domainId}/shop-group`, 'GET', null, token);
 };
 
-export const fetchShopGroup = async (shopGroupId, domainId, token) => {
+export const fetchShopGroup = async (domainId, shopGroupId, token) => {
   return await fetchData(`/api/cwm/v1/domain/${domainId}/shop-group/${shopGroupId}`, 'GET', null, token);
 };
 
-export const createShopGroup = async (shopGroupData, domainId, token) => {
+export const createShopGroup = async (domainId, shopGroupData, token) => {
   return await fetchData(`/api/cwm/v1/domain/${domainId}/shop-group`, 'POST', shopGroupData, token);
 };
 
@@ -227,12 +225,16 @@ export const authorizeUsersByIds = async (userIds, token) => {
 
 
 // OTHER CUSTOM FETCH DATAs
-export const fetchSubsystems = async (domainId, token) => {
-  return fetchData(`/api/cwm/v1/lov/Work/${domainId}/66f5cb9de9c61524e1cec2e4/subsystem`, 'GET', null, token);
+export const fetchSubsystems = async (domainId, workTypeId, token) => {
+  return fetchData(`/api/cwm/v1/lov/Work/${domainId}/${workTypeId}/subsystem`, 'GET', null, token);
 };
 
-export const fetchLOVs = async (token) => {
-  return fetchData('/api/cwm/v1/lov/Work/66f5cb9de9c61524e1cec2e3/66f5cb9de9c61524e1cec2e4')
+export const fetchProjectGroups = async (domainId, workTypeId, token) => {
+  return fetchData(`/api/cwm/v1/lov/Work/${domainId}/${workTypeId}/group`, 'GET', null, token);
+}
+
+export const fetchLOVs = async (domainId, workTypeId, token) => {
+  return fetchData(`/api/cwm/v1/lov/Work/${domainId}/${workTypeId}`)
 }
 
 export const createActivityLog = async (workId, activityId, formData, token) => {
@@ -271,6 +273,18 @@ export const fetchEntriesByOriginId = async (originId, token) => {
     console.error('Error fetching entries:', error.message);
     throw error;
   }
+};
+
+export const addAttachment = async (attachmentData, token) => {
+  const response = await fetchData(`/api/cwm/v1/attachment`, 'POST', attachmentData, token);
+};
+
+export const previewAttachment = async (attachmentId, token) => {
+  return await fetchData(`/api/cwm/v1/${attachmentId}/preview.jpg`, 'GET', null, token);
+};
+
+export const downloadAttachment = async (attachmentId, token) => {
+  return await fetchData(`/api/cwm/v1/${attachmentId}/download`, 'GET', null, token);
 };
 
 // export const fetchAllActivity = async (token) => {

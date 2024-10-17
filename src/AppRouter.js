@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import Layout from './layout/layout';
 import Home from './pages/dashboard/home'; 
 import Cwm from './pages/cwm/cwm';
@@ -17,7 +17,9 @@ function AppRouter() {
     <Router>
       <Layout>
         <Switch>
+        <Redirect exact from="/" to="/home" />
           <Route exact path="/" component={Home} />
+          <Route path="/home" component={Home} />
           <Route path="/cwm/pmm" component={Pmm} />
           <Route exact path="/cwm/dashboard" component={Cwm} />
           <Route exact path="/cwm/search" component={SearchPage} />

@@ -36,29 +36,50 @@ function Cwm() {
   return (
     <Router>
       <div>
-        {/* Tab Bar */}
+        {/* Tab Bar with Domain Dropdown */}
         <div className="tab-extension">
           <div className="tab-bar">
             <NavLink to="/cwm/dashboard">Dashboard</NavLink>
             <NavLink to="/cwm/search">Search</NavLink>
             <NavLink to="/cwm/admin">Admin</NavLink>
+
+            {/* Domain Dropdown */}
+            <div className="select-domain-container">
+              <label htmlFor="domain-select">Domain: </label>
+              <select
+                id="domain-select"
+                value={selectedDomain}
+                onChange={handleDomainChange}
+              >
+                {domains.map((domain) => (
+                  <option key={domain.id} value={domain.id}>
+                    {domain.name}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
 
         {/* Pages */}
         <Suspense fallback={<div>Loading...</div>}>
-          <Switch>
-            <Route path="/cwm/dashboard">
-              <DashboardPage selectedDomain={selectedDomain} />
-            </Route>
-            <Route path="/cwm/admin">
-              <AdminPage />
-            </Route>
-            <Route path="/cwm/search">
-              <SearchPage selectedDomain={selectedDomain} />
-            </Route>
-          </Switch>
-        </Suspense>
+  {selectedDomain ? (
+    <Switch>
+      <Route path="/cwm/dashboard">
+        <DashboardPage selectedDomain={selectedDomain} />
+      </Route>
+      <Route path="/cwm/admin">
+        <AdminPage selectedDomain={selectedDomain} />
+      </Route>
+      <Route path="/cwm/search">
+        <SearchPage selectedDomain={selectedDomain} />
+      </Route>
+    </Switch>
+  ) : (
+    <div>Loading domain data...</div>
+  )}
+</Suspense>
+
       </div>
     </Router>
   );

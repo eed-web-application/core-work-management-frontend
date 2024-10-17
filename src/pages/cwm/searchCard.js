@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import RequestForm from './requestForm'; 
 import './searchCard.css';
 
-const SearchCard = ({ searchInput, setSearchInput, handleSearch, selectedDomain, setSelectedDomain, sortOptions, handleSortChange, handleNew, domains }) => {
+const SearchCard = ({ searchInput, setSearchInput, selectedDomain, sortOptions, handleSortChange, handleNew }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = () => {
     setIsModalOpen(true);
+    console.log(selectedDomain);
   };
 
   const closeModal = () => {
@@ -18,6 +19,9 @@ const SearchCard = ({ searchInput, setSearchInput, handleSearch, selectedDomain,
     e.preventDefault();
     closeModal();
   };
+
+  console.log('SearchCard selectedDomain:', selectedDomain);
+
 
   return (
     <div className="search-card">
@@ -34,13 +38,13 @@ const SearchCard = ({ searchInput, setSearchInput, handleSearch, selectedDomain,
         </div>
 
         {/* Updated Domain Dropdown */}
-        <div className="input-group">
+        {/* <div className="input-group">
           <label htmlFor="domain-select">Domain</label>
           <select
             id="domain-select"
             value={selectedDomain}
             onChange={(e) => setSelectedDomain(e.target.value)}
-            disabled={domains.length === 0}  // Disable if there are no domains
+            disabled={domains.length === 0}
           >
             {domains.length > 0 ? (
               domains.map(domain => (
@@ -52,8 +56,7 @@ const SearchCard = ({ searchInput, setSearchInput, handleSearch, selectedDomain,
               <option value="" disabled>No domains available</option>
             )}
           </select>
-
-        </div>
+        </div> */}
 
         <div className="input-group">
           <label htmlFor="sort-select">Sort By</label>
@@ -80,7 +83,7 @@ const SearchCard = ({ searchInput, setSearchInput, handleSearch, selectedDomain,
         <RequestForm
           isOpen={isModalOpen}
           onClose={closeModal}
-          handleSubmit={handleSubmit}
+          // handleSubmit={handleSubmit}
           selectedDomain={selectedDomain}  
         />
       )}

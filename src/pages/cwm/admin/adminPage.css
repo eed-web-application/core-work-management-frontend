@@ -246,3 +246,19 @@
 .cancel-button:hover {
   background-color: #c82333;
 }
+
+/* Add this new class for the select input */
+.modal-select {
+  padding: 8px; /* Same padding as modal input */
+  width: 100%; /* Same width as modal input */
+  border: 1px solid #ccc; /* Same border style */
+  border-radius: 4px; /* Same border-radius */
+  margin-bottom: 20px; /* Same margin as modal input */
+  /* Add any additional styles here if needed */
+}
+
+/* Optionally, you can add focus styles */
+.modal-select:focus {
+  border-color: #007bff; /* Change border color on focus */
+  outline: none; /* Remove default outline */
+}

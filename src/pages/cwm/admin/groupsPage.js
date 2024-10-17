@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { fetchLocalGroupsByQuery, createLocalGroup } from '../../../services/api.js';
 import './adminPage.css';
 
-const GroupsPage = ({ openSheet, isSheetOpen }) => {
+const GroupsPage = ({ openSheet, isSheetOpen, selectedDomain }) => {
     const [groups, setGroups] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [filteredGroups, setFilteredGroups] = useState([]);

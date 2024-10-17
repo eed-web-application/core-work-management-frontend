@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { fetchWork, fetchAllShopGroup, fetchAllLocation, fetchShopGroup } from "../services/api";
 
-const useWorkDetails = (workId) => {
+const useWorkDetails = (selectedDomain, workId) => {
   const [workDetails, setWorkDetails] = useState(null);
   const [activities, setActivities] = useState([]);
   const [shopGroupUsers, setShopGroupUsers] = useState([]);
@@ -16,7 +16,7 @@ const useWorkDetails = (workId) => {
     const fetchData = async () => {
       try {
         const [workResponse] = await Promise.all([
-          fetchWork(workId),
+          fetchWork(selectedDomain, workId),
           // fetchActivitiesOfWork(workId),
         ]);
         
@@ -29,13 +29,13 @@ const useWorkDetails = (workId) => {
         setCustomFields(customFieldsData);
 
         // Fetch other necessary data
-        const shopGroupResponse = await fetchShopGroup(workResponse.payload.shopGroup.id, "66f5cb9de9c61524e1cec2e3");
+        const shopGroupResponse = await fetchShopGroup(selectedDomain, workResponse.payload.shopGroup.id);
         setShopGroupUsers(shopGroupResponse.payload.users.map(user => user.user));
 
-        const locationsResponse = await fetchAllLocation("66f5cb9de9c61524e1cec2e3");
+        const locationsResponse = await fetchAllLocation(selectedDomain);
         setLocations(locationsResponse.payload);
 
-        const shopgroupsResponse = await fetchAllShopGroup("66f5cb9de9c61524e1cec2e3");
+        const shopgroupsResponse = await fetchAllShopGroup(selectedDomain);
         setShopgroups(shopgroupsResponse.payload);
         
         // Optional: Fetch lov values if needed

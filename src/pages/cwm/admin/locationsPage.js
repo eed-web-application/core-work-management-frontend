@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { createLocation, fetchAllLocation } from '../../../services/api.js';
+import { createLocation, fetchAllLocation, fetchUsers } from '../../../services/api.js';
+import { toast, ToastContainer } from 'react-toastify'; // Import toast and ToastContainer
+import 'react-toastify/dist/ReactToastify.css'; // Import toastify CSS
 import './adminPage.css';
 
-const LocationsPage = ({ openSheet, isSheetOpen }) => {
+const LocationsPage = ({ openSheet, isSheetOpen, selectedDomain }) => {
   const [locations, setLocations] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredLocations, setFilteredLocations] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false); // To prevent double API calls
 
   // New state fields for the location form
   const [newLocationName, setNewLocationName] = useState('');
@@ -14,16 +17,41 @@ const LocationsPage = ({ openSheet, isSheetOpen }) => {
   const [newExternalLocationIdentifier, setNewExternalLocationIdentifier] = useState('');
   const [newLocationManagerUserId, setNewLocationManagerUserId] = useState('');
 
+  // State for fetched users
+  const [users, setUsers] = useState([]);
+
+  // Fetch locations based on the selected domain
   useEffect(() => {
-    const fetchArea = async () => {
-      const response = await fetchAllLocation();
-      setLocations(response.payload);
-      setFilteredLocations(response.payload);
+    const fetchLocations = async () => {
+      if (selectedDomain) {
+        try {
+          const response = await fetchAllLocation(selectedDomain);
+          setLocations(response.payload);
+          setFilteredLocations(response.payload);
+        } catch (error) {
+          console.error("Error fetching locations:", error);
+        }
+      }
+    };
+    console.log("DOMAIN", selectedDomain);
+    fetchLocations();
+  }, [selectedDomain]);
+
+  // Fetch users for the location manager dropdown
+  useEffect(() => {
+    const fetchAllUsers = async () => {
+      try {
+        const response = await fetchUsers(); // Adjust this if needed
+        setUsers(response.payload); // Assume the response structure has a payload
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
     };
 
-    fetchArea();
+    fetchAllUsers();
   }, []);
 
+  // Update filtered locations based on search query
   useEffect(() => {
     setFilteredLocations(
       locations.filter(location =>
@@ -42,8 +70,8 @@ const LocationsPage = ({ openSheet, isSheetOpen }) => {
         <h3>Location Details</h3>
         <p><strong>Name:</strong> {location.name}</p>
         <p><strong>Description:</strong> {location.description}</p>
-        <p><strong>External Location Identifier:</strong> {location.externalLocationIdentifier}</p>
-        <p><strong>Location Manager User ID:</strong> {location.locationManagerUserId}</p>
+        {/* <p><strong>External Location Identifier:</strong> {location.externalLocationIdentifier}</p> */}
+        <p><strong>Manager:</strong> {location.locationManagerUserId}</p>
       </div>
     );
   };
@@ -52,17 +80,27 @@ const LocationsPage = ({ openSheet, isSheetOpen }) => {
     setIsModalOpen(true);
   };
 
-
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    // Reset the form fields when closing the modal
+    // Reset form fields when closing modal
     setNewLocationName('');
     setNewLocationDescription('');
     setNewExternalLocationIdentifier('');
     setNewLocationManagerUserId('');
   };
 
+  // Handle the creation of a new location
   const handleSaveLocation = async () => {
+    if (!selectedDomain) {
+      console.error("No domain selected, cannot create location");
+      return;
+    }
+
+    // Prevent double-click or re-triggering of the API call
+    if (isSaving) return;
+
+    setIsSaving(true); // Set saving state
+
     const newLocation = {
       name: newLocationName,
       description: newLocationDescription,
@@ -70,12 +108,21 @@ const LocationsPage = ({ openSheet, isSheetOpen }) => {
       locationManagerUserId: newLocationManagerUserId,
     };
 
-    await createLocation(newLocation);
-    // Fetch the updated list of locations after creating the new one
-    const response = await fetchAllLocation();
-    setLocations(response.payload);
-    setFilteredLocations(response.payload);
-    handleCloseModal();
+    try {
+      await createLocation(selectedDomain, newLocation);
+      toast.success("Location created successfully!");
+
+      // Fetch updated locations list
+      const response = await fetchAllLocation(selectedDomain); // Use selectedDomain here
+      setLocations(response.payload);
+      setFilteredLocations(response.payload);
+      handleCloseModal();
+    } catch (error) {
+      console.error("Error creating location:", error);
+      toast.error("Error creating location. Please try again.");
+    } finally {
+      setIsSaving(false); // Reset saving state after the operation completes
+    }
   };
 
   return (
@@ -121,28 +168,32 @@ const LocationsPage = ({ openSheet, isSheetOpen }) => {
               onChange={(e) => setNewLocationDescription(e.target.value)}
               className="modal-input"
             />
-            <input
+            {/* <input
               type="text"
               placeholder="External Location Identifier"
               value={newExternalLocationIdentifier}
               onChange={(e) => setNewExternalLocationIdentifier(e.target.value)}
               className="modal-input"
-            />
-            <input
-              type="text"
-              placeholder="Location Manager Email"
+            /> */}
+            <select
               value={newLocationManagerUserId}
               onChange={(e) => setNewLocationManagerUserId(e.target.value)}
-              className="modal-input"
-            />
+              className="modal-select"
+            >
+              <option value="" disabled>Select Location Manager</option>
+              {users.map(user => (
+                <option key={user.mail} value={user.mail}>{user.uid}</option> // Adjust user properties based on your response structure
+              ))}
+            </select>
             <div className="modal-buttons">
-              <button onClick={handleSaveLocation} className="save-button">Save</button>
+              <button onClick={handleSaveLocation} className="save-button" disabled={isSaving}>
+                {isSaving ? 'Saving...' : 'Save'}
+              </button>
               <button onClick={handleCloseModal} className="cancel-button">Cancel</button>
             </div>
           </div>
         </div>
       )}
-
     </div>
   );
 };

@@ -123,9 +123,10 @@ function WorkForm({ showWorkForm, setShowWorkForm, selectedDomain }) {
         event.preventDefault();
 
         if (!validateForm()) return;
+        console.log("selectedDomain", selectedDomain);
 
         try {
-            const response = await createWork(workData, createWorkLogChecked);
+            const response = await createWork(selectedDomain, workData, createWorkLogChecked);
             window.location.href = `/cwm/${response}`;
             toast.success("Problem reported successfully!");
         } catch (error) {

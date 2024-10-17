@@ -27,6 +27,8 @@ function NavLink({ to, children }) {
 
 const WorkDetails = () => {
   const { workId } = useParams();
+  const location = useLocation();
+  const selectedDomain = location.state?.selectedDomain;
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState(null);
   const sidebarRef = useRef(null);
@@ -53,7 +55,7 @@ const WorkDetails = () => {
     loading,
     customFields,
     setWorkDetails,
-  } = useWorkDetails(workId);
+  } = useWorkDetails(selectedDomain, workId);
 
   useEffect(() => {
     const fetchWorkDetails = async () => {
@@ -68,7 +70,7 @@ const WorkDetails = () => {
         console.error("Error fetching work details:", error);
       }
     };
-
+console.log(selectedDomain);
     fetchWorkDetails();
   }, [workId, workDetails]);
 
@@ -118,42 +120,37 @@ const WorkDetails = () => {
   };
 
   const handleInputChange = async (e, field, customFieldId = null) => {
-    setHasUnsavedChanges(true);
-
-    if (field === 'bucketId') {
-      const newBucketId = e.target.value; // Get the new bucket ID
-      setTemporaryBucketId(newBucketId); // Store it in temporary state
-    } else if (field === 'assignedTo') {
-      const options = e.target.options;
-      const selectedValues = [];
-      for (let i = 0, len = options.length; i < len; i++) {
-        if (options[i].selected) {
-          selectedValues.push(options[i].value);
-        }
-      }
-      setWorkDetails({
-        ...workDetails,
-        [field]: selectedValues,
-      });
-    } else if (customFieldId) {
+    const newValue = e.target.value;
+  
+    console.log('New value:', newValue); // <-- Debug the new value
+    console.log('CustomFieldId:', customFieldId); // <-- Check which custom field is being updated
+  
+    if (customFieldId) {
       const updatedCustomFields = workDetails.customFields.map((customField) => {
         if (customField.id === customFieldId) {
-          return { ...customField, value: e.target.value };
+          console.log('Updating field:', customField); // <-- See which field is being updated
+          return { ...customField, value: newValue }; // Update the field's value
         }
         return customField;
       });
+  
       setWorkDetails({
         ...workDetails,
-        customFields: updatedCustomFields,
+        customFields: updatedCustomFields, // Update the state with new custom field values
       });
+
+      console.log("CUSTOM FIELDS", customFields);
     } else {
       setWorkDetails({
         ...workDetails,
-        [field]: e.target.value,
+        [field]: newValue,
       });
-    }
-  };
 
+    }
+  
+    console.log('Updated WorkDetails:', workDetails); // <-- Check if the state is updated correctly
+  };
+  
 
   const handleEditClick = () => {
     console.log("Edit button clicked"); // Add this line
@@ -182,25 +179,19 @@ const WorkDetails = () => {
           })),
         };
 
-        // Check if bucket has changed
-        if (temporaryBucketId && temporaryBucketId !== originalBucketId) {
-          await addToBucket(workDetails.domain.id, workId, temporaryBucketId);
-          toast.success("Bucket updated successfully!");
-          setOriginalBucketId(temporaryBucketId); // Update the original bucketId
-        }
+        console.log("Updated Work Details:", updatedWorkDetails);
 
         await updateWork(workDetails.domain.id, workId, updatedWorkDetails);
         toast.success("Work details updated successfully!");
-        setHasUnsavedChanges(false); // Mark changes as saved
-        window.location.reload();
+        setHasUnsavedChanges(false);
       } catch (error) {
         console.error("Error updating work details:", error);
-        // toast.error("Failed to update work details.");
-        window.location.reload();
+        toast.error("Failed to update work details.");
       }
     }
-    setIsEditing(!isEditing); // Toggle editing state
+    setIsEditing(!isEditing);
   };
+
 
 
   const handleCommentSubmit = () => {
@@ -397,39 +388,43 @@ const WorkDetails = () => {
         {/* Display custom fields */}
         <h2>Custom Fields</h2>
         <div className="custom-fields-container">
-          {customFields.length > 0 ? (
-            <div className="custom-fields-grid">
-              {customFields.map((field) => (
-                <DetailRow key={field.id} label={field.description}>
-                  {field.valueType === "LOV" ? (
-                    <SelectField
-                      className="input-field"
-                      value={field.value || ""} // Set to empty string if no value
-                      options={[
-                        { value: "", label: "Select an option" }, // Default empty option
-                        ...field.lovValues.map(lov => ({
-                          value: lov.value,
-                          label: lov.description,
-                        })),
-                      ]}
-                      onChange={(e) => handleInputChange(e, 'customField', field.id)} // Function to handle input changes
-                      disabled={!isEditing}
-                    />
-                  ) : (
-                    <input
-                      className="input-field"
-                      type={field.valueType === "Double" ? "number" : "text"}
-                      value={field.value || ""} // Default to empty string
-                      onChange={(e) => handleInputChange(e, 'customField', field.id)} // Handle input changes
-                      disabled={!isEditing}
-                    />
-                  )}
-                </DetailRow>
-              ))}
-            </div>
-          ) : (
-            <p>No custom fields available.</p>
-          )}
+          <h2>Custom Fields</h2>
+          <div className="custom-fields-container">
+            {customFields.length > 0 ? (
+              <div className="custom-fields-grid">
+                {customFields.map((field) => (
+                  <DetailRow key={field.id} label={field.description}>
+                    {field.valueType === "LOV" ? (
+                      <SelectField
+                        className="input-field"
+                        value={field.value || ""} // Set to empty string if no value
+                        options={[
+                          { value: "", label: "Select an option" },
+                          ...field.lovValues.map(lov => ({
+                            value: lov.value,
+                            label: lov.description,
+                          })),
+                        ]}
+                        onChange={(e) => handleInputChange(e, 'customField', field.id)} // Pass the customFieldId here
+                        disabled={!isEditing}
+                      />
+                    ) : (
+                      <input
+                        className="input-field"
+                        type={field.valueType === "Double" ? "number" : "text"}
+                        value={field.value || ""} // Default to empty string
+                        onChange={(e) => handleInputChange(e, 'customField', field.id)} // Pass the customFieldId here
+                        disabled={!isEditing}
+                      />
+                    )}
+                  </DetailRow>
+                ))}
+              </div>
+            ) : (
+              <p>No custom fields available.</p>
+            )}
+          </div>
+
         </div>
 
         <hr />

@@ -31,25 +31,25 @@ function TaskForm({ showTaskForm, setShowTaskForm, selectedDomain }) {
     const [subsystemGroups, setSubsystemGroups] = useState([]);
     const [createWorkLogChecked, setCreateWorkLogChecked] = useState(false);
 
-    useEffect(() => {
-        const fetchInitialData = async () => {
-            try {
-                const [types, locs, shops, subsystems] = await fetchData([
-                    fetchWorkType,
-                    fetchAllLocation,
-                    fetchAllShopGroup,
-                    () => fetchLovValuesForField("Activity", "664ba5674481b14757807930", "subsystem"),
-                ]);
-                setWorkTypes(types);
-                setLocations(locs.filter(location => location.domain.id === selectedDomain));
-                setShopGroups(shops.filter(shopGroup => shopGroup.domain.id === selectedDomain));
-                setSubsystemGroups(subsystems);
-            } catch (error) {
-                console.error('Error fetching initial data:', error);
-            }
-        };
-        fetchInitialData();
-    }, [selectedDomain]);
+    // useEffect(() => {
+    //     const fetchInitialData = async () => {
+    //         try {
+    //             const [types, locs, shops, subsystems] = await fetchData([
+    //                 fetchWorkType,
+    //                 fetchAllLocation,
+    //                 fetchAllShopGroup,
+    //                 () => fetchLovValuesForField("Activity", "664ba5674481b14757807930", "subsystem"),
+    //             ]);
+    //             setWorkTypes(types);
+    //             setLocations(locs.filter(location => location.domain.id === selectedDomain));
+    //             setShopGroups(shops.filter(shopGroup => shopGroup.domain.id === selectedDomain));
+    //             setSubsystemGroups(subsystems);
+    //         } catch (error) {
+    //             console.error('Error fetching initial data:', error);
+    //         }
+    //     };
+    //     fetchInitialData();
+    // }, [selectedDomain]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();

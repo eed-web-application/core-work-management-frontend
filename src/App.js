@@ -2,28 +2,44 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import AppRouter from './appRouter';
 import Layout from './layout';
-import Sidebar from './Sidebar'; // Import your Sidebar component here
-import Header from './Header'; // Import your Header component here
+import Sidebar from './Sidebar';
+import Header from './Header';
+import { DomainProvider } from './hooks/DomainContext';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
+import SearchPage from './pages/cwm/searchPage';
+import SearchCard from './components/SearchCard';  // Import the SearchCard component
+import LocationsPage from './components/admin/LocationsPage';  // Import LocationsPage
 
 function App() {
   return (
     <div className="App">
-      <Header /> {/* Render the Header component here */}
-      <div style={{ display: 'flex' }}>
-        <Sidebar /> {/* Render the Sidebar component here */}
-        <Layout>
-          <main className="Main">
-            <AppRouter /> {/* Render your router content here */}
-          </main>
-        </Layout>
-      </div>
-      <footer>
-        {/* Your footer content can go here */}
-      </footer>
-      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
+      <DomainProvider>
+        <Header /> {/* Render the Header component here */}
+        <div style={{ display: 'flex' }}>
+          <Sidebar /> {/* Render the Sidebar component here */}
+          <Layout>
+            <main className="Main">
+              <SearchCard /> {/* Moved SearchCard here */}
+              <SearchPage />
+              <LocationsPage /> {/* Moved LocationsPage here */}
+              <AppRouter /> {/* Render your router content here */}
+            </main>
+          </Layout>
+        </div>
+        <ToastContainer 
+          position="top-right" 
+          autoClose={3000} 
+          hideProgressBar={false} 
+          newestOnTop={false} 
+          closeOnClick 
+          rtl={false} 
+          pauseOnFocusLoss 
+          draggable 
+          pauseOnHover 
+        />
+      </DomainProvider>
     </div>
   );
 }
