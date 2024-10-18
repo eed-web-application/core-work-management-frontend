@@ -8,7 +8,6 @@ const SearchCard = ({ searchInput, setSearchInput, selectedDomain, sortOptions, 
 
   const openModal = () => {
     setIsModalOpen(true);
-    console.log(selectedDomain);
   };
 
   const closeModal = () => {
@@ -19,9 +18,6 @@ const SearchCard = ({ searchInput, setSearchInput, selectedDomain, sortOptions, 
     e.preventDefault();
     closeModal();
   };
-
-  console.log('SearchCard selectedDomain:', selectedDomain);
-
 
   return (
     <div className="search-card">

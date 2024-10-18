@@ -34,6 +34,11 @@ const RequestForm = ({ isOpen, onClose, selectedDomain }) => {
       const shopGroupsData = await fetchAllShopGroup(selectedDomain);
       const workTypesData = await fetchWorkType(selectedDomain);
 
+      // const lovData = await fetchLOVs(selectedDomain, "67127f0d11219f2cc083f72e");
+      // console.log(lovData.payload);
+      // const lov2Data = await fetchLOVs(selectedDomain, "67127f0d11219f2cc083f72f");
+      // console.log(lov2Data.payload);
+
       setLocations(locationsData.payload);
       setShopGroups(shopGroupsData.payload);
       setWorkTypes(workTypesData.payload);
@@ -53,7 +58,7 @@ const RequestForm = ({ isOpen, onClose, selectedDomain }) => {
           setProjectGroups(projectGroupsData.payload);
         } catch (error) {
           console.error("Error fetching subsystems or project groups", error);
-          toast.error("Error fetching subsystems or project groups.");
+          // toast.error("Error fetching subsystems or project groups.");
         }
       }
     };

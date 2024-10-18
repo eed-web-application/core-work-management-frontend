@@ -230,7 +230,7 @@ export const fetchSubsystems = async (domainId, workTypeId, token) => {
 };
 
 export const fetchProjectGroups = async (domainId, workTypeId, token) => {
-  return fetchData(`/api/cwm/v1/lov/Work/${domainId}/${workTypeId}/group`, 'GET', null, token);
+  return fetchData(`/api/cwm/v1/lov/Work/${domainId}/${workTypeId}/project`, 'GET', null, token);
 }
 
 export const fetchLOVs = async (domainId, workTypeId, token) => {

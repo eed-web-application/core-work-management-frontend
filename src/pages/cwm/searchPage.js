@@ -28,8 +28,6 @@ const SearchPage = ({selectedDomain}) => {
 
     try {
       const response = await fetchAllWork(itemsPerPage, selectedDomain, state.searchInput);
-      console.log("API Response:", response); // Log the response
-      console.log("SEARCHPAGE", selectedDomain);
       if (response?.payload) {
         setState(prevState => ({
           ...prevState,
@@ -92,7 +90,6 @@ const SearchPage = ({selectedDomain}) => {
   const handleNew = (type) => {
     alert(`Create a new ${type}`);
   };
-  console.log('searchPage selectedDomain:', selectedDomain);
 
   return (
     <div>

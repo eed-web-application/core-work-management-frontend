@@ -33,7 +33,6 @@ const LocationsPage = ({ openSheet, isSheetOpen, selectedDomain }) => {
         }
       }
     };
-    console.log("DOMAIN", selectedDomain);
     fetchLocations();
   }, [selectedDomain]);
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { createShopGroup, fetchAllShopGroup, fetchUsers } from '../../../services/api.js'; // Ensure fetchUsers is imported
+import { createShopGroup, fetchAllShopGroup, fetchUsers } from '../../../services/api.js';
 import './adminPage.css';
 
 const ShopgroupsPage = ({ openSheet, isSheetOpen, selectedDomain }) => {
@@ -8,11 +8,11 @@ const ShopgroupsPage = ({ openSheet, isSheetOpen, selectedDomain }) => {
   const [filteredShopgroups, setFilteredShopgroups] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newShopgroupName, setNewShopgroupName] = useState('');
-  const [newShopgroupDescription, setNewShopgroupDescription] = useState(''); // New state for description
-  const [members, setMembers] = useState([]); // New state for members
-  const [selectedMembers, setSelectedMembers] = useState([]); // State for selected members
-  const [users, setUsers] = useState([]); // State for user dropdown
-  const [isSaving, setIsSaving] = useState(false); // To prevent double API calls
+  const [newShopgroupDescription, setNewShopgroupDescription] = useState('');
+  const [members, setMembers] = useState([]);
+  const [selectedMembers, setSelectedMembers] = useState([]); // Array of selected user objects with {userId, isLeader}
+  const [users, setUsers] = useState([]); // Users fetched from API
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     const fetchShopGroup = async () => {
@@ -41,8 +41,8 @@ const ShopgroupsPage = ({ openSheet, isSheetOpen, selectedDomain }) => {
     // Fetch users to populate the dropdown
     const fetchAllUsers = async () => {
       try {
-        const response = await fetchUsers(); // Call fetchUsers API
-        setUsers(response.payload || []); // Store users in state
+        const response = await fetchUsers();
+        setUsers(response.payload || []);
       } catch (error) {
         console.error("Error fetching users:", error);
       }
@@ -74,41 +74,43 @@ const ShopgroupsPage = ({ openSheet, isSheetOpen, selectedDomain }) => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setNewShopgroupName('');
-    setNewShopgroupDescription(''); // Reset description input
-    setSelectedMembers([]); // Reset selected members
+    setNewShopgroupDescription('');
+    setSelectedMembers([]);
   };
 
   const handleSaveShopgroup = async () => {
-    // Check if a domain is selected
     if (!selectedDomain) {
       console.error("No domain selected, cannot create shop group");
       return;
     }
-  
-    // Prevent double-click or re-triggering of the API call
+
     if (isSaving) return;
-  
-    setIsSaving(true); // Set saving state
-  
+
+    setIsSaving(true);
+
+    const formattedMembers = selectedMembers.map((memberEmail) => ({
+      userId: memberEmail,
+      isLeader: false, // You can adjust this or provide a UI option to set a leader
+    }));
+
     const newShopgroup = {
       name: newShopgroupName,
       description: newShopgroupDescription,
-      users: selectedMembers // Include selected members
+      users: formattedMembers,
     };
-  
+
     try {
-      // Create the shop group using the selected domain
-      await createShopGroup(selectedDomain, newShopgroup); // Pass selectedDomain here
-  
-      // Fetch updated shop groups list using the selected domain
-      const response = await fetchAllShopGroup(selectedDomain); // Use selectedDomain here
+      await createShopGroup(selectedDomain, newShopgroup);
+      toast.success("Shop Group created successfully!");
+      const response = await fetchAllShopGroup(selectedDomain);
       setShopgroups(response.payload);
       setFilteredShopgroups(response.payload);
       handleCloseModal();
     } catch (error) {
-      console.error("Error creating shop group:", error); // Log any errors that occur
+      console.error("Error creating shop group:", error);
+      toast.error("Error creating shop group. Please try again.");
     } finally {
-      setIsSaving(false); // Reset saving state after the operation completes
+      setIsSaving(false);
     }
   };
 
@@ -159,8 +161,8 @@ const ShopgroupsPage = ({ openSheet, isSheetOpen, selectedDomain }) => {
               multiple
               value={selectedMembers}
               onChange={(e) => {
-                const options = Array.from(e.target.selectedOptions, option => option.value);
-                setSelectedMembers(options); // Update selected members based on dropdown selection
+                const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
+                setSelectedMembers(selectedOptions);
               }}
               className="modal-input"
             >
